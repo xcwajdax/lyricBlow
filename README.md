@@ -9,7 +9,7 @@
 [![Vite](https://img.shields.io/badge/Vite-6-purple?logo=vite&logoColor=white)](https://vitejs.dev/)
 [![No Backend](https://img.shields.io/badge/backend-none-green)](https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API)
 
-[Features](#-features) · [Quick Start](#-quick-start) · [Live TAP](#-live-tap-mode) · [Whisper](#-whisper-auto-alignment) · [Export](#-export-formats) · [Contributing](#-contributing)
+[Features](#-features) · [Quick Start](#-quick-start) · [Live TAP](#-live-tap-mode) · [Whisper](#-whisper-auto-alignment) · [Export](#-export-formats) · [Roadmap](#️-roadmap) · [Contributing](#-contributing)
 
 </div>
 
@@ -140,6 +140,26 @@ Supported models: `tiny` through `large-v3` (default `large-v3`). Works on CUDA 
 | **JSON** | Full `AlignedWord[]` array with start/end timestamps — useful for custom integrations |
 | **LRC** | Standard line-level lyric timing — supported by most media players |
 | **LRC+** | Word-level enhanced LRC — compatible with Spotify, Apple Music, and advanced karaoke players |
+
+---
+
+## 🗺️ Roadmap
+
+Planned features for future releases:
+
+### Export to 3D / Motion Graphics Applications
+
+Word-level timing data will be exportable directly into professional animation tools, enabling lyric-driven motion graphics workflows:
+
+| Application | Format | Use case |
+|---|---|---|
+| **Cinema 4D** | `.c4d` scene / Python script | Drive text effectors and MoGraph animations with word timestamps |
+| **Blender** | Python script (bpy) | Animate text objects and shape keys synced to word onsets |
+| **After Effects** | ExtendScript / JSON for Motion Bro | Generate lyric kinetic typography with frame-accurate word timing |
+
+### JSON Output Formatting
+
+Improved JSON export with configurable formatting options — pretty-print, compact, and schema-validated output — to make integration with external tools and pipelines easier.
 
 ---
 
