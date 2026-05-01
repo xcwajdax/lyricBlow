@@ -1,0 +1,19 @@
+{
+  "name": "lyric-visualizer",
+  "private": true,
+  "version": "0.0.1",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "three": "^0.175.0"
+  },
+  "devDependencies": {
+    "@types/three": "^0.183.1",
+    "typescript": "~5.8.3",
+    "vite": "^6.2.5"
+  }
+}

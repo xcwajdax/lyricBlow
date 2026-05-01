@@ -1,0 +1,32 @@
+{
+  "aligned_lyrics": [
+    { "word": "To", "start_time": 0.0, "end_time": 0.25 },
+    { "word": "jest", "start_time": 0.25, "end_time": 0.55 },
+    { "word": "mock", "start_time": 0.55, "end_time": 0.95 },
+    { "word": "alignmentu", "start_time": 0.95, "end_time": 1.55 },
+    { "word": "w", "start_time": 1.55, "end_time": 1.65 },
+    { "word": "stylu", "start_time": 1.65, "end_time": 2.05 },
+    { "word": "Sonauto", "start_time": 2.05, "end_time": 2.75 },
+    { "word": "aligned_lyrics", "start_time": 2.75, "end_time": 3.65 },
+    { "word": "—", "start_time": 3.65, "end_time": 3.85 },
+    { "word": "słowo", "start_time": 3.85, "end_time": 4.25 },
+    { "word": "plus", "start_time": 4.25, "end_time": 4.55 },
+    { "word": "start", "start_time": 4.55, "end_time": 4.95 },
+    { "word": "i", "start_time": 4.95, "end_time": 5.05 },
+    { "word": "end", "start_time": 5.05, "end_time": 5.45 },
+    { "word": "Bez", "start_time": 5.8, "end_time": 6.05 },
+    { "word": "audio", "start_time": 6.05, "end_time": 6.45 },
+    { "word": "czas", "start_time": 6.45, "end_time": 6.75 },
+    { "word": "idzie", "start_time": 6.75, "end_time": 7.05 },
+    { "word": "w", "start_time": 7.05, "end_time": 7.15 },
+    { "word": "pętli", "start_time": 7.15, "end_time": 7.55 },
+    { "word": "demo", "start_time": 7.55, "end_time": 8.05 },
+    { "word": "Wczytaj", "start_time": 8.4, "end_time": 8.75 },
+    { "word": "plik", "start_time": 8.75, "end_time": 9.0 },
+    { "word": "MP3", "start_time": 9.0, "end_time": 9.45 },
+    { "word": "aby", "start_time": 9.45, "end_time": 9.65 },
+    { "word": "podświetlać", "start_time": 9.65, "end_time": 10.25 },
+    { "word": "według", "start_time": 10.25, "end_time": 10.65 },
+    { "word": "currentTime", "start_time": 10.65, "end_time": 11.45 }
+  ]
+}

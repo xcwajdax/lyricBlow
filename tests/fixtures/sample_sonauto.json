@@ -1,0 +1,984 @@
+{
+  "aligned_lyrics": [
+    {
+      "word": "[Intro] Yeah",
+      "start_time": 1.58,
+      "end_time": 3.62
+    },
+    {
+      "word": "Mhm",
+      "start_time": 3.62,
+      "end_time": 8.24
+    },
+    {
+      "word": "[Verse 1] Pencil",
+      "start_time": 8.24,
+      "end_time": 8.66
+    },
+    {
+      "word": "tips",
+      "start_time": 8.76,
+      "end_time": 9.0
+    },
+    {
+      "word": "snapping",
+      "start_time": 9.02,
+      "end_time": 9.34
+    },
+    {
+      "word": "on",
+      "start_time": 9.36,
+      "end_time": 9.54
+    },
+    {
+      "word": "the",
+      "start_time": 9.56,
+      "end_time": 9.62
+    },
+    {
+      "word": "paper",
+      "start_time": 9.8,
+      "end_time": 10.18
+    },
+    {
+      "word": "Heavy",
+      "start_time": 10.36,
+      "end_time": 10.68
+    },
+    {
+      "word": "rain",
+      "start_time": 10.85,
+      "end_time": 11.04
+    },
+    {
+      "word": "Clock",
+      "start_time": 11.09,
+      "end_time": 11.38
+    },
+    {
+      "word": "on",
+      "start_time": 11.45,
+      "end_time": 11.62
+    },
+    {
+      "word": "the",
+      "start_time": 11.62,
+      "end_time": 11.71
+    },
+    {
+      "word": "wall",
+      "start_time": 11.87,
+      "end_time": 12.11
+    },
+    {
+      "word": "just",
+      "start_time": 12.14,
+      "end_time": 12.29
+    },
+    {
+      "word": "stays",
+      "start_time": 12.35,
+      "end_time": 12.61
+    },
+    {
+      "word": "steady",
+      "start_time": 12.62,
+      "end_time": 13.03
+    },
+    {
+      "word": "The",
+      "start_time": 13.17,
+      "end_time": 13.27
+    },
+    {
+      "word": "radiator",
+      "start_time": 13.45,
+      "end_time": 14.37
+    },
+    {
+      "word": "hums",
+      "start_time": 14.47,
+      "end_time": 14.91
+    },
+    {
+      "word": "Counting",
+      "start_time": 14.97,
+      "end_time": 15.53
+    },
+    {
+      "word": "hours",
+      "start_time": 15.55,
+      "end_time": 15.75
+    },
+    {
+      "word": "that",
+      "start_time": 15.77,
+      "end_time": 15.95
+    },
+    {
+      "word": "pass",
+      "start_time": 16.01,
+      "end_time": 16.25
+    },
+    {
+      "word": "like",
+      "start_time": 16.31,
+      "end_time": 16.49
+    },
+    {
+      "word": "clouds",
+      "start_time": 16.51,
+      "end_time": 16.77
+    },
+    {
+      "word": "Small",
+      "start_time": 16.79,
+      "end_time": 16.95
+    },
+    {
+      "word": "sounds",
+      "start_time": 17.03,
+      "end_time": 17.27
+    },
+    {
+      "word": "Staring",
+      "start_time": 17.29,
+      "end_time": 17.53
+    },
+    {
+      "word": "through",
+      "start_time": 17.57,
+      "end_time": 17.77
+    },
+    {
+      "word": "the",
+      "start_time": 17.83,
+      "end_time": 17.93
+    },
+    {
+      "word": "glass",
+      "start_time": 18.09,
+      "end_time": 18.41
+    },
+    {
+      "word": "Distant",
+      "start_time": 18.61,
+      "end_time": 19.07
+    },
+    {
+      "word": "tires",
+      "start_time": 19.11,
+      "end_time": 19.31
+    },
+    {
+      "word": "splash",
+      "start_time": 19.33,
+      "end_time": 19.67
+    },
+    {
+      "word": "in",
+      "start_time": 19.71,
+      "end_time": 19.91
+    },
+    {
+      "word": "a",
+      "start_time": 19.97,
+      "end_time": 19.99
+    },
+    {
+      "word": "puddle",
+      "start_time": 20.15,
+      "end_time": 20.59
+    },
+    {
+      "word": "[Pre-Chorus] Just",
+      "start_time": 20.67,
+      "end_time": 20.91
+    },
+    {
+      "word": "some",
+      "start_time": 20.91,
+      "end_time": 21.13
+    },
+    {
+      "word": "loose",
+      "start_time": 21.17,
+      "end_time": 21.47
+    },
+    {
+      "word": "leaf",
+      "start_time": 21.47,
+      "end_time": 21.71
+    },
+    {
+      "word": "and",
+      "start_time": 21.79,
+      "end_time": 21.93
+    },
+    {
+      "word": "some",
+      "start_time": 21.97,
+      "end_time": 22.23
+    },
+    {
+      "word": "tea",
+      "start_time": 22.23,
+      "end_time": 22.45
+    },
+    {
+      "word": "Nothing",
+      "start_time": 22.75,
+      "end_time": 23.17
+    },
+    {
+      "word": "bothering",
+      "start_time": 23.27,
+      "end_time": 23.99
+    },
+    {
+      "word": "me",
+      "start_time": 24.05,
+      "end_time": 24.13
+    },
+    {
+      "word": "Writing",
+      "start_time": 24.23,
+      "end_time": 24.61
+    },
+    {
+      "word": "until",
+      "start_time": 24.63,
+      "end_time": 25.01
+    },
+    {
+      "word": "my",
+      "start_time": 25.07,
+      "end_time": 25.23
+    },
+    {
+      "word": "fingers",
+      "start_time": 25.31,
+      "end_time": 25.57
+    },
+    {
+      "word": "go",
+      "start_time": 25.61,
+      "end_time": 25.69
+    },
+    {
+      "word": "numb",
+      "start_time": 25.85,
+      "end_time": 26.17
+    },
+    {
+      "word": "[Chorus] Slow",
+      "start_time": 26.33,
+      "end_time": 26.65
+    },
+    {
+      "word": "motion",
+      "start_time": 26.87,
+      "end_time": 27.71
+    },
+    {
+      "word": "Slow",
+      "start_time": 27.87,
+      "end_time": 28.21
+    },
+    {
+      "word": "motion",
+      "start_time": 28.41,
+      "end_time": 29.21
+    },
+    {
+      "word": "Ink",
+      "start_time": 29.27,
+      "end_time": 29.37
+    },
+    {
+      "word": "drying",
+      "start_time": 29.45,
+      "end_time": 30.03
+    },
+    {
+      "word": "on",
+      "start_time": 30.09,
+      "end_time": 30.25
+    },
+    {
+      "word": "the",
+      "start_time": 30.27,
+      "end_time": 30.33
+    },
+    {
+      "word": "page",
+      "start_time": 30.51,
+      "end_time": 30.93
+    },
+    {
+      "word": "Floating",
+      "start_time": 30.99,
+      "end_time": 31.49
+    },
+    {
+      "word": "through",
+      "start_time": 31.55,
+      "end_time": 31.87
+    },
+    {
+      "word": "a",
+      "start_time": 31.89,
+      "end_time": 31.91
+    },
+    {
+      "word": "quiet",
+      "start_time": 32.05,
+      "end_time": 32.61
+    },
+    {
+      "word": "age",
+      "start_time": 32.69,
+      "end_time": 33.09
+    },
+    {
+      "word": "In",
+      "start_time": 33.09,
+      "end_time": 33.13
+    },
+    {
+      "word": "the",
+      "start_time": 33.13,
+      "end_time": 33.21
+    },
+    {
+      "word": "rhythm",
+      "start_time": 33.21,
+      "end_time": 33.41
+    },
+    {
+      "word": "of",
+      "start_time": 33.41,
+      "end_time": 33.45
+    },
+    {
+      "word": "the",
+      "start_time": 33.45,
+      "end_time": 33.57
+    },
+    {
+      "word": "pen",
+      "start_time": 33.57,
+      "end_time": 33.63
+    },
+    {
+      "word": "Do",
+      "start_time": 33.65,
+      "end_time": 33.69
+    },
+    {
+      "word": "it",
+      "start_time": 33.69,
+      "end_time": 33.73
+    },
+    {
+      "word": "once",
+      "start_time": 33.73,
+      "end_time": 33.81
+    },
+    {
+      "word": "again",
+      "start_time": 33.85,
+      "end_time": 33.97
+    },
+    {
+      "word": "Slow",
+      "start_time": 33.97,
+      "end_time": 34.09
+    },
+    {
+      "word": "motion",
+      "start_time": 34.09,
+      "end_time": 34.25
+    },
+    {
+      "word": "Slow",
+      "start_time": 34.25,
+      "end_time": 34.35
+    },
+    {
+      "word": "motion",
+      "start_time": 34.35,
+      "end_time": 34.51
+    },
+    {
+      "word": "[Verse 2] Dust",
+      "start_time": 34.51,
+      "end_time": 34.62
+    },
+    {
+      "word": "settles",
+      "start_time": 34.62,
+      "end_time": 34.81
+    },
+    {
+      "word": "on",
+      "start_time": 34.85,
+      "end_time": 34.9
+    },
+    {
+      "word": "the",
+      "start_time": 34.9,
+      "end_time": 34.95
+    },
+    {
+      "word": "wooden",
+      "start_time": 34.95,
+      "end_time": 35.09
+    },
+    {
+      "word": "shelf",
+      "start_time": 35.09,
+      "end_time": 35.2
+    },
+    {
+      "word": "Nobody",
+      "start_time": 35.23,
+      "end_time": 35.45
+    },
+    {
+      "word": "home",
+      "start_time": 35.45,
+      "end_time": 35.53
+    },
+    {
+      "word": "Finding",
+      "start_time": 35.53,
+      "end_time": 35.7
+    },
+    {
+      "word": "parts",
+      "start_time": 35.7,
+      "end_time": 35.8
+    },
+    {
+      "word": "of",
+      "start_time": 35.8,
+      "end_time": 35.84
+    },
+    {
+      "word": "my",
+      "start_time": 35.84,
+      "end_time": 35.9
+    },
+    {
+      "word": "shelf",
+      "start_time": 35.9,
+      "end_time": 35.99
+    },
+    {
+      "word": "Mind",
+      "start_time": 35.99,
+      "end_time": 36.13
+    },
+    {
+      "word": "alone",
+      "start_time": 36.17,
+      "end_time": 36.27
+    },
+    {
+      "word": "Turning",
+      "start_time": 36.27,
+      "end_time": 36.49
+    },
+    {
+      "word": "back",
+      "start_time": 36.49,
+      "end_time": 36.73
+    },
+    {
+      "word": "the",
+      "start_time": 36.77,
+      "end_time": 36.84
+    },
+    {
+      "word": "wrinkled",
+      "start_time": 36.88,
+      "end_time": 37.2
+    },
+    {
+      "word": "corner",
+      "start_time": 37.2,
+      "end_time": 37.32
+    },
+    {
+      "word": "Open",
+      "start_time": 37.32,
+      "end_time": 37.5
+    },
+    {
+      "word": "water",
+      "start_time": 37.5,
+      "end_time": 37.6
+    },
+    {
+      "word": "Falling",
+      "start_time": 37.6,
+      "end_time": 37.76
+    },
+    {
+      "word": "deeper",
+      "start_time": 37.76,
+      "end_time": 38.08
+    },
+    {
+      "word": "than",
+      "start_time": 38.08,
+      "end_time": 38.16
+    },
+    {
+      "word": "before",
+      "start_time": 38.16,
+      "end_time": 38.28
+    },
+    {
+      "word": "Heavy",
+      "start_time": 38.28,
+      "end_time": 38.42
+    },
+    {
+      "word": "boots",
+      "start_time": 38.56,
+      "end_time": 38.68
+    },
+    {
+      "word": "outside",
+      "start_time": 38.68,
+      "end_time": 38.84
+    },
+    {
+      "word": "the",
+      "start_time": 38.84,
+      "end_time": 38.9
+    },
+    {
+      "word": "door",
+      "start_time": 38.9,
+      "end_time": 39.06
+    },
+    {
+      "word": "[Pre-Chorus] Just",
+      "start_time": 39.06,
+      "end_time": 39.22
+    },
+    {
+      "word": "some",
+      "start_time": 39.22,
+      "end_time": 39.34
+    },
+    {
+      "word": "loose",
+      "start_time": 39.36,
+      "end_time": 39.6
+    },
+    {
+      "word": "leaf",
+      "start_time": 39.6,
+      "end_time": 39.68
+    },
+    {
+      "word": "and",
+      "start_time": 39.68,
+      "end_time": 39.74
+    },
+    {
+      "word": "some",
+      "start_time": 39.74,
+      "end_time": 39.82
+    },
+    {
+      "word": "tea",
+      "start_time": 39.82,
+      "end_time": 39.88
+    },
+    {
+      "word": "Nothing",
+      "start_time": 39.88,
+      "end_time": 40.04
+    },
+    {
+      "word": "bothering",
+      "start_time": 40.04,
+      "end_time": 40.22
+    },
+    {
+      "word": "me",
+      "start_time": 40.22,
+      "end_time": 40.32
+    },
+    {
+      "word": "Writing",
+      "start_time": 40.32,
+      "end_time": 40.56
+    },
+    {
+      "word": "until",
+      "start_time": 40.56,
+      "end_time": 40.66
+    },
+    {
+      "word": "my",
+      "start_time": 40.66,
+      "end_time": 40.7
+    },
+    {
+      "word": "fingers",
+      "start_time": 40.7,
+      "end_time": 40.86
+    },
+    {
+      "word": "go",
+      "start_time": 40.86,
+      "end_time": 40.9
+    },
+    {
+      "word": "numb",
+      "start_time": 40.9,
+      "end_time": 41.0
+    },
+    {
+      "word": "[Chorus] Slow",
+      "start_time": 41.0,
+      "end_time": 41.08
+    },
+    {
+      "word": "motion",
+      "start_time": 41.08,
+      "end_time": 41.24
+    },
+    {
+      "word": "Slow",
+      "start_time": 41.24,
+      "end_time": 41.34
+    },
+    {
+      "word": "motion",
+      "start_time": 41.34,
+      "end_time": 41.54
+    },
+    {
+      "word": "Ink",
+      "start_time": 41.58,
+      "end_time": 41.64
+    },
+    {
+      "word": "drying",
+      "start_time": 41.64,
+      "end_time": 41.8
+    },
+    {
+      "word": "on",
+      "start_time": 41.8,
+      "end_time": 41.88
+    },
+    {
+      "word": "the",
+      "start_time": 41.88,
+      "end_time": 41.94
+    },
+    {
+      "word": "page",
+      "start_time": 41.94,
+      "end_time": 42.06
+    },
+    {
+      "word": "Floating",
+      "start_time": 42.06,
+      "end_time": 42.22
+    },
+    {
+      "word": "through",
+      "start_time": 42.26,
+      "end_time": 42.46
+    },
+    {
+      "word": "a",
+      "start_time": 42.52,
+      "end_time": 42.54
+    },
+    {
+      "word": "quiet",
+      "start_time": 42.54,
+      "end_time": 42.7
+    },
+    {
+      "word": "age",
+      "start_time": 42.7,
+      "end_time": 42.76
+    },
+    {
+      "word": "In",
+      "start_time": 42.76,
+      "end_time": 42.8
+    },
+    {
+      "word": "the",
+      "start_time": 42.8,
+      "end_time": 42.88
+    },
+    {
+      "word": "rhythm",
+      "start_time": 42.92,
+      "end_time": 43.04
+    },
+    {
+      "word": "of",
+      "start_time": 43.04,
+      "end_time": 43.16
+    },
+    {
+      "word": "the",
+      "start_time": 43.16,
+      "end_time": 43.22
+    },
+    {
+      "word": "pen",
+      "start_time": 43.22,
+      "end_time": 43.3
+    },
+    {
+      "word": "Do",
+      "start_time": 43.3,
+      "end_time": 43.34
+    },
+    {
+      "word": "it",
+      "start_time": 43.34,
+      "end_time": 43.38
+    },
+    {
+      "word": "once",
+      "start_time": 43.38,
+      "end_time": 43.46
+    },
+    {
+      "word": "again",
+      "start_time": 43.54,
+      "end_time": 43.7
+    },
+    {
+      "word": "Slow",
+      "start_time": 43.7,
+      "end_time": 43.82
+    },
+    {
+      "word": "motion",
+      "start_time": 43.86,
+      "end_time": 44.46
+    },
+    {
+      "word": "Slow",
+      "start_time": 44.46,
+      "end_time": 44.54
+    },
+    {
+      "word": "motion",
+      "start_time": 44.54,
+      "end_time": 44.7
+    },
+    {
+      "word": "[Bridge] Maybe",
+      "start_time": 44.7,
+      "end_time": 44.8
+    },
+    {
+      "word": "it",
+      "start_time": 44.8,
+      "end_time": 44.84
+    },
+    {
+      "word": "fades",
+      "start_time": 44.84,
+      "end_time": 44.98
+    },
+    {
+      "word": "Maybe",
+      "start_time": 45.0,
+      "end_time": 45.12
+    },
+    {
+      "word": "it",
+      "start_time": 45.12,
+      "end_time": 45.16
+    },
+    {
+      "word": "stays",
+      "start_time": 45.16,
+      "end_time": 45.42
+    },
+    {
+      "word": "Maybe",
+      "start_time": 45.42,
+      "end_time": 45.52
+    },
+    {
+      "word": "it",
+      "start_time": 45.52,
+      "end_time": 45.58
+    },
+    {
+      "word": "drifts",
+      "start_time": 45.58,
+      "end_time": 45.8
+    },
+    {
+      "word": "far",
+      "start_time": 45.8,
+      "end_time": 45.88
+    },
+    {
+      "word": "away",
+      "start_time": 45.88,
+      "end_time": 45.98
+    },
+    {
+      "word": "[Chorus] Slow",
+      "start_time": 46.0,
+      "end_time": 46.28
+    },
+    {
+      "word": "motion",
+      "start_time": 46.28,
+      "end_time": 46.4
+    },
+    {
+      "word": "Slow",
+      "start_time": 46.42,
+      "end_time": 46.5
+    },
+    {
+      "word": "motion",
+      "start_time": 46.5,
+      "end_time": 46.76
+    },
+    {
+      "word": "Ink",
+      "start_time": 46.76,
+      "end_time": 46.82
+    },
+    {
+      "word": "drying",
+      "start_time": 46.82,
+      "end_time": 47.0
+    },
+    {
+      "word": "on",
+      "start_time": 47.0,
+      "end_time": 47.04
+    },
+    {
+      "word": "the",
+      "start_time": 47.04,
+      "end_time": 47.1
+    },
+    {
+      "word": "page",
+      "start_time": 47.12,
+      "end_time": 47.26
+    },
+    {
+      "word": "Floating",
+      "start_time": 47.26,
+      "end_time": 47.46
+    },
+    {
+      "word": "through",
+      "start_time": 47.46,
+      "end_time": 47.8
+    },
+    {
+      "word": "a",
+      "start_time": 47.8,
+      "end_time": 47.82
+    },
+    {
+      "word": "quiet",
+      "start_time": 47.82,
+      "end_time": 47.92
+    },
+    {
+      "word": "age",
+      "start_time": 47.92,
+      "end_time": 47.98
+    },
+    {
+      "word": "In",
+      "start_time": 47.98,
+      "end_time": 48.02
+    },
+    {
+      "word": "the",
+      "start_time": 48.02,
+      "end_time": 48.08
+    },
+    {
+      "word": "rhythm",
+      "start_time": 48.08,
+      "end_time": 48.2
+    },
+    {
+      "word": "of",
+      "start_time": 48.2,
+      "end_time": 48.24
+    },
+    {
+      "word": "the",
+      "start_time": 48.26,
+      "end_time": 48.32
+    },
+    {
+      "word": "pen",
+      "start_time": 48.32,
+      "end_time": 48.38
+    },
+    {
+      "word": "Do",
+      "start_time": 48.38,
+      "end_time": 48.42
+    },
+    {
+      "word": "it",
+      "start_time": 48.42,
+      "end_time": 48.46
+    },
+    {
+      "word": "once",
+      "start_time": 48.46,
+      "end_time": 48.54
+    },
+    {
+      "word": "again",
+      "start_time": 48.54,
+      "end_time": 48.64
+    },
+    {
+      "word": "Slow",
+      "start_time": 48.64,
+      "end_time": 48.72
+    },
+    {
+      "word": "motion",
+      "start_time": 48.72,
+      "end_time": 48.84
+    },
+    {
+      "word": "Slow",
+      "start_time": 48.84,
+      "end_time": 48.92
+    },
+    {
+      "word": "motion",
+      "start_time": 48.92,
+      "end_time": 49.04
+    }
+  ]
+}

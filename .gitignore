@@ -1,0 +1,11 @@
+node_modules/
+dist/
+*.local
+.DS_Store
+.claude/
+
+# Duże źródłowe pliki audio (trzymane lokalnie, nie w gicie)
+assets/*.mp3
+assets/*.wav
+assets/*.m4a
+assets/*.flac

@@ -1,0 +1,3 @@
+To jest mock alignmentu w stylu Sonauto aligned_lyrics — słowo plus start i end
+Bez audio czas idzie w pętli demo
+Wczytaj plik MP3 aby podświetlać według currentTime

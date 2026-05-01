@@ -1,0 +1,1252 @@
+<!DOCTYPE html>
+<html lang="pl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lyric visualizer</title>
+    <style>
+      * {
+        box-sizing: border-box;
+        scrollbar-width: thin;
+        scrollbar-color: #3a4a5c #12121c;
+      }
+      html, body {
+        margin: 0; height: 100%; overflow: hidden;
+        background: #0a0a0f;
+        font-family: system-ui, sans-serif;
+      }
+
+      /* Scrollbars — WebKit (Chrome, Edge, Safari); Firefox uses scrollbar-* above */
+      *::-webkit-scrollbar {
+        width: 10px;
+        height: 10px;
+      }
+      *::-webkit-scrollbar-track {
+        background: #12121c;
+        border-radius: 6px;
+      }
+      *::-webkit-scrollbar-thumb {
+        background: linear-gradient(180deg, #3a4a5c 0%, #2a3548 100%);
+        border-radius: 6px;
+        border: 2px solid #12121c;
+      }
+      *::-webkit-scrollbar-thumb:hover {
+        background: linear-gradient(180deg, #4a5c78 0%, #3a4a62 100%);
+      }
+      *::-webkit-scrollbar-corner {
+        background: #12121c;
+      }
+
+      #app { position: fixed; inset: 0; transition: right 0.15s ease; }
+      body.editor-open #app { right: min(640px, 96vw); }
+      body.editor-open #hud { right: calc(min(640px, 96vw) + 12px); }
+      body.editor-open #mini-visualizer { right: calc(min(640px, 96vw) + 12px); }
+
+      /* Mini visualizer — top right */
+      #mini-visualizer {
+        position: fixed;
+        top: 12px;
+        right: 12px;
+        width: 80px;
+        height: 32px;
+        display: none;
+        border-radius: 4px;
+        background: rgba(20, 20, 35, 0.85);
+        border: 1px solid #2a3a4a;
+        z-index: 10;
+      }
+      #mini-visualizer.active { display: block; }
+
+      #projects {
+        display: none;
+        position: fixed; inset: 0;
+        background: #0a0a0f; z-index: 100;
+        flex-direction: column;
+        align-items: center;
+        padding: 24px 16px 32px;
+        overflow: hidden;
+      }
+      #projects.visible { display: flex; }
+      #projects h1 {
+        color: #e8e8f0; font-size: 24px;
+        margin: 0 0 16px 0;
+        flex-shrink: 0;
+      }
+      #projects-list {
+        display: flex; flex-direction: column; gap: 14px;
+        align-items: stretch;
+        width: 100%;
+        max-width: 600px;
+        min-width: min(320px, 100%);
+        flex: 1;
+        min-height: 0;
+        overflow-y: auto;
+        overflow-x: hidden;
+        padding: 4px 2px 12px;
+      }
+      .projects-section-title {
+        font-size: 11px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        color: #6a6a78;
+        margin: 18px 0 6px 0;
+      }
+      .projects-section-title:first-child { margin-top: 0; }
+      .projects-empty-hint {
+        font-size: 13px;
+        color: #7a7a88;
+        margin: 4px 0 8px;
+        line-height: 1.45;
+      }
+      .project-row {
+        display: flex;
+        gap: 8px;
+        align-items: stretch;
+        min-width: 0;
+      }
+      .project-card-main {
+        flex: 1;
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 8px;
+        padding: 14px 16px;
+        text-align: left;
+        font: inherit;
+        color: #e8e8f0;
+        background: #1a1a24;
+        border: 1px solid #3a3a4a;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: background 0.2s, border-color 0.2s;
+      }
+      .project-card-main:hover {
+        background: #2a2a3a;
+        border-color: #5a5a6a;
+      }
+      .project-card-title {
+        font-size: 17px;
+        font-weight: 600;
+        line-height: 1.25;
+      }
+      .project-card-meta {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+      .project-card-line {
+        font-size: 13px;
+        color: #b8b8c8;
+        line-height: 1.35;
+      }
+      .project-card-line-sub {
+        font-size: 12px;
+        color: #6a7590;
+        word-break: break-all;
+      }
+      .project-card-line-file {
+        display: block;
+        min-width: 0;
+      }
+      .project-card-filename {
+        display: inline;
+        max-width: 100%;
+        color: #9ec5ff;
+        word-break: break-all;
+      }
+      .project-card-line-dates {
+        font-size: 12px;
+        color: #888;
+      }
+      .meta-chip {
+        display: inline-block;
+        font-size: 11px;
+        font-weight: 600;
+        padding: 2px 7px;
+        border-radius: 4px;
+        vertical-align: baseline;
+        margin-right: 2px;
+      }
+      .meta-chip-json {
+        background: #1e3048;
+        color: #9ec5ff;
+        border: 1px solid #2a4a6a;
+      }
+      .meta-chip-text {
+        background: #2a2838;
+        color: #d4b8ff;
+        border: 1px solid #4a3a6a;
+      }
+      .project-delete {
+        flex-shrink: 0;
+        align-self: stretch;
+        padding: 8px 12px;
+        font-size: 12px;
+        background: #1a1a24;
+        color: #c88;
+        border: 1px solid #3a3a4a;
+        border-radius: 8px;
+        cursor: pointer;
+        font: inherit;
+      }
+      .project-delete:hover { background: #3a1a1a; border-color: #6a3a3a; }
+      .project-card-new {
+        width: 100%;
+        padding: 14px 16px;
+        font-size: 16px;
+        text-align: center;
+        background: transparent;
+        color: #9ec5ff;
+        border: 1px dashed #3a4a6a;
+        border-radius: 8px;
+        cursor: pointer;
+        font: inherit;
+        transition: border-color 0.2s, background 0.2s;
+      }
+      .project-card-new:hover {
+        background: rgba(158, 197, 255, 0.06);
+        border-color: #5a6a8a;
+      }
+
+      /* New-project modal */
+      #project-modal {
+        display: none;
+        position: fixed; inset: 0;
+        background: rgba(0,0,0,0.65);
+        z-index: 200;
+        align-items: center; justify-content: center;
+      }
+      #project-modal.visible { display: flex; }
+      #project-modal .panel {
+        background: #15151f;
+        border: 1px solid #3a3a4a;
+        border-radius: 10px;
+        padding: 24px;
+        min-width: 480px; max-width: 720px;
+        max-height: 86vh;
+        overflow: auto;
+        color: #e8e8f0;
+        display: flex; flex-direction: column; gap: 14px;
+      }
+      #project-modal h2 { margin: 0 0 4px 0; font-size: 20px; }
+      #project-modal label {
+        display: flex; flex-direction: column; gap: 4px;
+        font-size: 13px; color: #b8b8c4;
+      }
+      #project-modal input[type="text"],
+      #project-modal textarea {
+        background: #0a0a0f; color: #e8e8f0;
+        border: 1px solid #3a3a4a; border-radius: 6px;
+        padding: 8px 10px; font: inherit;
+      }
+      #project-modal textarea {
+        min-height: 220px; resize: vertical; font-family: ui-monospace, monospace;
+        font-size: 13px;
+      }
+      #project-modal .row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+      #project-modal button {
+        cursor: pointer;
+        border: 1px solid #3a3a4a; background: #1a1a24; color: #e8e8f0;
+        border-radius: 6px; padding: 8px 14px; font: inherit;
+      }
+      #project-modal button:hover { border-color: #5a5a6a; }
+      #project-modal button.primary { background: #2a4a6a; border-color: #3a6a9a; }
+      #project-modal button.primary:disabled { opacity: 0.4; cursor: not-allowed; }
+      #project-modal .audio-status { font-size: 13px; color: #9ec5ff; }
+      #project-modal .lyrics-tabs { display: flex; gap: 0; }
+      #project-modal .lyrics-tabs button {
+        border-radius: 0;
+        border-right-width: 0;
+      }
+      #project-modal .lyrics-tabs button:first-child { border-radius: 6px 0 0 6px; }
+      #project-modal .lyrics-tabs button:last-child { border-radius: 0 6px 6px 0; border-right-width: 1px; }
+      #project-modal .lyrics-tabs button.active { background: #2a4a6a; border-color: #3a6a9a; }
+      #project-modal .pane { display: none; }
+      #project-modal .pane.active { display: flex; flex-direction: column; gap: 6px; }
+      #project-modal .error { color: #ff8888; font-size: 13px; min-height: 18px; }
+      #project-modal .hint { color: #888; font-size: 12px; }
+
+      /* Timing editor — side panel (right) */
+      #editor-modal {
+        display: none;
+        position: fixed;
+        top: 0; right: 0; bottom: 0;
+        width: min(640px, 96vw);
+        z-index: 300;
+        background: transparent;
+        pointer-events: none;
+      }
+      #editor-modal.visible { display: flex; }
+      #editor-modal .panel {
+        background: #15151f;
+        border-left: 1px solid #3a3a4a;
+        flex: 1;
+        padding: 14px;
+        color: #e8e8f0;
+        display: flex; flex-direction: column; gap: 10px;
+        overflow: hidden;
+        box-shadow: -8px 0 24px rgba(0,0,0,0.5);
+        pointer-events: auto;
+      }
+      #editor-modal h2 { margin: 0; font-size: 18px; }
+      #editor-modal .toolbar {
+        display: flex; gap: 6px; align-items: center; flex-wrap: wrap;
+      }
+      #editor-modal .toolbar .sep {
+        display: inline-block; width: 1px; height: 20px;
+        background: #2a2a3a; margin: 0 4px;
+      }
+      #editor-modal .toolbar .group-label {
+        font-size: 11px; color: #6a6a78; text-transform: uppercase;
+        letter-spacing: 0.04em; margin-right: 2px;
+      }
+      #editor-modal button {
+        cursor: pointer;
+        border: 1px solid #3a3a4a; background: #1a1a24; color: #e8e8f0;
+        border-radius: 6px; padding: 4px 9px; font: inherit; font-size: 12px;
+      }
+      #editor-modal button:hover { border-color: #5a5a6a; }
+      #editor-modal button.primary { background: #2a4a6a; border-color: #3a6a9a; }
+      #editor-modal button.danger { background: #3a1a1a; border-color: #6a3a3a; color: #ffb0b0; }
+      #editor-modal .status { font-size: 13px; margin-left: auto; }
+      #editor-modal .tap-hint { font-size: 12px; color: #888; }
+      #editor-modal .table-wrap {
+        flex: 1; overflow: auto;
+        border: 1px solid #2a2a38; border-radius: 6px;
+        background: #0a0a0f;
+      }
+      #editor-modal.raw-open .table-wrap { flex: 1 1 50%; }
+      #editor-modal .raw-wrap {
+        flex: 0 1 40vh; overflow: auto;
+        margin-top: 8px;
+        border: 1px solid #2a2a38; border-radius: 6px;
+        background: #0e0e10; padding: 8px 12px;
+      }
+      #editor-modal #ed-raw-json {
+        margin: 0;
+        font: 12px/1.45 ui-monospace, "Cascadia Mono", Consolas, monospace;
+        color: #c8d3e0; white-space: pre;
+      }
+      #editor-modal table {
+        width: 100%; border-collapse: collapse; font-size: 13px;
+      }
+      #editor-modal thead th {
+        position: sticky; top: 0; background: #15151f;
+        text-align: left; padding: 6px 8px; font-weight: 600;
+        border-bottom: 1px solid #2a2a38; color: #b8b8c4;
+      }
+      #editor-modal tbody tr { border-bottom: 1px solid #1a1a24; cursor: pointer; }
+      #editor-modal tbody tr:not(.ed-verse-header):hover { background: #14141e; }
+      #editor-modal tbody tr.ed-verse-header {
+        border-bottom: 1px solid #2a3a55;
+        cursor: pointer;
+        background: #18182a;
+      }
+      #editor-modal tbody tr.ed-verse-header:hover { background: #222238; }
+      #editor-modal tbody tr.ed-verse-header td.ed-verse-header-cell {
+        padding: 6px 8px;
+        font-size: 12px;
+        color: #a8b0d0;
+        vertical-align: top;
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 4px;
+      }
+      #editor-modal .ed-verse-header-top {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        flex-wrap: nowrap;
+      }
+      #editor-modal .ed-verse-chevron {
+        flex-shrink: 0;
+        width: 1.1em;
+        color: #7cf0ff;
+        font-size: 10px;
+        text-align: center;
+      }
+      #editor-modal .ed-verse-title {
+        flex-shrink: 0;
+        font-weight: 600;
+        color: #c8d0e8;
+      }
+      #editor-modal .ed-verse-preview {
+        color: #6a7088;
+        font-style: italic;
+        font-size: 11px;
+        line-height: 1.35;
+        padding-left: calc(1.1em + 6px);
+        white-space: normal;
+        word-break: break-word;
+      }
+      #editor-modal tbody tr.ed-line-even:not(.label):not(.suggestion) { background: #12121c; }
+      #editor-modal tbody tr.ed-line-odd:not(.label):not(.suggestion) { background: #0d0d14; }
+      #editor-modal tbody tr.ed-verse-row-hidden { display: none !important; }
+      #editor-modal tbody tr.active { background: #1a2438; }
+      #editor-modal tbody tr.selected { box-shadow: inset 3px 0 0 #7cf0ff; }
+      #editor-modal tbody tr.label { background: #1a1a2c; }
+      #editor-modal tbody tr.label input.ed-word {
+        color: #9ec5ff; font-weight: 700; letter-spacing: 0.02em;
+      }
+      #editor-modal tbody tr.line-break { border-bottom: 1px solid #3a3a55; }
+      #editor-modal tbody tr.verse-break { border-bottom: 2px solid #5a6ab0; }
+      #editor-modal tbody tr.blank-line td { padding-bottom: 18px; }
+      #editor-modal tbody td { padding: 4px 6px; vertical-align: middle; }
+      #editor-modal td.idx { color: #666; width: 32px; text-align: right; font-variant-numeric: tabular-nums; }
+      #editor-modal td.word-cell { width: auto; }
+      #editor-modal td.time-cell { width: 1%; white-space: nowrap; }
+      #editor-modal input.ed-word {
+        width: 100%; min-width: 160px; box-sizing: border-box;
+        background: #0a0a0f; color: #e8e8f0;
+        border: 1px solid #2a2a38; border-radius: 4px;
+        padding: 4px 6px; font: inherit; font-size: 14px;
+      }
+      #editor-modal .ed-time-field {
+        display: inline-flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 4px;
+        vertical-align: middle;
+      }
+      #editor-modal input.ed-time {
+        width: 58px;
+        background: #0a0a0f; color: #e8e8f0;
+        border: 1px solid #2a2a38; border-radius: 4px;
+        padding: 4px 4px; font: inherit; font-size: 12px;
+        font-variant-numeric: tabular-nums;
+        -moz-appearance: textfield;
+        appearance: textfield;
+      }
+      #editor-modal input.ed-time[type="number"]::-webkit-outer-spin-button,
+      #editor-modal input.ed-time[type="number"]::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+      }
+      #editor-modal .ed-time-spin {
+        display: flex;
+        flex-direction: column;
+        gap: 1px;
+        flex-shrink: 0;
+      }
+      #editor-modal button.ed-time-step {
+        margin: 0;
+        padding: 0 4px;
+        width: 20px;
+        height: 11px;
+        line-height: 1;
+        font-size: 8px;
+        color: #9ec5ff;
+        background: linear-gradient(180deg, #1e2434 0%, #161a28 100%);
+        border: 1px solid #2a3a4a;
+        border-radius: 2px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      #editor-modal button.ed-time-step:hover {
+        background: linear-gradient(180deg, #283248 0%, #1e2438 100%);
+        border-color: #4a6a8a;
+        color: #c8ddff;
+      }
+      #editor-modal button.ed-time-step:active {
+        background: #141a28;
+      }
+      #editor-modal button.ed-time-up { border-radius: 3px 3px 2px 2px; }
+      #editor-modal button.ed-time-down { border-radius: 2px 2px 3px 3px; }
+      #editor-modal button.ed-now {
+        margin-left: 4px; padding: 3px 4px; font-size: 11px; color: #9ec5ff;
+      }
+      #editor-modal td:has(input.ed-time) {
+        white-space: nowrap;
+      }
+      #editor-modal td.actions { white-space: nowrap; }
+      #editor-modal td.actions button {
+        padding: 3px 7px; margin-left: 2px; font-size: 12px;
+      }
+
+      #hud {
+        position: fixed;
+        left: 12px; bottom: 12px; right: 12px;
+        display: flex; flex-direction: column; gap: 4px;
+        color: #c8c8d2; font-size: 13px;
+        pointer-events: none; z-index: 2;
+      }
+      #hud.hidden { display: none; }
+      #hud a { color: #9ec5ff; pointer-events: auto; }
+      #hud button {
+        pointer-events: auto; cursor: pointer;
+        border: 1px solid #3a3a4a; background: #1a1a24; color: #e8e8f0;
+        border-radius: 6px; padding: 6px 10px; font: inherit;
+      }
+      #hud button:hover { border-color: #5a5a6a; }
+      #hud input[type="file"] { pointer-events: auto; max-width: 220px; }
+
+      #hud-controls {
+        display: flex; flex-wrap: wrap; gap: 6px 12px;
+        align-items: center;
+        background: rgba(15, 15, 25, 0.85);
+        border: 1px solid #1e2a38;
+        border-radius: 8px;
+        padding: 6px 10px;
+        pointer-events: auto;
+        backdrop-filter: blur(8px);
+      }
+      .hud-group {
+        display: flex; align-items: center; gap: 4px;
+        pointer-events: auto;
+      }
+      .hud-group + .hud-group {
+        padding-left: 10px;
+        border-left: 1px solid #2a2a3a;
+      }
+
+      #volume-slider {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 80px; height: 4px;
+        background: #2a2a3a;
+        border-radius: 2px;
+        outline: none;
+        pointer-events: auto;
+        cursor: pointer;
+      }
+      #volume-slider::-webkit-slider-thumb {
+        -webkit-appearance: none; appearance: none;
+        width: 14px; height: 14px;
+        border-radius: 50%;
+        background: #7cf0ff;
+        border: 2px solid #0a0a0f;
+        cursor: pointer;
+      }
+      #volume-slider::-moz-range-thumb {
+        width: 14px; height: 14px;
+        border-radius: 50%;
+        background: #7cf0ff;
+        border: 2px solid #0a0a0f;
+        cursor: pointer;
+      }
+      #volume-label {
+        font-size: 11px; color: #888;
+        min-width: 32px;
+        font-variant-numeric: tabular-nums;
+      }
+      .hud-icon { font-size: 14px; line-height: 1; }
+      #hud-audio-name, #hud-json-name {
+        font-size: 12px; color: #9ec5ff;
+        max-width: 120px; overflow: hidden;
+        text-overflow: ellipsis; white-space: nowrap;
+      }
+
+      /* File inputs — match dark aesthetic */
+      input[type="file"] {
+        color: #c8c8d2;
+        font: inherit;
+        border: 1px solid #3a3a4a;
+        background: #1a1a24;
+        border-radius: 6px;
+        padding: 4px 6px;
+        cursor: pointer;
+        max-width: 100%;
+      }
+      input[type="file"]:hover { border-color: #5a5a6a; }
+      input[type="file"]:focus-visible {
+        outline: none;
+        border-color: #6a82c8;
+        box-shadow: 0 0 0 2px rgba(106, 130, 200, 0.25);
+      }
+      input[type="file"]::file-selector-button {
+        font: inherit;
+        color: #e8e8f0;
+        background: #232334;
+        border: 1px solid #3a3a4a;
+        border-radius: 4px;
+        padding: 4px 10px;
+        margin-right: 8px;
+        cursor: pointer;
+        transition: background-color 0.15s, border-color 0.15s;
+      }
+      input[type="file"]::file-selector-button:hover {
+        background: #2d2d42;
+        border-color: #5a5a6a;
+      }
+      input[type="file"]::file-selector-button:active {
+        background: #1a1a24;
+      }
+      #hud select {
+        pointer-events: auto; cursor: pointer;
+        border: 1px solid #3a3a4a; background: #1a1a24; color: #e8e8f0;
+        border-radius: 6px; padding: 4px 8px; font: inherit; max-width: 220px;
+      }
+      #hud select:hover { border-color: #5a5a6a; }
+      /* Waveform must receive clicks (parent #hud is pointer-events: none) */
+      #waveform-wrapper,
+      #static-waveform {
+        pointer-events: auto;
+        cursor: pointer;
+      }
+
+      /* Viz settings panel */
+      #viz-settings-panel {
+        display: none;
+        position: fixed;
+        right: 12px;
+        bottom: 60px;
+        z-index: 10;
+        background: rgba(15, 15, 25, 0.97);
+        border: 1px solid #2a3a4a;
+        border-radius: 10px;
+        padding: 14px 16px;
+        color: #c8c8d2;
+        font-size: 13px;
+        min-width: 240px;
+        box-shadow: 0 4px 24px rgba(0,0,0,0.6);
+        backdrop-filter: blur(10px);
+        pointer-events: auto;
+        flex-direction: column;
+        gap: 12px;
+      }
+      #viz-settings-panel.open { display: flex; }
+      #viz-settings-panel .vs-row {
+        display: flex; align-items: center; gap: 10px;
+        justify-content: space-between;
+      }
+      #viz-settings-panel .vs-label { color: #b8b8c4; min-width: 110px; }
+      #viz-settings-panel input[type="range"] {
+        -webkit-appearance: none; appearance: none;
+        flex: 1; height: 4px;
+        background: #2a2a3a; border-radius: 2px;
+        outline: none; cursor: pointer; pointer-events: auto;
+      }
+      #viz-settings-panel input[type="range"]::-webkit-slider-thumb {
+        -webkit-appearance: none; appearance: none;
+        width: 14px; height: 14px; border-radius: 50%;
+        background: #7cf0ff; border: 2px solid #0a0a0f; cursor: pointer;
+      }
+      #viz-settings-panel input[type="range"]::-moz-range-thumb {
+        width: 14px; height: 14px; border-radius: 50%;
+        background: #7cf0ff; border: 2px solid #0a0a0f; cursor: pointer;
+      }
+      #viz-settings-panel input[type="color"] {
+        -webkit-appearance: none; appearance: none;
+        width: 32px; height: 24px; border: none; border-radius: 4px;
+        cursor: pointer; padding: 0; background: none;
+        pointer-events: auto;
+      }
+      #viz-settings-panel input[type="color"]::-webkit-color-swatch-wrapper { padding: 0; }
+      #viz-settings-panel input[type="color"]::-webkit-color-swatch { border: 1px solid #3a3a4a; border-radius: 4px; }
+      #vs-font-size-val { font-variant-numeric: tabular-nums; min-width: 30px; text-align: right; color: #888; font-size: 12px; }
+      #btn-vs-reset {
+        align-self: flex-end; font-size: 11px; color: #888;
+        background: none; border: none; cursor: pointer; padding: 0;
+        pointer-events: auto;
+      }
+      #btn-vs-reset:hover { color: #c8c8d2; }
+
+      /* Static waveform */
+      #waveform-wrapper {
+        display: none;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 4px;
+        padding: 4px 0;
+        position: relative;
+      }
+      #waveform-wrapper.visible { display: flex; }
+      #waveform-controls {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        flex-shrink: 0;
+      }
+      #waveform-controls button {
+        font: inherit;
+        font-size: 11px;
+        padding: 3px 10px;
+        border-radius: 4px;
+        border: 1px solid #2a3a4a;
+        background: rgba(25, 28, 40, 0.95);
+        color: #9ec5ff;
+        cursor: pointer;
+        pointer-events: auto;
+      }
+      #waveform-controls button:hover {
+        border-color: #4a6a8a;
+        background: rgba(35, 40, 55, 0.98);
+      }
+      #waveform-canvas-wrap {
+        position: relative;
+        width: 100%;
+        height: 52px;
+        flex-shrink: 0;
+      }
+      #static-waveform {
+        width: 100%;
+        height: 52px;
+        display: block;
+        border-radius: 4px;
+        background: rgba(15, 18, 28, 0.9);
+        border: 1px solid #1e2a38;
+      }
+      #waveform-playhead {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        width: 1px;
+        margin-left: -0.5px;
+        background: rgba(158, 197, 255, 0.85);
+        pointer-events: none;
+        display: none;
+        box-shadow: 0 0 4px rgba(158, 197, 255, 0.6);
+      }
+      #waveform-playhead.visible { display: block; }
+      #waveform-tooltip {
+        position: absolute;
+        top: -22px;
+        padding: 2px 6px;
+        font-size: 11px;
+        font-variant-numeric: tabular-nums;
+        background: rgba(20, 24, 36, 0.95);
+        color: #e8e8f0;
+        border: 1px solid #2a3a4a;
+        border-radius: 4px;
+        pointer-events: none;
+        display: none;
+        white-space: nowrap;
+        transform: translateX(-50%);
+        z-index: 3;
+      }
+      #waveform-tooltip.visible { display: block; }
+      #waveform-loop {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        background: rgba(255, 200, 100, 0.18);
+        border-left: 1px solid rgba(255, 200, 100, 0.7);
+        border-right: 1px solid rgba(255, 200, 100, 0.7);
+        pointer-events: none;
+        display: none;
+      }
+      #waveform-loop.visible { display: block; }
+      #waveform-minimap {
+        display: none;
+        position: relative;
+        height: 10px;
+        border-radius: 3px;
+        background: rgba(20, 24, 36, 0.9);
+        border: 1px solid #1e2a38;
+        flex-shrink: 0;
+      }
+      #waveform-minimap.visible { display: block; }
+      #waveform-minimap-viewport {
+        position: absolute;
+        top: 1px;
+        bottom: 1px;
+        min-width: 3px;
+        border-radius: 2px;
+        background: rgba(124, 240, 255, 0.22);
+        border: 1px solid rgba(124, 240, 255, 0.45);
+        pointer-events: none;
+        box-sizing: border-box;
+      }
+      #waveform-minimap-playhead {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        width: 1px;
+        margin-left: -0.5px;
+        background: rgba(158, 197, 255, 0.75);
+        pointer-events: none;
+        display: none;
+      }
+      #waveform-minimap-playhead.visible { display: block; }
+      #waveform-loop-clear {
+        position: absolute;
+        top: -6px;
+        right: 0;
+        width: 18px; height: 18px;
+        padding: 0;
+        font-size: 11px; line-height: 1;
+        background: rgba(20, 24, 36, 0.95);
+        color: #ffc864;
+        border: 1px solid rgba(255, 200, 100, 0.6);
+        border-radius: 50%;
+        cursor: pointer;
+        display: none;
+        z-index: 4;
+      }
+      #waveform-loop-clear.visible { display: block; }
+      #waveform-loop-clear:hover { background: rgba(40, 30, 20, 0.95); }
+
+      /* Time display */
+      #time-display {
+        display: none;
+        align-items: center;
+        gap: 4px;
+        font-size: 11px; color: #888;
+        font-variant-numeric: tabular-nums;
+        margin-left: auto;
+      }
+      #time-display.visible { display: flex; }
+
+      /* Timeline */
+      #timeline-wrapper {
+        display: none;
+        position: relative;
+        overflow: hidden;
+        max-height: 300px;
+        border-radius: 4px;
+        border: 1px solid #1e2a38;
+        background: rgba(10, 10, 18, 0.95);
+        cursor: default;
+        user-select: none;
+        pointer-events: auto;
+      }
+      #timeline-wrapper.visible { display: block; }
+      #timeline-canvas { display: block; width: 100%; }
+      #timeline-tooltip {
+        position: absolute;
+        top: 2px;
+        padding: 2px 6px;
+        font-size: 11px;
+        font-variant-numeric: tabular-nums;
+        background: rgba(20, 24, 36, 0.95);
+        color: #e8e8f0;
+        border: 1px solid #2a3a4a;
+        border-radius: 4px;
+        pointer-events: none;
+        display: none;
+        white-space: nowrap;
+        transform: translateX(-50%);
+        z-index: 3;
+      }
+      #timeline-tooltip.visible { display: block; }
+
+      /* Whisper panel w edytorze */
+      #ed-whisper-row {
+        display: none;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+      #ed-whisper-row.visible { display: flex; }
+      #ed-whisper-url {
+        background: #0a0a0f; color: #9ec5ff;
+        border: 1px solid #2a2a38; border-radius: 4px;
+        padding: 4px 6px; font: inherit; font-size: 12px;
+        width: 180px;
+      }
+      #ed-whisper-status { font-size: 12px; color: #888; }
+      #ed-whisper-bar-wrap {
+        display: none; height: 3px;
+        background: #1a1a24; border-radius: 2px;
+      }
+      #ed-whisper-bar-wrap.visible { display: block; }
+      #ed-whisper-bar {
+        height: 3px; width: 0%;
+        background: #7cf0ff; border-radius: 2px;
+        transition: width 0.15s;
+      }
+      /* Sugestia Whisper w tabeli */
+      #editor-modal tbody tr.suggestion { background: #1e1a0a; }
+      #editor-modal tbody tr.suggestion .ed-time { color: #ffc864; border-color: #4a3a1a; }
+      #editor-modal button.accept-sug {
+        padding: 2px 5px; font-size: 11px; color: #ffc864;
+        border-color: #4a3a1a; background: #2a1e08;
+      }
+
+      /* LiveTap overlay */
+      #livetap-modal {
+        display: none;
+        position: fixed; inset: 0;
+        background: rgba(8, 10, 18, 0.96);
+        z-index: 200;
+        flex-direction: column;
+        color: #e8e8f0;
+        font-family: system-ui, sans-serif;
+      }
+      #livetap-modal.visible { display: flex; }
+      #livetap-modal .lt-toolbar {
+        display: flex; align-items: center; gap: 12px;
+        padding: 12px 20px;
+        border-bottom: 1px solid #1c2230;
+        background: #0e121c;
+        flex-wrap: wrap;
+      }
+      #livetap-modal .lt-toolbar button,
+      #livetap-modal .lt-toolbar select {
+        background: #1a2030; color: #e8e8f0;
+        border: 1px solid #2a3a4a; border-radius: 4px;
+        padding: 6px 10px; font-size: 13px; cursor: pointer;
+      }
+      #livetap-modal .lt-toolbar button:hover { background: #243049; }
+      #livetap-modal .lt-toolbar .lt-spacer { flex: 1; }
+      #livetap-modal .lt-toolbar .lt-status {
+        color: #9ec5ff; font-size: 12px; min-width: 200px;
+      }
+      #livetap-modal .lt-toolbar label {
+        display: inline-flex; align-items: center; gap: 6px; font-size: 13px;
+      }
+      #livetap-modal .lt-toolbar input[type="range"] { width: 120px; }
+
+      #livetap-modal .lt-stage {
+        flex: 1;
+        display: flex; flex-direction: column;
+        align-items: center; justify-content: center;
+        gap: 24px; padding: 40px 20px;
+        overflow: hidden;
+      }
+      #livetap-modal .lt-rail-viewport {
+        position: relative;
+        width: 100%;
+        height: 96px;
+        overflow: hidden;
+        mask-image: linear-gradient(to right, transparent 0, #000 12%, #000 88%, transparent 100%);
+        -webkit-mask-image: linear-gradient(to right, transparent 0, #000 12%, #000 88%, transparent 100%);
+      }
+      #livetap-modal .lt-rail-viewport::before {
+        content: ""; position: absolute;
+        left: 50%; top: 50%;
+        width: 2px; height: 70%;
+        transform: translate(-50%, -50%);
+        background: rgba(255, 209, 102, 0.18);
+        pointer-events: none;
+      }
+      #livetap-modal .lt-rail-track {
+        position: absolute;
+        left: 50%; top: 50%;
+        display: flex; align-items: center; gap: 32px;
+        white-space: nowrap;
+        transform: translate(0, -50%);
+        transition: transform 0.22s cubic-bezier(.22,.8,.36,1);
+        will-change: transform;
+      }
+      #livetap-modal .lt-word {
+        font-size: 44px;
+        color: #8a95b0;
+        opacity: 0.7;
+        font-weight: 500;
+        transition: color 0.18s, opacity 0.18s;
+      }
+      #livetap-modal .lt-word.tapped { color: #4a5570; opacity: 0.45; }
+      #livetap-modal .lt-word.current {
+        color: #ffd166; opacity: 1;
+        text-shadow: 0 2px 24px rgba(255, 209, 102, 0.45);
+        font-weight: 600;
+      }
+      #livetap-modal .lt-word.label {
+        font-style: italic; color: #6a7590; font-size: 32px;
+      }
+
+      #livetap-modal .lt-progress {
+        width: min(800px, 90%);
+        display: flex; align-items: center; gap: 12px;
+      }
+      #livetap-modal .lt-progress .lt-bar {
+        flex: 1;
+        height: 6px; border-radius: 3px;
+        background: #1c2230;
+        position: relative; overflow: hidden;
+      }
+      #livetap-modal .lt-progress .lt-bar-fill {
+        position: absolute; inset: 0;
+        background: linear-gradient(90deg, #4a90e2, #ffd166);
+        transform-origin: left center;
+        transform: scaleX(0);
+      }
+      #livetap-modal .lt-progress .lt-time {
+        font-variant-numeric: tabular-nums; font-size: 13px; color: #9ec5ff;
+      }
+      #livetap-modal .lt-progress-controls {
+        width: min(800px, 90%);
+        display: flex;
+        justify-content: center;
+      }
+      #livetap-modal .lt-progress-controls button {
+        background: #1a2030;
+        color: #e8e8f0;
+        border: 1px solid #2a3a4a;
+        border-radius: 999px;
+        padding: 7px 16px;
+        font-size: 14px;
+        cursor: pointer;
+      }
+      #livetap-modal .lt-progress-controls button:hover { background: #243049; }
+
+      #livetap-modal .lt-legend {
+        font-size: 12px; color: #6a7590;
+        text-align: center; padding: 16px 20px;
+        border-top: 1px solid #1c2230;
+        background: #0e121c;
+      }
+      #livetap-modal .lt-legend kbd {
+        background: #1a2030; border: 1px solid #2a3a4a; border-radius: 3px;
+        padding: 1px 6px; font-family: monospace; color: #e8e8f0;
+        margin: 0 2px;
+      }
+      #livetap-modal .lt-done { color: #80ffa0; font-weight: 600; }
+    </style>
+  </head>
+  <body>
+    <div id="app"></div>
+    <canvas id="mini-visualizer"></canvas>
+
+    <div id="projects" class="visible">
+      <h1>Wybierz projekt</h1>
+      <div id="projects-list"></div>
+    </div>
+
+    <div id="project-modal">
+      <div class="panel">
+        <h2>Nowy projekt</h2>
+
+        <label>
+          Nazwa projektu
+          <input type="text" id="np-name" placeholder="np. Tiny Hands Tiny Plans" />
+        </label>
+
+        <div>
+          <div class="row">
+            <button type="button" id="np-pick-audio">Wybierz plik audio…</button>
+            <span class="audio-status" id="np-audio-status">brak pliku</span>
+          </div>
+        </div>
+
+        <div>
+          <div class="hint" style="margin-bottom:6px">Tekst piosenki:</div>
+          <div class="lyrics-tabs">
+            <button type="button" id="np-tab-json" class="active">Wgraj JSON</button>
+            <button type="button" id="np-tab-text">Edytor tekstu</button>
+          </div>
+        </div>
+
+        <div class="pane active" id="np-pane-json">
+          <div class="row">
+            <input type="file" id="np-json-file" accept=".json" style="display:none" />
+            <button type="button" id="np-pick-json">Wybierz plik JSON…</button>
+            <span class="audio-status" id="np-json-name">brak pliku</span>
+          </div>
+          <div class="hint">Format Sonauto: <code>{ "aligned_lyrics": [{ "word", "start_time", "end_time" }, ...] }</code></div>
+          <div class="hint" id="np-json-status"></div>
+        </div>
+
+        <div class="pane" id="np-pane-text">
+          <div class="hint">
+            <strong>Format wklejanego tekstu:</strong>
+            <ul style="margin: 4px 0 4px 18px; padding: 0;">
+              <li>każdy <strong>Enter</strong> = koniec wiersza (line break)</li>
+              <li>puste linie są ignorowane — używaj ich tylko do wizualnego grupowania</li>
+              <li><strong>nowa zwrotka</strong>: dodaj nagłówek w nawiasach kwadratowych — np. <code>[Zwrotka 1]</code>, <code>[Refren]</code>, <code>[Chorus]</code>, <code>[Bridge]</code>. Sama etykieta jest pomijana, ale wymusza początek nowej sekcji.</li>
+              <li>fallback: gdy w tekście nie ma w ogóle enterów, przecinek (<code>, </code>) traktowany jest jako koniec wiersza</li>
+            </ul>
+            Po zapisaniu projektu czasy słów są <strong>automatycznie rozłożone równomiernie</strong> na całą długość audio. Doprecyzuj je później w Edytorze czasów lub w timeline.
+          </div>
+          <textarea id="np-text" placeholder="Linia jeden zwrotki&#10;Linia dwa zwrotki&#10;&#10;[Chorus]&#10;Linia jeden refrenu&#10;Linia dwa refrenu&#10;&#10;Linia jeden drugiej zwrotki&#10;..."></textarea>
+        </div>
+
+        <div class="error" id="np-error"></div>
+
+        <div class="row" style="justify-content: flex-end">
+          <button type="button" id="np-cancel">Anuluj</button>
+          <button type="button" id="np-save" class="primary" disabled>Zapisz projekt</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="editor-modal">
+      <div class="panel">
+        <div class="toolbar">
+          <h2>Edytor czasów słów</h2>
+          <span class="sep"></span>
+          <span class="group-label">Edycja</span>
+          <button type="button" id="ed-add" title="Dodaj nowe słowo na końcu">+ Słowo</button>
+          <button type="button" id="ed-sort" title="Posortuj wg start_time">Sortuj</button>
+          <span class="sep"></span>
+          <span class="group-label">Auto</span>
+          <button type="button" id="ed-autofill" title="Rozłóż słowa równomiernie na całą długość utworu">Rozłóż równomiernie</button>
+          <span class="sep"></span>
+          <span class="group-label">Struktura</span>
+          <button type="button" id="ed-toggle-label" title="Promuj zaznaczone słowa do etykiety (Refren / imię wokalisty / itp.)">🏷 Etykieta</button>
+          <button type="button" id="ed-mark-line" title="Oznacz koniec linijki na ostatnim słowie selekcji">↵ Linijka</button>
+          <button type="button" id="ed-mark-verse" title="Oznacz koniec zwrotki na ostatnim słowie selekcji">¶ Zwrotka</button>
+          <button type="button" id="ed-clear-breaks" title="Usuń granice linii/zwrotki z zaznaczonych słów">Wyczyść granice</button>
+          <span class="sep"></span>
+          <span class="group-label">Eksport</span>
+          <button type="button" id="ed-toggle-raw" title="Pokaż/ukryj podgląd RAW JSON">{ } RAW</button>
+          <button type="button" id="ed-download" title="Pobierz JSON">JSON</button>
+          <button type="button" id="ed-export-lrc" title="Eksportuj jako LRC (linie)">LRC</button>
+          <button type="button" id="ed-export-lrc-plus" title="Eksportuj jako enhanced LRC (słowa)">LRC+</button>
+          <span class="sep"></span>
+          <button type="button" id="ed-save" class="primary">Zapisz</button>
+          <button type="button" id="ed-close">Zamknij</button>
+          <span class="status" id="ed-status"></span>
+        </div>
+        <div id="ed-whisper-row">
+          <button type="button" id="ed-whisper">Whisper ✦</button>
+          <input type="text" id="ed-whisper-url" value="http://localhost:5001" title="URL serwera Whisper" />
+          <span id="ed-whisper-status"></span>
+          <button type="button" id="ed-accept-all" style="display:none">Przyjmij wszystko</button>
+          <button type="button" id="ed-reject-all" style="display:none" class="danger">Odrzuć</button>
+        </div>
+        <div id="ed-whisper-bar-wrap"><div id="ed-whisper-bar"></div></div>
+        <div class="tap-hint" id="ed-tap-hint"></div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Słowo</th>
+                <th>start_time</th>
+                <th>end_time</th>
+                <th>Akcje</th>
+              </tr>
+            </thead>
+            <tbody id="ed-tbody"></tbody>
+          </table>
+        </div>
+        <div id="ed-raw-wrap" class="raw-wrap" hidden>
+          <pre id="ed-raw-json"></pre>
+        </div>
+      </div>
+    </div>
+
+    <div id="livetap-modal">
+      <div class="lt-toolbar">
+        <label>
+          Tempo:
+          <select id="lt-rate">
+            <option value="0.5">0.5×</option>
+            <option value="0.75">0.75×</option>
+            <option value="1" selected>1×</option>
+          </select>
+        </label>
+        <button type="button" id="lt-rew10" title="Cofnij 10 s (Shift+←)">⟲ -10s</button>
+        <button type="button" id="lt-rew5" title="Cofnij 5 s (←)">⟲ -5s</button>
+        <button type="button" id="lt-play" title="Play / Pause (P)">▶︎ / ⏸</button>
+        <button type="button" id="lt-fwd5" title="Do przodu 5 s (→)">⟳ +5s</button>
+        <label title="Kompensacja czasu reakcji — odejmowana od audio.currentTime przy każdym tapie">
+          Offset:
+          <input type="range" id="lt-offset" min="0" max="300" step="10" value="150" />
+          <span id="lt-offset-val">150 ms</span>
+        </label>
+        <div class="lt-spacer"></div>
+        <span class="lt-status" id="lt-status"></span>
+        <button type="button" id="lt-save" title="Zapisz stan (Ctrl+S)">💾 Zapisz</button>
+        <button type="button" id="lt-close" title="Zamknij (Esc)">✕ Zamknij</button>
+      </div>
+      <div class="lt-stage">
+        <div class="lt-rail-viewport">
+          <div class="lt-rail-track" id="lt-rail"></div>
+        </div>
+        <div class="lt-progress">
+          <span class="lt-time" id="lt-time-current">0:00</span>
+          <div class="lt-bar"><div class="lt-bar-fill" id="lt-bar-fill"></div></div>
+          <span class="lt-time" id="lt-time-total">0:00</span>
+        </div>
+        <div class="lt-progress-controls">
+          <button type="button" id="lt-play-under" title="Play / Pause (P)">▶︎ / ⏸</button>
+        </div>
+      </div>
+      <div class="lt-legend">
+        <kbd>Spacja</kbd> tap &middot;
+        <kbd>⌫</kbd> cofnij ostatni tap &middot;
+        <kbd>P</kbd>/<kbd>K</kbd> play/pause &middot;
+        <kbd>←</kbd> -5s &middot; <kbd>Shift+←</kbd> -10s &middot; <kbd>→</kbd> +5s &middot;
+        <kbd>1</kbd>/<kbd>2</kbd>/<kbd>3</kbd> tempo &middot;
+        <kbd>Ctrl+S</kbd> zapisz &middot;
+        <kbd>Esc</kbd> wyjście
+      </div>
+    </div>
+
+    <div id="viz-settings-panel">
+      <div class="vs-row">
+        <span class="vs-label">Rozmiar czcionki</span>
+        <input type="range" id="vs-font-size" min="12" max="72" step="1" value="26" />
+        <span id="vs-font-size-val">26</span>
+      </div>
+      <div class="vs-row">
+        <span class="vs-label">Kolor aktywny</span>
+        <input type="color" id="vs-active-color" value="#7cf0ff" />
+      </div>
+      <div class="vs-row">
+        <span class="vs-label">Kolor nieaktywny</span>
+        <input type="color" id="vs-inactive-color" value="#5a5a68" />
+      </div>
+      <div class="vs-row">
+        <span class="vs-label">Kolor tła</span>
+        <input type="color" id="vs-bg-color" value="#0a0a0f" />
+      </div>
+      <button type="button" id="btn-vs-reset">Przywróć domyślne</button>
+    </div>
+
+    <div id="hud" class="hidden">
+      <div id="waveform-wrapper">
+        <div id="waveform-controls">
+          <button type="button" id="btn-waveform-sync" title="Zsynchronizuj widok fali z timeline tekstu">Sync</button>
+          <button type="button" id="btn-waveform-zoom-all" title="Pokaż cały utwór">Całość</button>
+        </div>
+        <div id="waveform-canvas-wrap">
+          <canvas id="static-waveform"></canvas>
+          <div id="waveform-loop"></div>
+          <div id="waveform-playhead"></div>
+          <div id="waveform-tooltip"></div>
+          <button type="button" id="waveform-loop-clear" title="Wyczyść loop">✕</button>
+        </div>
+        <div id="waveform-minimap">
+          <div id="waveform-minimap-viewport"></div>
+          <div id="waveform-minimap-playhead"></div>
+        </div>
+      </div>
+      <div id="timeline-wrapper">
+        <canvas id="timeline-canvas"></canvas>
+        <div id="timeline-tooltip"></div>
+      </div>
+      <div id="hud-controls">
+        <div class="hud-group" id="hud-nav">
+          <span id="mode-label"></span>
+          <button type="button" id="btn-back">← Projekty</button>
+        </div>
+        <div class="hud-group" id="hud-transport">
+          <button type="button" id="btn-play">▶</button>
+          <button type="button" id="btn-pause">⏸</button>
+          <button type="button" id="btn-stop">⏹</button>
+        </div>
+        <div class="hud-group" id="hud-volume">
+          <span class="hud-icon">🔊</span>
+          <input type="range" id="volume-slider" min="0" max="1" step="0.01" value="1" />
+          <span id="volume-label">100%</span>
+        </div>
+        <div class="hud-group" id="hud-files">
+          <input type="file" id="audio-file" accept="audio/*" style="display:none" />
+          <button type="button" id="hud-pick-audio">Audio…</button>
+          <span id="hud-audio-name"></span>
+          <input type="file" id="json-file" accept=".json" style="display:none" />
+          <button type="button" id="hud-pick-json">JSON…</button>
+          <span id="hud-json-name"></span>
+        </div>
+        <div class="hud-group" id="hud-viz">
+          <button type="button" id="btn-edit-timing">Edytor czasów</button>
+          <button type="button" id="btn-livetap" title="Tryb LiveTap — taguj słowa Spacją w trakcie odtwarzania">⏱ LiveTap</button>
+          <label>
+            Widok:
+            <select id="viz-mode" aria-label="Tryb wizualizacji tekstu">
+              <option value="multiline">Wieloliniowy</option>
+              <option value="rail">Jedna linia (środek)</option>
+              <option value="full">Cały tekst (zwrotki/refren)</option>
+            </select>
+          </label>
+          <button type="button" id="btn-viz-settings" title="Ustawienia wizualizatora (czcionka, kolory)">Aa</button>
+        </div>
+        <div id="time-display">
+          <span id="time-current">0:00</span>
+          <span>/</span>
+          <span id="time-total">0:00</span>
+        </div>
+      </div>
+    </div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
