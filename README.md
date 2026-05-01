@@ -1,6 +1,6 @@
 <div align="center">
 
-# 🎵 LyricBlow
+# LyricBlow
 we'll blow your ... ekh, mind
 
 100% vibe coded. 
@@ -9,7 +9,7 @@ I made this tool for myself as I'm about to produce some lyric videos :) inside 
 
 **Browser-native karaoke editor — sync lyrics to music, edit word-level timings, and export for Spotify & Apple Music**
 
-### [➡️ Try the live app on GitHub Pages](https://xcwajdax.github.io/lyricBlow/)
+### [Try the live app on GitHub Pages](https://xcwajdax.github.io/lyricBlow/)
 
 > **No installation needed.** Open the link above and start using the app directly in your browser — no account, no sign-up, no backend.
 
@@ -18,7 +18,7 @@ I made this tool for myself as I'm about to produce some lyric videos :) inside 
 [![Vite](https://img.shields.io/badge/Vite-6-purple?logo=vite&logoColor=white)](https://vitejs.dev/)
 [![No Backend](https://img.shields.io/badge/backend-none-green)](https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API)
 
-[Features](#-features) · [Quick Start](#-quick-start) · [Live TAP](#-live-tap-mode) · [Whisper](#-whisper-auto-alignment) · [Export](#-export-formats) · [Roadmap](#️-roadmap) · [Contributing](#-contributing)
+[Features](#features) · [Quick Start](#quick-start) · [Live TAP](#live-tap-mode) · [Whisper](#whisper-auto-alignment) · [Export](#export-formats) · [Roadmap](#roadmap) · [Contributing](#contributing)
 
 </div>
 
@@ -32,7 +32,7 @@ Everything runs in your browser. No accounts, no uploads, no servers required.
 
 ---
 
-## ✨ Features
+## Features
 
 | Feature | Description |
 |---|---|
@@ -48,7 +48,7 @@ Everything runs in your browser. No accounts, no uploads, no servers required.
 
 ---
 
-## 🔒 Privacy
+## Privacy
 
 - Runs entirely in your browser — no backend, no cloud sync
 - Audio files are stored as local browser Blobs
@@ -57,7 +57,7 @@ Everything runs in your browser. No accounts, no uploads, no servers required.
 
 ---
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Prerequisites
 
@@ -84,7 +84,7 @@ npm run preview    # serve the built dist/ locally
 
 ---
 
-## 🌐 Deploy on GitHub Pages
+## Deploy on GitHub Pages
 
 The repository includes a ready-to-use workflow at `.github/workflows/deploy-pages.yml` that builds and deploys to GitHub Pages on every push to `main`.
 
@@ -97,7 +97,7 @@ The repository includes a ready-to-use workflow at `.github/workflows/deploy-pag
 
 ---
 
-## 🎵 Getting Audio
+## Getting Audio
 
 Lyric Visualizer works with any local audio file (MP3, OGG, WAV, FLAC, M4A).
 
@@ -109,7 +109,7 @@ Then drag the file into a new Lyric Visualizer project.
 
 ---
 
-## 🎹 Live TAP Mode
+## Live TAP Mode
 
 The fastest way to sync lyrics from scratch:
 
@@ -122,7 +122,7 @@ The fastest way to sync lyrics from scratch:
 
 ---
 
-## 🤖 Whisper Auto-Alignment
+## Whisper Auto-Alignment
 
 For hands-free alignment, run a local [Whisper](https://github.com/openai/whisper) transcription server:
 
@@ -142,7 +142,7 @@ Supported models: `tiny` through `large-v3` (default `large-v3`). Works on CUDA 
 
 ---
 
-## 📤 Export Formats
+## Export Formats
 
 | Format | Description |
 |---|---|
@@ -152,7 +152,7 @@ Supported models: `tiny` through `large-v3` (default `large-v3`). Works on CUDA 
 
 ---
 
-## 🗺️ Roadmap
+## Roadmap
 
 Planned features for future releases:
 
@@ -172,7 +172,7 @@ Improved JSON export with configurable formatting options — pretty-print, comp
 
 ---
 
-## 🏗 Architecture
+## Architecture
 
 The app is a single-page application with no backend dependency. All state lives in IndexedDB.
 
@@ -222,7 +222,7 @@ Every word is an `AlignedWord`:
 
 ---
 
-## 🛠 Tech Stack
+## Tech Stack
 
 - **TypeScript 5.8** — strict type checking throughout
 - **Vite 6** — fast dev server and optimized production builds
@@ -232,7 +232,7 @@ Every word is an `AlignedWord`:
 
 ---
 
-## 🤝 Contributing
+## Contributing
 
 Contributions are welcome! Here's how to get started:
 
@@ -247,6 +247,6 @@ For larger changes, open an issue first to discuss the approach.
 
 ---
 
-## 📄 License
+## License
 
 [MIT](LICENSE) © 2026 Lyric Visualizer Contributors
