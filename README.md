@@ -1,6 +1,11 @@
 <div align="center">
 
-# 🎵 Lyric Visualizer
+# 🎵 LyricBlow
+we'll blow your ... ekh, mind
+
+100% vibe coded. 
+
+I made this tool for myself as I'm about to produce some lyric videos :) inside browser, in threeJS. Check out demo on my site www.topkek.info
 
 **Browser-native karaoke editor — sync lyrics to music, edit word-level timings, and export for Spotify & Apple Music**
 
