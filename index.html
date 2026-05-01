@@ -1114,6 +1114,72 @@
         margin: 0 2px;
       }
       #livetap-modal .lt-done { color: #80ffa0; font-weight: 600; }
+
+      /* ─── Mobile / touch responsiveness ────────────────────────── */
+
+      /* Eliminate 300 ms tap delay on all interactive elements */
+      button, select, input, a, label { touch-action: manipulation; }
+
+      /* Larger minimum touch targets on coarse-pointer (touch) devices */
+      @media (pointer: coarse) {
+        #hud button, #hud select { min-height: 44px; }
+        #hud-controls { gap: 6px 10px; padding: 8px 12px; }
+        .hud-group + .hud-group { padding-left: 8px; }
+        #project-modal button,
+        #editor-modal button { min-height: 40px; }
+        #livetap-modal .lt-toolbar button,
+        #livetap-modal .lt-toolbar select { min-height: 44px; padding: 8px 14px; }
+        /* Thinner scrollbars on touch screens */
+        *::-webkit-scrollbar { width: 4px; height: 4px; }
+        * { scrollbar-width: thin; }
+      }
+
+      @media (max-width: 600px) {
+        /* Project creation modal — remove fixed min-width that overflows on phones */
+        #project-modal .panel {
+          min-width: 0;
+          width: calc(100vw - 24px);
+          padding: 16px;
+          max-height: 92vh;
+        }
+
+        /* Editor modal — full-screen overlay on mobile instead of side panel */
+        body.editor-open #app { right: 0; }
+        body.editor-open #hud { right: 12px; }
+        body.editor-open #mini-visualizer { right: 12px; }
+        #editor-modal {
+          width: 100vw;
+          top: 15vh;
+          height: 85vh;
+        }
+        #editor-modal .panel {
+          border-left: none;
+          border-top: 1px solid #3a3a4a;
+          box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.7);
+        }
+
+        /* HUD — tighter margins and spacing */
+        #hud { bottom: 6px; left: 6px; right: 6px; }
+        #hud-controls { padding: 6px 8px; gap: 4px 6px; }
+        .hud-group + .hud-group { padding-left: 6px; }
+        #volume-slider { width: 56px; }
+        #hud-audio-name, #hud-json-name { max-width: 80px; }
+
+        /* Shorter timeline so waveform + controls still fit on screen */
+        #timeline-wrapper { max-height: 140px; }
+
+        /* LiveTap — hide keyboard hint bar (no keyboard on phone) */
+        #livetap-modal .lt-legend { display: none; }
+        /* Slightly smaller lyric words so more fit on narrow rail */
+        #livetap-modal .lt-word { font-size: 34px; }
+        /* Less padding in the tap stage area */
+        #livetap-modal .lt-stage { padding: 24px 16px; gap: 18px; }
+
+        /* Landing page — tighter padding on small screens */
+        #landing .landing-wrap { padding: 16px 0 24px; }
+        #landing .hero { padding: 18px 14px; }
+        #landing .lead { font-size: 15px; }
+      }
     </style>
   </head>
   <body>
