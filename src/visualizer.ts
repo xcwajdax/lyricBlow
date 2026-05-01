@@ -85,6 +85,17 @@ export class LyricPlane {
   private bottomMargin = 0;
   private settings: VizSettings = { ...DEFAULT_VIZ_SETTINGS };
 
+  // Logical (CSS-pixel) canvas dimensions, kept in sync with resize()
+  private logicalW = 0;
+  private logicalH = 0;
+
+  // Touch / pointer scroll state for full mode
+  private ptrActive = false;
+  private ptrId = -1;
+  private ptrStartY = 0;
+  private ptrScrollStart = 0;
+  private ptrMoved = false;
+
   // ── Computed font / size helpers ───────────────────────────────────
   private get multilineFontSize(): number { return this.settings.fontSize * 1.69; }
   private get multilineLineHeight(): number { return this.multilineFontSize * 1.27; }
@@ -106,7 +117,7 @@ export class LyricPlane {
   }
 
   private get effectiveH(): number {
-    return Math.max(120, this.canvas.height - this.bottomMargin);
+    return Math.max(120, this.logicalH - this.bottomMargin);
   }
 
   constructor(container: HTMLElement) {
@@ -117,6 +128,7 @@ export class LyricPlane {
       top: 0; left: 0;
       width: 100%; height: 100%;
       display: block;
+      touch-action: none;
     `;
     container.appendChild(this.canvas);
 
@@ -126,7 +138,10 @@ export class LyricPlane {
     if (typeof ResizeObserver !== "undefined") {
       new ResizeObserver(() => this.resize()).observe(container);
     }
-    this.canvas.addEventListener("click", (e) => this.handleCanvasClick(e));
+    this.canvas.addEventListener("pointerdown", (e) => this.handlePointerDown(e));
+    this.canvas.addEventListener("pointermove", (e) => this.handlePointerMove(e));
+    this.canvas.addEventListener("pointerup", (e) => this.handlePointerUp(e));
+    this.canvas.addEventListener("pointercancel", () => { this.ptrActive = false; });
     this.canvas.addEventListener("wheel", (e) => this.handleWheel(e), { passive: false });
   }
 
@@ -158,6 +173,40 @@ export class LyricPlane {
     this.fullScrollY = Math.min(maxScroll, Math.max(0, this.fullScrollY + e.deltaY));
     this.fullScrollManualUntilMs = performance.now() + 4000;
     this.redraw();
+  }
+
+  private handlePointerDown(e: PointerEvent): void {
+    // Only primary pointer (left mouse / first finger)
+    if (e.button > 0) return;
+    this.ptrActive = true;
+    this.ptrId = e.pointerId;
+    this.ptrStartY = e.clientY;
+    this.ptrScrollStart = this.fullScrollY;
+    this.ptrMoved = false;
+    this.canvas.setPointerCapture(e.pointerId);
+  }
+
+  private handlePointerMove(e: PointerEvent): void {
+    if (!this.ptrActive || e.pointerId !== this.ptrId) return;
+    if (this.mode !== "full") return;
+    const deltaY = this.ptrStartY - e.clientY;
+    if (Math.abs(deltaY) > 6) this.ptrMoved = true;
+    if (!this.ptrMoved) return;
+    const layout = this.fullLayout;
+    if (!layout) return;
+    const maxScroll = Math.max(0, layout.totalHeight - this.effectiveH);
+    this.fullScrollY = Math.min(maxScroll, Math.max(0, this.ptrScrollStart + deltaY));
+    this.fullScrollManualUntilMs = performance.now() + 4000;
+    this.redraw();
+  }
+
+  private handlePointerUp(e: PointerEvent): void {
+    if (!this.ptrActive || e.pointerId !== this.ptrId) return;
+    this.ptrActive = false;
+    if (!this.ptrMoved) {
+      // Short tap without movement — treat as word click
+      this.handleCanvasClick(e);
+    }
   }
 
   getMode(): LyricVizMode {
@@ -241,7 +290,7 @@ export class LyricPlane {
 
   private updateRailScroll(dtSec: number): void {
     const layout = this.railLayout;
-    const w = this.canvas.width;
+    const w = this.logicalW;
     const cx = w / 2;
     if (!layout || layout.centerX.length === 0) return;
 
@@ -271,10 +320,15 @@ export class LyricPlane {
   }
 
   private resize(): void {
+    const dpr = window.devicePixelRatio || 1;
     const w = this.container.clientWidth || window.innerWidth;
     const h = this.container.clientHeight || window.innerHeight;
-    this.canvas.width = w;
-    this.canvas.height = h;
+    this.logicalW = w;
+    this.logicalH = h;
+    this.canvas.width = Math.round(w * dpr);
+    this.canvas.height = Math.round(h * dpr);
+    // Scale context so all drawing coordinates use CSS pixels
+    this.ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     this.rebuildRailLayout();
     this.rebuildFullLayout();
     this.redraw();
@@ -287,8 +341,8 @@ export class LyricPlane {
   }
 
   private redrawMultiline(): void {
-    const w = this.canvas.width;
-    const h = this.canvas.height;
+    const w = this.logicalW;
+    const h = this.logicalH;
     const H = this.effectiveH;
     const ctx = this.ctx;
 
@@ -397,8 +451,8 @@ export class LyricPlane {
   }
 
   private redrawRail(): void {
-    const w = this.canvas.width;
-    const h = this.canvas.height;
+    const w = this.logicalW;
+    const h = this.logicalH;
     const H = this.effectiveH;
     const ctx = this.ctx;
     const layout = this.railLayout;
@@ -540,12 +594,12 @@ export class LyricPlane {
   }
 
   private rebuildFullLayout(): void {
-    if (this.sections.length === 0 || this.canvas.width === 0) {
+    if (this.sections.length === 0 || this.logicalW === 0) {
       this.fullLayout = null;
       return;
     }
     const ctx = this.ctx;
-    const maxWidth = this.canvas.width - FULL_PAD * 2;
+    const maxWidth = this.logicalW - FULL_PAD * 2;
     const lines: FullLayoutLine[] = [];
     const wordToLine = new Map<number, number>();
     const lineH = this.fullLineHeight;
@@ -678,8 +732,8 @@ export class LyricPlane {
   }
 
   private redrawFull(): void {
-    const w = this.canvas.width;
-    const h = this.canvas.height;
+    const w = this.logicalW;
+    const h = this.logicalH;
     const H = this.effectiveH;
     const ctx = this.ctx;
 
