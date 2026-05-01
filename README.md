@@ -62,7 +62,7 @@ Everything runs in your browser. No accounts, no uploads, no servers required.
 ### Run locally
 
 ```bash
-git clone https://github.com/xcwajdax/lyric.git
+git clone https://github.com/xcwajdax/lyricBlow.git
 cd lyric
 npm install
 npm run dev
