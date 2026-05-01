@@ -1,0 +1,26 @@
+<svg width="1600" height="900" viewBox="0 0 1600 900" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">LyricBlow Hero</title>
+  <desc id="desc">Minimal LyricBlow lettering on an abstract paint blot background.</desc>
+  <defs>
+    <linearGradient id="bg" x1="80" y1="120" x2="1520" y2="780" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#111A2A"/>
+      <stop offset="1" stop-color="#0A0A0F"/>
+    </linearGradient>
+    <radialGradient id="blot" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(812 446) rotate(10) scale(520 300)">
+      <stop stop-color="#7CF0FF" stop-opacity="0.42"/>
+      <stop offset="1" stop-color="#7CF0FF" stop-opacity="0.06"/>
+    </radialGradient>
+    <linearGradient id="word" x1="384" y1="442" x2="1218" y2="442" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#F0F5FF"/>
+      <stop offset="1" stop-color="#7CF0FF"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1600" height="900" rx="34" fill="url(#bg)"/>
+  <rect x="24" y="24" width="1552" height="852" rx="28" stroke="#2A3A4A" stroke-opacity="0.75" stroke-width="2"/>
+
+  <path d="M468 268C598 182 756 168 914 204C1050 236 1166 318 1182 430C1200 552 1096 652 938 688C768 726 566 692 456 588C356 492 354 344 468 268Z" fill="url(#blot)"/>
+  <path d="M526 314C620 250 742 238 862 266C966 292 1062 352 1074 430C1088 514 1008 592 886 620C756 650 604 624 520 544C442 472 442 374 526 314Z" fill="#80FFA0" fill-opacity="0.13"/>
+
+  <text x="364" y="486" fill="url(#word)" font-family="'Segoe UI', Arial, sans-serif" font-size="154" font-weight="820" letter-spacing="1.2">LyricBlow</text>
+</svg>

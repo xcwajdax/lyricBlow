@@ -6,7 +6,11 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc --noEmit && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "hero:openai": "node scripts/generate-hero.mjs openai",
+    "hero:openai:default": "node scripts/generate-hero.mjs openai default",
+    "hero:openai:topkek": "node scripts/generate-hero.mjs openai topkek",
+    "hero:all": "node scripts/generate-hero.mjs"
   },
   "dependencies": {
     "three": "^0.175.0"

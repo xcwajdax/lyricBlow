@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/svg+xml" href="%BASE_URL%favicon.svg" />
     <title>Lyric Visualizer</title>
     <style>
       * {
@@ -73,6 +73,48 @@
         margin: 0 0 16px 0;
         flex-shrink: 0;
       }
+      .projects-topbar {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-bottom: 12px;
+      }
+      .projects-back-btn {
+        border: 1px solid #3a3a4a;
+        border-radius: 8px;
+        background: #14141c;
+        color: #e8e8f0;
+        font: inherit;
+        font-size: 13px;
+        padding: 6px 12px;
+        cursor: pointer;
+      }
+      .projects-back-btn:hover {
+        border-color: #5a5a6a;
+      }
+      .projects-control-group {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 6px 10px;
+        border: 1px solid #3a3a4a;
+        border-radius: 8px;
+        background: #14141c;
+      }
+      .projects-control-group label,
+      .projects-control-group span {
+        font-size: 12px;
+        color: #c6c6d0;
+      }
+      .projects-control-group select {
+        border: 1px solid #4c4c60;
+        border-radius: 6px;
+        background: #0f0f15;
+        color: #ececf5;
+        font: inherit;
+        font-size: 13px;
+        padding: 5px 8px;
+      }
       #landing {
         position: fixed;
         inset: 0;
@@ -97,24 +139,54 @@
       #landing .landing-topbar {
         display: flex;
         justify-content: flex-end;
+        gap: 10px;
+        flex-wrap: wrap;
       }
-      #landing .lang-toggle {
+      #landing .landing-control-group {
         display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 6px 10px;
         border: 1px solid #2a3a4a;
-        border-radius: 999px;
-        overflow: hidden;
+        border-radius: 8px;
+        background: rgba(19, 24, 36, 0.85);
       }
-      #landing .lang-toggle button {
-        border: 0;
-        background: #131824;
-        color: #8ea8c8;
-        padding: 7px 12px;
-        cursor: pointer;
+      #landing .landing-control-group label {
         font-size: 12px;
+        color: #c1d3ea;
       }
-      #landing .lang-toggle button.active {
-        background: #2a4a6a;
+      #landing .landing-control-group select {
+        border: 1px solid #3a4f68;
+        border-radius: 6px;
+        background: #101827;
         color: #e8f1ff;
+        font: inherit;
+        font-size: 13px;
+        padding: 5px 8px;
+      }
+      .lang-switch {
+        display: inline-flex;
+        gap: 6px;
+      }
+      .lang-btn {
+        min-width: 38px;
+        height: 30px;
+        border: 1px solid #3a4f68;
+        border-radius: 6px;
+        background: #101827;
+        color: #e8f1ff;
+        font-size: 18px;
+        line-height: 1;
+        padding: 0 8px;
+        cursor: pointer;
+      }
+      .lang-btn:hover {
+        border-color: #5e8cb8;
+      }
+      .lang-btn.active {
+        background: #244b70;
+        border-color: #5e8cb8;
+        box-shadow: 0 0 0 1px rgba(94, 140, 184, 0.55) inset;
       }
       #landing .hero {
         background: rgba(18, 24, 34, 0.88);
@@ -122,11 +194,44 @@
         border-radius: 14px;
         padding: 28px 24px;
       }
+      #landing .hero-brand {
+        display: grid;
+        grid-template-columns: minmax(260px, 1fr) minmax(320px, 1.1fr);
+        gap: 18px;
+        align-items: center;
+      }
+      #landing .hero-copy {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      #landing .hero-kicker {
+        display: inline-flex;
+        width: fit-content;
+        margin: 0;
+        padding: 6px 10px;
+        border-radius: 999px;
+        border: 1px solid #355476;
+        background: rgba(18, 36, 58, 0.65);
+        color: #9ec5ff;
+        font-size: 12px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        font-weight: 600;
+      }
       #landing h1 {
         margin: 0 0 10px 0;
         color: #f0f5ff;
         font-size: clamp(28px, 5vw, 42px);
         line-height: 1.1;
+      }
+      #landing .hero-tagline {
+        margin: 0;
+        color: #d3e8ff;
+        font-size: 14px;
+        font-weight: 600;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
       }
       #landing .lead {
         margin: 0;
@@ -134,6 +239,18 @@
         line-height: 1.45;
         color: #bdd2ed;
         max-width: 74ch;
+      }
+      #landing .hero-visual {
+        margin: 0;
+        border-radius: 12px;
+        border: 1px solid #2a3a4a;
+        background: rgba(12, 19, 30, 0.7);
+        overflow: hidden;
+      }
+      #landing .hero-visual img {
+        display: block;
+        width: 100%;
+        height: auto;
       }
       #landing .privacy {
         background: rgba(13, 28, 24, 0.65);
@@ -197,6 +314,22 @@
       }
       #landing .cta-row button:hover {
         border-color: #5e8cb8;
+      }
+      #landing .landing-footer {
+        margin-top: 4px;
+        padding: 10px 12px;
+        border: 1px solid #273447;
+        border-radius: 10px;
+        background: rgba(20, 24, 35, 0.7);
+        color: #aebfd9;
+        font-size: 13px;
+        line-height: 1.4;
+      }
+      #landing .landing-footer a {
+        color: #9ec5ff;
+      }
+      #landing .landing-footer a:hover {
+        color: #c8deff;
       }
       #projects-list {
         display: flex; flex-direction: column; gap: 14px;
@@ -472,14 +605,16 @@
       }
       #editor-modal tbody tr.ed-verse-header:hover { background: #222238; }
       #editor-modal tbody tr.ed-verse-header td.ed-verse-header-cell {
-        padding: 6px 8px;
+        padding: 7px 8px;
         font-size: 12px;
         color: #a8b0d0;
-        vertical-align: top;
-        display: flex;
-        flex-direction: column;
-        align-items: stretch;
-        gap: 4px;
+        vertical-align: middle;
+        white-space: nowrap;
+        width: 1%;
+      }
+      #editor-modal tbody tr.ed-verse-header td.ed-verse-preview-cell {
+        padding: 7px 8px;
+        vertical-align: middle;
       }
       #editor-modal .ed-verse-header-top {
         display: flex;
@@ -502,11 +637,15 @@
       #editor-modal .ed-verse-preview {
         color: #6a7088;
         font-style: italic;
-        font-size: 11px;
+        font-size: 12px;
         line-height: 1.35;
-        padding-left: calc(1.1em + 6px);
         white-space: normal;
         word-break: break-word;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
       }
       #editor-modal tbody tr.ed-line-even:not(.label):not(.suggestion) { background: #12121c; }
       #editor-modal tbody tr.ed-line-odd:not(.label):not(.suggestion) { background: #0d0d14; }
@@ -625,9 +764,19 @@
         display: flex; align-items: center; gap: 4px;
         pointer-events: auto;
       }
+      #hud-nav {
+        position: fixed;
+        top: 12px;
+        left: 12px;
+        z-index: 11;
+      }
       .hud-group + .hud-group {
         padding-left: 10px;
         border-left: 1px solid #2a2a3a;
+      }
+      #hud-nav + .hud-group {
+        padding-left: 0;
+        border-left: none;
       }
 
       #volume-slider {
@@ -1115,6 +1264,321 @@
       }
       #livetap-modal .lt-done { color: #80ffa0; font-weight: 600; }
 
+      body.app-skin-topkek {
+        --topkek-bg: #111;
+        --topkek-surface: rgba(12, 17, 13, 0.9);
+        --topkek-surface-soft: rgba(0, 0, 0, 0.55);
+        --topkek-border: rgba(76, 175, 80, 0.5);
+        --topkek-border-strong: rgba(76, 175, 80, 0.65);
+        --topkek-text: #d7f2d9;
+        --topkek-text-dim: #9ac79d;
+        --topkek-accent: #81c784;
+        --topkek-accent-strong: #b8efba;
+        --topkek-radius: 2px;
+      }
+      body.app-skin-topkek #landing,
+      body.app-skin-topkek #projects,
+      body.app-skin-topkek #project-modal,
+      body.app-skin-topkek #editor-modal .panel,
+      body.app-skin-topkek #livetap-modal {
+        font-family: "Courier New", monospace;
+      }
+      body.app-skin-topkek #landing,
+      body.app-skin-topkek #projects {
+        background:
+          radial-gradient(circle at 24% 14%, rgba(76, 175, 80, 0.18), transparent 42%),
+          radial-gradient(circle at 80% 4%, rgba(129, 199, 132, 0.12), transparent 45%),
+          var(--topkek-bg);
+        color: var(--topkek-text);
+      }
+      body.app-skin-topkek #landing .landing-control-group,
+      body.app-skin-topkek .projects-control-group,
+      body.app-skin-topkek #project-modal .panel,
+      body.app-skin-topkek #editor-modal .panel,
+      body.app-skin-topkek #hud-controls,
+      body.app-skin-topkek #viz-settings-panel {
+        border: 1px solid var(--topkek-border);
+        border-radius: var(--topkek-radius);
+        background: var(--topkek-surface);
+        color: var(--topkek-text);
+        box-shadow: 0 0 0 1px rgba(76, 175, 80, 0.2), 0 0 24px rgba(76, 175, 80, 0.12);
+      }
+      body.app-skin-topkek #landing .landing-control-group,
+      body.app-skin-topkek .projects-control-group {
+        background: var(--topkek-surface-soft);
+      }
+      body.app-skin-topkek #landing .landing-control-group label,
+      body.app-skin-topkek #landing .landing-control-group span,
+      body.app-skin-topkek .projects-control-group label,
+      body.app-skin-topkek .projects-control-group span,
+      body.app-skin-topkek #project-modal label,
+      body.app-skin-topkek #editor-modal .toolbar .group-label,
+      body.app-skin-topkek #viz-settings-panel .vs-label {
+        color: var(--topkek-accent);
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+      }
+      body.app-skin-topkek #landing .landing-control-group select,
+      body.app-skin-topkek .projects-control-group select,
+      body.app-skin-topkek #hud select,
+      body.app-skin-topkek #hud button,
+      body.app-skin-topkek .lang-btn,
+      body.app-skin-topkek #project-modal button,
+      body.app-skin-topkek #project-modal input[type="text"],
+      body.app-skin-topkek #project-modal textarea,
+      body.app-skin-topkek #editor-modal button,
+      body.app-skin-topkek #editor-modal input.ed-word,
+      body.app-skin-topkek #editor-modal input.ed-time,
+      body.app-skin-topkek #ed-whisper-url,
+      body.app-skin-topkek #livetap-modal .lt-toolbar button,
+      body.app-skin-topkek #livetap-modal .lt-toolbar select,
+      body.app-skin-topkek #livetap-modal .lt-progress-controls button,
+      body.app-skin-topkek #waveform-controls button {
+        border: 1px solid var(--topkek-border);
+        border-radius: 2px;
+        background: rgba(0, 0, 0, 0.45);
+        color: var(--topkek-accent);
+      }
+      body.app-skin-topkek #landing .hero,
+      body.app-skin-topkek #landing .privacy,
+      body.app-skin-topkek #landing .card,
+      body.app-skin-topkek #landing .cta-row button,
+      body.app-skin-topkek .project-card-main,
+      body.app-skin-topkek .project-card-new,
+      body.app-skin-topkek .project-delete,
+      body.app-skin-topkek .meta-chip,
+      body.app-skin-topkek #editor-modal .table-wrap,
+      body.app-skin-topkek #editor-modal .raw-wrap,
+      body.app-skin-topkek #static-waveform,
+      body.app-skin-topkek #waveform-minimap,
+      body.app-skin-topkek #timeline-wrapper,
+      body.app-skin-topkek #waveform-tooltip,
+      body.app-skin-topkek #timeline-tooltip,
+      body.app-skin-topkek #ed-whisper-url,
+      body.app-skin-topkek #ed-whisper-bar-wrap,
+      body.app-skin-topkek #ed-whisper-bar,
+      body.app-skin-topkek #livetap-modal .lt-toolbar button,
+      body.app-skin-topkek #livetap-modal .lt-toolbar select,
+      body.app-skin-topkek #livetap-modal .lt-legend kbd {
+        border-radius: 2px;
+      }
+      body.app-skin-topkek #landing .hero-kicker {
+        border-color: var(--topkek-border-strong);
+        border-radius: 2px;
+        background: rgba(7, 26, 10, 0.8);
+        color: var(--topkek-accent-strong);
+      }
+      body.app-skin-topkek #landing .hero-tagline {
+        color: var(--topkek-text-dim);
+      }
+      body.app-skin-topkek #landing .hero-visual {
+        border-color: var(--topkek-border);
+        border-radius: 2px;
+        background: rgba(10, 16, 11, 0.92);
+      }
+      body.app-skin-topkek #waveform-loop-clear,
+      body.app-skin-topkek #volume-slider::-webkit-slider-thumb,
+      body.app-skin-topkek #viz-settings-panel input[type="range"]::-webkit-slider-thumb,
+      body.app-skin-topkek #volume-slider::-moz-range-thumb,
+      body.app-skin-topkek #viz-settings-panel input[type="range"]::-moz-range-thumb {
+        border-radius: 0;
+      }
+      body.app-skin-topkek #landing .hero,
+      body.app-skin-topkek #landing .card,
+      body.app-skin-topkek #landing .privacy,
+      body.app-skin-topkek #landing .landing-footer,
+      body.app-skin-topkek .project-card-main,
+      body.app-skin-topkek .project-card-new,
+      body.app-skin-topkek #editor-modal .table-wrap,
+      body.app-skin-topkek #editor-modal .raw-wrap,
+      body.app-skin-topkek #waveform-wrapper,
+      body.app-skin-topkek #timeline-wrapper {
+        background: var(--topkek-surface);
+        border-color: var(--topkek-border);
+        color: var(--topkek-text);
+      }
+      body.app-skin-topkek #landing h1,
+      body.app-skin-topkek #landing h2,
+      body.app-skin-topkek #projects h1,
+      body.app-skin-topkek .project-card-title,
+      body.app-skin-topkek #project-modal h2,
+      body.app-skin-topkek #editor-modal h2 {
+        color: var(--topkek-accent-strong);
+      }
+      body.app-skin-topkek #landing .lead,
+      body.app-skin-topkek #landing .privacy,
+      body.app-skin-topkek .project-card-meta,
+      body.app-skin-topkek .project-card-line,
+      body.app-skin-topkek #project-modal .hint,
+      body.app-skin-topkek #editor-modal .tap-hint,
+      body.app-skin-topkek #ed-whisper-status,
+      body.app-skin-topkek #volume-label,
+      body.app-skin-topkek #time-display {
+        color: var(--topkek-text-dim);
+      }
+      body.app-skin-topkek #landing .cta-row button,
+      body.app-skin-topkek .project-delete,
+      body.app-skin-topkek .projects-back-btn,
+      body.app-skin-topkek #btn-back,
+      body.app-skin-topkek #project-modal button.primary,
+      body.app-skin-topkek #editor-modal button.primary {
+        border: 1px solid var(--topkek-border-strong);
+        background: rgba(7, 26, 10, 0.85);
+        color: var(--topkek-accent);
+      }
+      body.app-skin-topkek #landing .cta-row button:hover,
+      body.app-skin-topkek .project-card-main:hover,
+      body.app-skin-topkek .project-delete:hover,
+      body.app-skin-topkek .projects-back-btn:hover,
+      body.app-skin-topkek .project-card-new:hover,
+      body.app-skin-topkek .lang-btn:hover,
+      body.app-skin-topkek #hud button:hover,
+      body.app-skin-topkek #project-modal button:hover,
+      body.app-skin-topkek #editor-modal button:hover,
+      body.app-skin-topkek #waveform-controls button:hover,
+      body.app-skin-topkek #livetap-modal .lt-toolbar button:hover,
+      body.app-skin-topkek #livetap-modal .lt-progress-controls button:hover {
+        border-color: var(--topkek-accent-strong);
+        color: var(--topkek-accent-strong);
+        text-shadow: 0 0 8px rgba(129, 199, 132, 0.4);
+      }
+      body.app-skin-topkek .hud-group + .hud-group {
+        border-left-color: rgba(76, 175, 80, 0.35);
+      }
+      body.app-skin-topkek #hud-audio-name,
+      body.app-skin-topkek #hud-json-name,
+      body.app-skin-topkek #project-modal .audio-status,
+      body.app-skin-topkek #livetap-modal .lt-toolbar .lt-status {
+        color: var(--topkek-accent);
+      }
+      body.app-skin-topkek .lang-btn.active {
+        background: rgba(7, 26, 10, 0.9);
+        border-color: var(--topkek-border-strong);
+        color: var(--topkek-accent-strong);
+      }
+      body.app-skin-topkek #volume-slider,
+      body.app-skin-topkek #viz-settings-panel input[type="range"] {
+        background: rgba(76, 175, 80, 0.25);
+      }
+      body.app-skin-topkek #volume-slider::-webkit-slider-thumb,
+      body.app-skin-topkek #viz-settings-panel input[type="range"]::-webkit-slider-thumb {
+        background: var(--topkek-accent);
+        border-color: #0f150f;
+      }
+      body.app-skin-topkek #volume-slider::-moz-range-thumb,
+      body.app-skin-topkek #viz-settings-panel input[type="range"]::-moz-range-thumb {
+        background: var(--topkek-accent);
+        border-color: #0f150f;
+      }
+      body.app-skin-topkek #static-waveform,
+      body.app-skin-topkek #waveform-minimap,
+      body.app-skin-topkek #timeline-wrapper {
+        background: rgba(10, 16, 11, 0.95);
+        border-color: var(--topkek-border);
+      }
+      body.app-skin-topkek #waveform-playhead,
+      body.app-skin-topkek #waveform-minimap-playhead {
+        background: rgba(129, 199, 132, 0.9);
+        box-shadow: 0 0 6px rgba(129, 199, 132, 0.5);
+      }
+      body.app-skin-topkek #waveform-tooltip,
+      body.app-skin-topkek #timeline-tooltip {
+        background: rgba(9, 16, 10, 0.96);
+        color: var(--topkek-accent-strong);
+        border-color: var(--topkek-border);
+      }
+      body.app-skin-topkek #waveform-minimap-viewport {
+        background: rgba(76, 175, 80, 0.22);
+        border-color: rgba(76, 175, 80, 0.55);
+      }
+      body.app-skin-topkek #waveform-loop-clear {
+        background: rgba(9, 16, 10, 0.96);
+        color: var(--topkek-accent);
+        border-color: var(--topkek-border);
+      }
+      body.app-skin-topkek #editor-modal thead th {
+        background: rgba(11, 16, 12, 0.98);
+        color: var(--topkek-accent);
+        border-bottom-color: rgba(76, 175, 80, 0.3);
+      }
+      body.app-skin-topkek #editor-modal tbody tr { border-bottom-color: rgba(76, 175, 80, 0.18); }
+      body.app-skin-topkek #editor-modal tbody tr:not(.ed-verse-header):hover { background: rgba(29, 44, 31, 0.42); }
+      body.app-skin-topkek #editor-modal tbody tr.ed-line-even:not(.label):not(.suggestion) { background: rgba(14, 22, 16, 0.92); }
+      body.app-skin-topkek #editor-modal tbody tr.ed-line-odd:not(.label):not(.suggestion) { background: rgba(11, 17, 12, 0.92); }
+      body.app-skin-topkek #editor-modal tbody tr.label { background: rgba(20, 32, 22, 0.92); }
+      body.app-skin-topkek #editor-modal tbody tr.selected { box-shadow: inset 3px 0 0 var(--topkek-accent); }
+      body.app-skin-topkek #editor-modal .ed-verse-chevron,
+      body.app-skin-topkek #editor-modal .ed-verse-title { color: var(--topkek-accent-strong); }
+      body.app-skin-topkek #editor-modal .ed-verse-preview { color: var(--topkek-text-dim); }
+      body.app-skin-topkek #project-modal .error,
+      body.app-skin-topkek #editor-modal button.danger {
+        color: #ff9c9c;
+        border-color: rgba(160, 72, 72, 0.8);
+        background: rgba(64, 19, 19, 0.8);
+      }
+      body.app-skin-topkek #livetap-modal {
+        background: rgba(7, 12, 8, 0.97);
+        color: var(--topkek-text);
+      }
+      body.app-skin-topkek #livetap-modal .lt-toolbar,
+      body.app-skin-topkek #livetap-modal .lt-legend {
+        background: rgba(10, 16, 11, 0.98);
+        border-color: rgba(76, 175, 80, 0.28);
+      }
+      body.app-skin-topkek #livetap-modal .lt-word { color: #6b8d6f; }
+      body.app-skin-topkek #livetap-modal .lt-word.current {
+        color: var(--topkek-accent-strong);
+        text-shadow: 0 2px 24px rgba(129, 199, 132, 0.4);
+      }
+      body.app-skin-topkek #livetap-modal .lt-progress .lt-bar {
+        background: rgba(76, 175, 80, 0.18);
+      }
+      body.app-skin-topkek #livetap-modal .lt-progress .lt-bar-fill {
+        background: linear-gradient(90deg, #4caf50, #81c784);
+      }
+      body.app-skin-topkek #project-modal .panel,
+      body.app-skin-topkek #editor-modal .table-wrap,
+      body.app-skin-topkek #editor-modal .raw-wrap {
+        scrollbar-width: thin;
+        scrollbar-color: #4caf50 #111;
+      }
+      body.app-skin-topkek #project-modal .panel::-webkit-scrollbar,
+      body.app-skin-topkek #editor-modal .table-wrap::-webkit-scrollbar,
+      body.app-skin-topkek #editor-modal .raw-wrap::-webkit-scrollbar,
+      body.app-skin-topkek #projects-list::-webkit-scrollbar {
+        width: 10px;
+      }
+      body.app-skin-topkek #project-modal .panel::-webkit-scrollbar-track,
+      body.app-skin-topkek #editor-modal .table-wrap::-webkit-scrollbar-track,
+      body.app-skin-topkek #editor-modal .raw-wrap::-webkit-scrollbar-track,
+      body.app-skin-topkek #projects-list::-webkit-scrollbar-track {
+        background: #111;
+      }
+      body.app-skin-topkek #project-modal .panel::-webkit-scrollbar-thumb,
+      body.app-skin-topkek #editor-modal .table-wrap::-webkit-scrollbar-thumb,
+      body.app-skin-topkek #editor-modal .raw-wrap::-webkit-scrollbar-thumb,
+      body.app-skin-topkek #projects-list::-webkit-scrollbar-thumb {
+        background: #4caf50;
+        border: 1px solid #111;
+      }
+      body.app-skin-topkek #project-modal .panel::-webkit-scrollbar-thumb:hover,
+      body.app-skin-topkek #editor-modal .table-wrap::-webkit-scrollbar-thumb:hover,
+      body.app-skin-topkek #editor-modal .raw-wrap::-webkit-scrollbar-thumb:hover,
+      body.app-skin-topkek #projects-list::-webkit-scrollbar-thumb:hover {
+        background: #66bb6a;
+      }
+      body.app-skin-topkek #projects-list {
+        scrollbar-width: thin;
+        scrollbar-color: #4caf50 #111;
+      }
+      body.app-skin-topkek button:focus-visible,
+      body.app-skin-topkek select:focus-visible,
+      body.app-skin-topkek input:focus-visible,
+      body.app-skin-topkek textarea:focus-visible {
+        outline: 1px solid #4caf50;
+        outline-offset: 1px;
+      }
+
       /* ─── Mobile / touch responsiveness ────────────────────────── */
 
       /* Eliminate 300 ms tap delay on all interactive elements */
@@ -1160,6 +1624,7 @@
 
         /* HUD — tighter margins and spacing */
         #hud { bottom: 6px; left: 6px; right: 6px; }
+        #hud-nav { top: 6px; left: 6px; }
         #hud-controls { padding: 6px 8px; gap: 4px 6px; }
         .hud-group + .hud-group { padding-left: 6px; }
         #volume-slider { width: 56px; }
@@ -1179,6 +1644,13 @@
         #landing .landing-wrap { padding: 16px 0 24px; }
         #landing .hero { padding: 18px 14px; }
         #landing .lead { font-size: 15px; }
+        #landing .hero-brand {
+          grid-template-columns: 1fr;
+          gap: 14px;
+        }
+        #landing .hero-copy {
+          gap: 8px;
+        }
       }
     </style>
   </head>
@@ -1189,16 +1661,41 @@
     <div id="landing" class="visible">
       <div class="landing-wrap">
         <div class="landing-topbar">
-          <div class="lang-toggle" role="group" aria-label="Language switcher">
-            <button type="button" id="landing-lang-pl" class="active">PL</button>
-            <button type="button" id="landing-lang-en">EN</button>
+          <div class="landing-control-group">
+            <span id="landing-lang-label">Język:</span>
+            <div class="lang-switch" id="landing-lang-switch" role="group" aria-label="Language">
+              <button type="button" class="lang-btn" data-lang="pl" aria-label="Polski" title="Polski">🇵🇱</button>
+              <button type="button" class="lang-btn" data-lang="en" aria-label="English" title="English">🇬🇧</button>
+            </div>
+          </div>
+          <div class="landing-control-group">
+            <label for="landing-skin-select" id="landing-skin-label">Skórka:</label>
+            <select id="landing-skin-select" aria-label="Skin">
+              <option value="default">Podstawowa</option>
+              <option value="topkek">TOPKEK</option>
+            </select>
           </div>
         </div>
         <section class="hero">
-          <h1 data-i18n="hero_title">Lyric Visualizer — local-first</h1>
-          <p class="lead" data-i18n="hero_lead">
-            Narzędzie do synchronizacji i wizualizacji tekstu piosenek działające lokalnie na Twoim komputerze.
-          </p>
+          <div class="hero-brand">
+            <div class="hero-copy">
+              <p class="hero-kicker" data-i18n="hero_kicker">Nowa marka</p>
+              <h1 data-i18n="hero_title">LyricBlow</h1>
+              <p class="hero-tagline" data-i18n="hero_tagline">Rhythm in motion</p>
+              <p class="lead" data-i18n="hero_lead">
+                Narzędzie do synchronizacji i wizualizacji tekstu piosenek działające lokalnie na Twoim komputerze.
+              </p>
+            </div>
+            <figure class="hero-visual">
+              <img
+                id="landing-hero-image"
+                src="%BASE_URL%branding/lyric-blow-hero-openai-default.png"
+                alt="Lyric Blow hero graphic"
+                loading="eager"
+                decoding="async"
+              />
+            </figure>
+          </div>
         </section>
         <section class="privacy" data-i18n="privacy_callout">
           Prywatność: audio, tekst i timingi zostają lokalnie (IndexedDB + lokalne pliki). Aplikacja nie wysyła danych do chmury.
@@ -1226,10 +1723,33 @@
           <button type="button" id="landing-start-app" data-i18n="cta_start">Uruchom aplikację</button>
           <button type="button" id="landing-jump-livetap" class="secondary" data-i18n="cta_livetap">Pokaż jak uruchomić Live TAP</button>
         </div>
+        <footer class="landing-footer">
+          Autor: <a href="https://www.topkek.info" target="_blank" rel="noopener noreferrer">www.topkek.info</a>
+          &middot;
+          Oficjalne repozytorium:
+          <a href="https://github.com/xcwajdax/lyric" target="_blank" rel="noopener noreferrer">github.com/xcwajdax/lyric</a>
+        </footer>
       </div>
     </div>
 
     <div id="projects">
+      <div class="projects-topbar">
+        <button type="button" id="projects-back-landing" class="projects-back-btn">← Landing</button>
+        <div class="projects-control-group">
+          <span id="projects-lang-label">Język:</span>
+          <div class="lang-switch" id="projects-lang-switch" role="group" aria-label="Language">
+            <button type="button" class="lang-btn" data-lang="pl" aria-label="Polski" title="Polski">🇵🇱</button>
+            <button type="button" class="lang-btn" data-lang="en" aria-label="English" title="English">🇬🇧</button>
+          </div>
+        </div>
+        <div class="projects-control-group">
+          <label for="projects-skin-select" id="projects-skin-label">Skórka:</label>
+          <select id="projects-skin-select" aria-label="Skin">
+            <option value="default">Podstawowa</option>
+            <option value="topkek">TOPKEK</option>
+          </select>
+        </div>
+      </div>
       <h1 id="projects-title">Wybierz projekt</h1>
       <div id="projects-list"></div>
     </div>
@@ -1418,6 +1938,10 @@
     </div>
 
     <div id="hud" class="hidden">
+      <div class="hud-group" id="hud-nav">
+        <span id="mode-label"></span>
+        <button type="button" id="btn-back">← Projekty</button>
+      </div>
       <div id="waveform-wrapper">
         <div id="waveform-controls">
           <button type="button" id="btn-waveform-sync" title="Zsynchronizuj widok fali z timeline tekstu">Sync</button>
@@ -1440,10 +1964,6 @@
         <div id="timeline-tooltip"></div>
       </div>
       <div id="hud-controls">
-        <div class="hud-group" id="hud-nav">
-          <span id="mode-label"></span>
-          <button type="button" id="btn-back">← Projekty</button>
-        </div>
         <div class="hud-group" id="hud-transport">
           <button type="button" id="btn-play">▶</button>
           <button type="button" id="btn-pause">⏸</button>
@@ -1470,15 +1990,22 @@
             <select id="viz-mode" aria-label="Tryb wizualizacji tekstu">
               <option value="multiline">Wieloliniowy</option>
               <option value="rail">Jedna linia (środek)</option>
-              <option value="full">Cały tekst (zwrotki/refren)</option>
+              <option value="full" selected>Cały tekst (zwrotki/refren)</option>
             </select>
           </label>
           <button type="button" id="btn-viz-settings" title="Ustawienia wizualizatora (czcionka, kolory)">Aa</button>
           <label>
             <span id="app-lang-label">Język:</span>
-            <select id="app-lang" aria-label="App language">
-              <option value="pl">PL</option>
-              <option value="en">EN</option>
+            <div class="lang-switch" id="app-lang-switch" role="group" aria-label="App language">
+              <button type="button" class="lang-btn" data-lang="pl" aria-label="Polski" title="Polski">🇵🇱</button>
+              <button type="button" class="lang-btn" data-lang="en" aria-label="English" title="English">🇬🇧</button>
+            </div>
+          </label>
+          <label>
+            <span id="app-skin-label">Skórka:</span>
+            <select id="app-skin" aria-label="App skin">
+              <option value="default">Podstawowa</option>
+              <option value="topkek">TOPKEK</option>
             </select>
           </label>
         </div>
@@ -1489,6 +2016,6 @@
         </div>
       </div>
     </div>
-    <script type="module" src="/src/main.ts"></script>
+    <script type="module" src="%BASE_URL%src/main.ts"></script>
   </body>
 </html>

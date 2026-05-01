@@ -230,11 +230,14 @@ export function openTimingEditor(opts: EditorOptions): { close(): boolean } {
 
     const versePreview = (start: number, end: number): string => {
       const parts: string[] = [];
-      for (let j = start; j <= end && parts.length < 3; j++) {
-        const t = words[j]?.word?.trim();
-        if (t) parts.push(t);
+      const maxWords = 22;
+      for (let j = start; j <= end && parts.length < maxWords; j++) {
+        const token = words[j]?.word?.trim();
+        if (token) parts.push(token);
       }
-      return parts.length ? parts.join(" · ") : "…";
+      const hasMore = (end - start + 1) > parts.length;
+      if (!parts.length) return "…";
+      return `${parts.join(" ")}${hasMore ? " …" : ""}`;
     };
 
     for (let v = 0; v < verseRanges.length; v++) {
@@ -247,7 +250,6 @@ export function openTimingEditor(opts: EditorOptions): { close(): boolean } {
       headerTr.dataset.verse = String(v);
       headerTr.setAttribute("aria-expanded", collapsed ? "false" : "true");
       const tdH = document.createElement("td");
-      tdH.colSpan = 5;
       tdH.className = "ed-verse-header-cell";
       const chevron = document.createElement("span");
       chevron.className = "ed-verse-chevron";
@@ -263,8 +265,12 @@ export function openTimingEditor(opts: EditorOptions): { close(): boolean } {
       const topRow = document.createElement("div");
       topRow.className = "ed-verse-header-top";
       topRow.append(chevron, title);
-      tdH.append(topRow, preview);
-      headerTr.appendChild(tdH);
+      tdH.append(topRow);
+      const tdPreview = document.createElement("td");
+      tdPreview.className = "ed-verse-preview-cell";
+      tdPreview.colSpan = 4;
+      tdPreview.append(preview);
+      headerTr.append(tdH, tdPreview);
       headerTr.addEventListener("click", (ev) => {
         ev.stopPropagation();
         if (collapsedVerses.has(v)) collapsedVerses.delete(v);

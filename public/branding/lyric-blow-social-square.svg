@@ -1,0 +1,25 @@
+<svg width="1080" height="1080" viewBox="0 0 1080 1080" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">LyricBlow Social</title>
+  <desc id="desc">Minimal LyricBlow text with abstract paint blot for social usage.</desc>
+  <defs>
+    <linearGradient id="bg" x1="130" y1="120" x2="960" y2="960" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#111A2A"/>
+      <stop offset="1" stop-color="#0A0A0F"/>
+    </linearGradient>
+    <radialGradient id="blot" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(544 534) rotate(12) scale(360 330)">
+      <stop stop-color="#7CF0FF" stop-opacity="0.42"/>
+      <stop offset="1" stop-color="#7CF0FF" stop-opacity="0.08"/>
+    </radialGradient>
+    <linearGradient id="word" x1="190" y1="572" x2="884" y2="572" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#F0F5FF"/>
+      <stop offset="1" stop-color="#7CF0FF"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1080" height="1080" rx="60" fill="url(#bg)"/>
+  <rect x="24" y="24" width="1032" height="1032" rx="48" stroke="#2A3A4A" stroke-width="2"/>
+  <path d="M332 312C426 252 566 234 692 274C802 308 894 388 900 492C906 612 832 716 706 770C574 824 412 810 322 716C242 632 238 476 332 312Z" fill="url(#blot)"/>
+  <path d="M378 350C458 298 578 286 680 318C770 346 844 410 850 496C856 598 792 676 690 722C582 772 448 760 374 682C306 610 302 486 378 350Z" fill="#80FFA0" fill-opacity="0.13"/>
+
+  <text x="182" y="598" fill="url(#word)" font-family="'Segoe UI', Arial, sans-serif" font-size="126" font-weight="820">LyricBlow</text>
+</svg>

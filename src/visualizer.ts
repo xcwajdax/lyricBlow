@@ -15,6 +15,18 @@ export const DEFAULT_VIZ_SETTINGS: VizSettings = {
   bgColor: "#0a0a0f",
 };
 
+export function defaultVizSettingsForSkin(skin: "default" | "topkek"): VizSettings {
+  if (skin === "topkek") {
+    return {
+      fontSize: DEFAULT_VIZ_SETTINGS.fontSize,
+      activeColor: "#81c784",
+      inactiveColor: "#5f8a63",
+      bgColor: "#0f150f",
+    };
+  }
+  return { ...DEFAULT_VIZ_SETTINGS };
+}
+
 // Fixed layout constants
 const FULL_PAD = 48;
 const FULL_SECTION_GAP = 16;
@@ -67,7 +79,7 @@ export class LyricPlane {
   private lastKnownActive = -1;
   private active = -1;
   private selected: Set<number> = new Set();
-  private mode: LyricVizMode = "multiline";
+  private mode: LyricVizMode = "full";
   private multilineHitRects: { idx: number; x: number; y: number; w: number }[] = [];
   private multilineLines: LyricLine[] = [];
   private railLayout: RailLayout | null = null;

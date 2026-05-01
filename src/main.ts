@@ -1,5 +1,5 @@
 import { parseAlignmentJson, type AlignedWord, type AlignmentPayload } from "./alignment";
-import { LyricPlane, type LyricVizMode, DEFAULT_VIZ_SETTINGS } from "./visualizer";
+import { LyricPlane, type LyricVizMode, defaultVizSettingsForSkin } from "./visualizer";
 import {
   deleteProject,
   getProject,
@@ -23,18 +23,51 @@ interface BuiltinProject {
 }
 
 type LandingLanguage = "pl" | "en";
+type AppSkin = "default" | "topkek";
+type WaveformPalette = {
+  miniBar: string;
+  waveformFill: string;
+  axisMinor: string;
+  axisMajor: string;
+  axisLabel: string;
+};
 
 const AJKS_JSON_URL = new URL("../assets/ajks/ajkjsonnew.json", import.meta.url).href;
+const FIXTURES_BASE_URL = new URL("fixtures/", new URL(import.meta.env.BASE_URL, window.location.href)).href;
+const LANDING_HERO_BY_SKIN: Record<AppSkin, string> = {
+  default: new URL("../public/branding/lyric-blow-hero-openai-default.png", import.meta.url).href,
+  topkek: new URL("../public/branding/lyric-blow-hero-openai-topkek.png", import.meta.url).href,
+};
+const WAVEFORM_PALETTE_BY_SKIN: Record<AppSkin, WaveformPalette> = {
+  default: {
+    miniBar: "#3a7aaa",
+    waveformFill: "#2a4a6a",
+    axisMinor: "rgba(180, 200, 220, 0.08)",
+    axisMajor: "rgba(180, 200, 220, 0.22)",
+    axisLabel: "rgba(180, 200, 220, 0.45)",
+  },
+  topkek: {
+    miniBar: "#3e7f47",
+    waveformFill: "#2f5f35",
+    axisMinor: "rgba(129, 199, 132, 0.10)",
+    axisMajor: "rgba(129, 199, 132, 0.3)",
+    axisLabel: "rgba(178, 230, 181, 0.6)",
+  },
+};
+
+function fixtureUrl(fileName: string): string {
+  return new URL(fileName, FIXTURES_BASE_URL).href;
+}
 
 const BUILTIN_PROJECTS: Record<string, BuiltinProject> = {
   sample_sonauto: {
     name: "Sample Sonauto",
-    jsonUrl: "/fixtures/sample_sonauto.json",
-    audioUrl: "/fixtures/sample_sonauto.mp3",
+    jsonUrl: fixtureUrl("sample_sonauto.json"),
+    audioUrl: fixtureUrl("sample_sonauto.mp3"),
   },
   aligned: {
     name: "Aligned (mock)",
-    jsonUrl: "/fixtures/aligned.json",
+    jsonUrl: fixtureUrl("aligned.json"),
     audioUrl: undefined,
   },
   ajks: {
@@ -154,8 +187,14 @@ function main(): void {
   const landingDiv = document.getElementById("landing")!;
   const landingStartBtn = document.getElementById("landing-start-app") as HTMLButtonElement;
   const landingLiveTapBtn = document.getElementById("landing-jump-livetap") as HTMLButtonElement;
-  const landingLangPlBtn = document.getElementById("landing-lang-pl") as HTMLButtonElement;
-  const landingLangEnBtn = document.getElementById("landing-lang-en") as HTMLButtonElement;
+  const landingLangSelect = document.getElementById("landing-lang-select") as HTMLSelectElement | null;
+  const landingLangButtons = Array.from(document.querySelectorAll<HTMLButtonElement>("#landing-lang-switch .lang-btn"));
+  const landingSkinSelect = document.getElementById("landing-skin-select") as HTMLSelectElement;
+  const landingHeroImage = document.getElementById("landing-hero-image") as HTMLImageElement;
+  const projectsLangSelect = document.getElementById("projects-lang-select") as HTMLSelectElement | null;
+  const projectsLangButtons = Array.from(document.querySelectorAll<HTMLButtonElement>("#projects-lang-switch .lang-btn"));
+  const projectsSkinSelect = document.getElementById("projects-skin-select") as HTMLSelectElement;
+  const projectsBackLandingBtn = document.getElementById("projects-back-landing") as HTMLButtonElement;
   const projectsDiv = document.getElementById("projects")!;
   const hud = document.getElementById("hud")!;
   const modeLabel = document.getElementById("mode-label")!;
@@ -191,7 +230,9 @@ function main(): void {
   const btnLiveTap = document.getElementById("btn-livetap") as HTMLButtonElement;
   const volumeSlider = document.getElementById("volume-slider") as HTMLInputElement;
   const volumeLabel = document.getElementById("volume-label")!;
-  const appLangSelect = document.getElementById("app-lang") as HTMLSelectElement;
+  const appLangSelect = document.getElementById("app-lang") as HTMLSelectElement | null;
+  const appLangButtons = Array.from(document.querySelectorAll<HTMLButtonElement>("#app-lang-switch .lang-btn"));
+  const appSkinSelect = document.getElementById("app-skin") as HTMLSelectElement;
 
   /** Aktualnie wczytany projekt użytkownika (null dla wbudowanych lub gdy nic nie wczytane). */
   let currentUserProjectId: string | null = null;
@@ -228,54 +269,75 @@ function main(): void {
   const vsBgColor = document.getElementById("vs-bg-color") as HTMLInputElement;
   const btnVsReset = document.getElementById("btn-vs-reset") as HTMLButtonElement;
 
-  const VIZ_SETTINGS_KEY = "viz-settings";
+  const VIZ_SETTINGS_KEY = "viz-settings-v2";
+  type VizBySkinStore = {
+    default?: ReturnType<typeof defaultVizSettingsForSkin>;
+    topkek?: ReturnType<typeof defaultVizSettingsForSkin>;
+  };
+  let vizSettingsBySkin: VizBySkinStore = {};
 
-  function loadVizSettings(): void {
+  function currentSkinVizDefaults(): ReturnType<typeof defaultVizSettingsForSkin> {
+    return defaultVizSettingsForSkin(appSkin);
+  }
+
+  function getStoredVizForSkin(skin: AppSkin): ReturnType<typeof defaultVizSettingsForSkin> {
+    const fromStore = vizSettingsBySkin[skin];
+    if (fromStore) return { ...fromStore };
+    return defaultVizSettingsForSkin(skin);
+  }
+
+  function applyVizSettingsToUi(s: ReturnType<typeof defaultVizSettingsForSkin>): void {
+    vsFontSize.value = String(s.fontSize);
+    vsFontSizeVal.textContent = String(s.fontSize);
+    vsActiveColor.value = s.activeColor;
+    vsInactiveColor.value = s.inactiveColor;
+    vsBgColor.value = s.bgColor;
+  }
+
+  function loadVizSettingsStore(): void {
     try {
       const raw = localStorage.getItem(VIZ_SETTINGS_KEY);
       if (!raw) return;
-      const s = JSON.parse(raw) as Partial<typeof DEFAULT_VIZ_SETTINGS>;
-      if (typeof s.fontSize === "number") {
-        vsFontSize.value = String(s.fontSize);
-        vsFontSizeVal.textContent = String(s.fontSize);
-      }
-      if (s.activeColor) vsActiveColor.value = s.activeColor;
-      if (s.inactiveColor) vsInactiveColor.value = s.inactiveColor;
-      if (s.bgColor) vsBgColor.value = s.bgColor;
-      viz.setSettings(s);
+      const parsed = JSON.parse(raw) as VizBySkinStore;
+      if (parsed && typeof parsed === "object") vizSettingsBySkin = parsed;
     } catch {}
   }
 
-  function saveVizSettings(): void {
-    localStorage.setItem(VIZ_SETTINGS_KEY, JSON.stringify(viz.getSettings()));
+  function saveVizSettingsStore(): void {
+    localStorage.setItem(VIZ_SETTINGS_KEY, JSON.stringify(vizSettingsBySkin));
   }
 
-  function applyVizSettings(): void {
+  function applyVizSettingsFromCurrentSkin(): void {
+    const s = getStoredVizForSkin(appSkin);
+    applyVizSettingsToUi(s);
+    viz.setSettings(s);
+  }
+
+  function applyVizSettingsFromInputs(): void {
     const fontSize = parseInt(vsFontSize.value, 10);
     vsFontSizeVal.textContent = String(fontSize);
-    viz.setSettings({
+    const updated = {
       fontSize,
       activeColor: vsActiveColor.value,
       inactiveColor: vsInactiveColor.value,
       bgColor: vsBgColor.value,
-    });
-    saveVizSettings();
+    };
+    vizSettingsBySkin[appSkin] = updated;
+    viz.setSettings(updated);
+    saveVizSettingsStore();
   }
 
-  vsFontSize.addEventListener("input", applyVizSettings);
-  vsActiveColor.addEventListener("input", applyVizSettings);
-  vsInactiveColor.addEventListener("input", applyVizSettings);
-  vsBgColor.addEventListener("input", applyVizSettings);
+  vsFontSize.addEventListener("input", applyVizSettingsFromInputs);
+  vsActiveColor.addEventListener("input", applyVizSettingsFromInputs);
+  vsInactiveColor.addEventListener("input", applyVizSettingsFromInputs);
+  vsBgColor.addEventListener("input", applyVizSettingsFromInputs);
 
   btnVsReset.addEventListener("click", () => {
-    const d = DEFAULT_VIZ_SETTINGS;
-    vsFontSize.value = String(d.fontSize);
-    vsFontSizeVal.textContent = String(d.fontSize);
-    vsActiveColor.value = d.activeColor;
-    vsInactiveColor.value = d.inactiveColor;
-    vsBgColor.value = d.bgColor;
+    const d = currentSkinVizDefaults();
+    vizSettingsBySkin[appSkin] = { ...d };
+    applyVizSettingsToUi(d);
     viz.setSettings({ ...d });
-    saveVizSettings();
+    saveVizSettingsStore();
   });
 
   btnVizSettings.addEventListener("click", (e) => {
@@ -312,7 +374,7 @@ function main(): void {
     new ResizeObserver(updateVizMargin).observe(hud);
   }
 
-  loadVizSettings();
+  loadVizSettingsStore();
   // Initial margin will be set after first showHud() call
 
   const timelineWrapper = document.getElementById("timeline-wrapper") as HTMLDivElement;
@@ -375,7 +437,7 @@ function main(): void {
 
     const barW = w / bufLen;
     let x = 0;
-    ctx.fillStyle = "#3a7aaa";
+    ctx.fillStyle = WAVEFORM_PALETTE_BY_SKIN[appSkin].miniBar;
     for (let i = 0; i < bufLen; i++) {
       const barH = (dataArr[i] / 255) * h;
       const y = h - barH;
@@ -492,7 +554,7 @@ function main(): void {
     const sliceLen = i1 - i0;
     const amp = h / 2;
 
-    ctx.fillStyle = "#2a4a6a";
+    ctx.fillStyle = WAVEFORM_PALETTE_BY_SKIN[appSkin].waveformFill;
     for (let x = 0; x < w; x++) {
       let min = 1.0, max = -1.0;
       const frac0 = x / w;
@@ -543,7 +605,8 @@ function main(): void {
     const dpr = window.devicePixelRatio;
     ctx.save();
 
-    ctx.strokeStyle = "rgba(180, 200, 220, 0.08)";
+    const palette = WAVEFORM_PALETTE_BY_SKIN[appSkin];
+    ctx.strokeStyle = palette.axisMinor;
     ctx.lineWidth = 1;
     const tMinor0 = Math.ceil(t0 / minorInterval) * minorInterval;
     for (let t = tMinor0; t <= t1 + 1e-9; t += minorInterval) {
@@ -555,8 +618,8 @@ function main(): void {
       ctx.stroke();
     }
 
-    ctx.strokeStyle = "rgba(180, 200, 220, 0.22)";
-    ctx.fillStyle = "rgba(180, 200, 220, 0.45)";
+    ctx.strokeStyle = palette.axisMajor;
+    ctx.fillStyle = palette.axisLabel;
     ctx.font = `${10 * dpr}px ui-monospace, monospace`;
     ctx.textBaseline = "bottom";
     const tMajor0 = Math.ceil(t0 / interval) * interval;
@@ -688,11 +751,14 @@ function main(): void {
   // ── UI helpers ──────────────────────────────────────────────────────
   let editorHandle: { close(): boolean } | null = null;
   const APP_LANG_KEY = "app-lang";
+  const APP_SKIN_KEY = "app-skin";
 
   const landingCopy: Record<LandingLanguage, Record<string, string>> = {
     pl: {
-      hero_title: "Lyric Visualizer - local-first",
-      hero_lead: "Narzędzie do synchronizacji i wizualizacji tekstu piosenek działające lokalnie na Twoim komputerze.",
+      hero_kicker: "Nowa marka",
+      hero_title: "LyricBlow",
+      hero_tagline: "Rhythm in motion",
+      hero_lead: "Lokalne narzedzie do synchronizacji i wizualizacji tekstu piosenek, gotowe na szybki rytm pracy.",
       privacy_callout:
         "Prywatność: audio, tekst i timingi zostają lokalnie (IndexedDB + lokalne pliki). Aplikacja nie wysyła danych do chmury. Whisper działa wyłącznie na Twoim lokalnym serwerze, jeśli sam go uruchomisz.",
       how_title: "Jak to działa",
@@ -706,10 +772,16 @@ function main(): void {
       livetap_3: "Idealny punkt startowy przed finalnym szlifem w timeline.",
       cta_start: "Uruchom aplikację",
       cta_livetap: "Pokaż jak uruchomić Live TAP",
+      langLabel: "Język:",
+      skinLabel: "Skórka:",
+      skinDefault: "Podstawowa",
+      skinTopkek: "TOPKEK",
     },
     en: {
-      hero_title: "Lyric Visualizer - local-first",
-      hero_lead: "A local tool for syncing and visualizing song lyrics directly on your computer.",
+      hero_kicker: "New identity",
+      hero_title: "LyricBlow",
+      hero_tagline: "Rhythm in motion",
+      hero_lead: "A local tool for syncing and visualizing song lyrics, tuned for fast creative flow.",
       privacy_callout:
         "Privacy: audio, lyrics and timings stay local (IndexedDB + local files). The app does not send your data to the cloud. Whisper is used only via your own local server when you run it.",
       how_title: "How it works",
@@ -723,9 +795,14 @@ function main(): void {
       livetap_3: "Perfect first pass before final cleanup in timeline.",
       cta_start: "Start app",
       cta_livetap: "Show Live TAP quickstart",
+      langLabel: "Language:",
+      skinLabel: "Skin:",
+      skinDefault: "Default",
+      skinTopkek: "TOPKEK",
     },
   };
   let appLang: LandingLanguage = "pl";
+  let appSkin: AppSkin = "default";
 
   const tr: Record<LandingLanguage, Record<string, string>> = {
     pl: {
@@ -762,7 +839,11 @@ function main(): void {
       ltLegend:
         "<kbd>Spacja</kbd> tap &middot; <kbd>⌫</kbd> cofnij ostatni tap &middot; <kbd>P</kbd>/<kbd>K</kbd> play/pause &middot; <kbd>←</kbd> -5s &middot; <kbd>Shift+←</kbd> -10s &middot; <kbd>→</kbd> +5s &middot; <kbd>1</kbd>/<kbd>2</kbd>/<kbd>3</kbd> tempo &middot; <kbd>Ctrl+S</kbd> zapisz &middot; <kbd>Esc</kbd> wyjście",
       appLangLabel: "Język:",
+      appSkinLabel: "Skórka:",
+      appSkinDefault: "Podstawowa",
+      appSkinTopkek: "TOPKEK",
       btnBack: "← Projekty",
+      projectsBackLanding: "← Landing",
       btnEditTiming: "Edytor czasów",
       liveTapGuide:
         "Szybki start Live TAP:\n1) Otwórz lub utwórz projekt.\n2) Kliknij 'LiveTap' na dolnym pasku.\n3) Podczas odtwarzania wciskaj Spację, aby tagować słowa.\n4) Zapisz przez Ctrl+S.",
@@ -809,7 +890,11 @@ function main(): void {
       ltLegend:
         "<kbd>Space</kbd> tap &middot; <kbd>⌫</kbd> undo last tap &middot; <kbd>P</kbd>/<kbd>K</kbd> play/pause &middot; <kbd>←</kbd> -5s &middot; <kbd>Shift+←</kbd> -10s &middot; <kbd>→</kbd> +5s &middot; <kbd>1</kbd>/<kbd>2</kbd>/<kbd>3</kbd> speed &middot; <kbd>Ctrl+S</kbd> save &middot; <kbd>Esc</kbd> close",
       appLangLabel: "Language:",
+      appSkinLabel: "Skin:",
+      appSkinDefault: "Default",
+      appSkinTopkek: "TOPKEK",
       btnBack: "← Projects",
+      projectsBackLanding: "← Landing",
       btnEditTiming: "Timing editor",
       liveTapGuide:
         "Live TAP quickstart:\n1) Open or create a project.\n2) Click 'LiveTap' in the bottom bar.\n3) Press Space while the track plays to tag words.\n4) Save with Ctrl+S.",
@@ -832,13 +917,24 @@ function main(): void {
     return s;
   }
 
+  function setLangButtonsActive(btns: HTMLButtonElement[], lang: LandingLanguage): void {
+    btns.forEach((btn) => {
+      const active = btn.dataset.lang === lang;
+      btn.classList.toggle("active", active);
+      btn.setAttribute("aria-pressed", active ? "true" : "false");
+    });
+  }
+
   function applyLanguage(lang: LandingLanguage): void {
     appLang = lang;
     localStorage.setItem(APP_LANG_KEY, lang);
     document.documentElement.lang = lang;
-    landingLangPlBtn.classList.toggle("active", lang === "pl");
-    landingLangEnBtn.classList.toggle("active", lang === "en");
-    appLangSelect.value = lang;
+    if (landingLangSelect) landingLangSelect.value = lang;
+    if (projectsLangSelect) projectsLangSelect.value = lang;
+    if (appLangSelect) appLangSelect.value = lang;
+    setLangButtonsActive(landingLangButtons, lang);
+    setLangButtonsActive(projectsLangButtons, lang);
+    setLangButtonsActive(appLangButtons, lang);
     const dict = landingCopy[lang];
     const i18nNodes = landingDiv.querySelectorAll<HTMLElement>("[data-i18n]");
     i18nNodes.forEach((node) => {
@@ -859,7 +955,13 @@ function main(): void {
     setText("np-pick-json", t("npPickJson"));
     setText("np-cancel", t("npCancel"));
     setText("np-save", t("npSave"));
+    setText("landing-lang-label", dict.langLabel);
+    setText("landing-skin-label", dict.skinLabel);
+    setText("projects-lang-label", dict.langLabel);
+    setText("projects-skin-label", dict.skinLabel);
+    setText("projects-back-landing", t("projectsBackLanding"));
     setText("app-lang-label", t("appLangLabel"));
+    setText("app-skin-label", t("appSkinLabel"));
     setText("btn-back", t("btnBack"));
     setText("btn-edit-timing", t("btnEditTiming"));
     setText("btn-waveform-sync", t("waveSync"));
@@ -897,6 +999,16 @@ function main(): void {
     setText("btn-vs-reset", appLang === "en" ? "Reset defaults" : "Przywróć domyślne");
     const npNameInput = document.getElementById("np-name") as HTMLInputElement | null;
     if (npNameInput) npNameInput.placeholder = t("npNamePlaceholder");
+    const setOptionText = (selectEl: HTMLSelectElement, value: string, label: string): void => {
+      const option = selectEl.querySelector(`option[value="${value}"]`);
+      if (option) option.textContent = label;
+    };
+    setOptionText(landingSkinSelect, "default", t("appSkinDefault"));
+    setOptionText(landingSkinSelect, "topkek", t("appSkinTopkek"));
+    setOptionText(projectsSkinSelect, "default", t("appSkinDefault"));
+    setOptionText(projectsSkinSelect, "topkek", t("appSkinTopkek"));
+    setOptionText(appSkinSelect, "default", t("appSkinDefault"));
+    setOptionText(appSkinSelect, "topkek", t("appSkinTopkek"));
     const ltLegend = byId("lt-legend");
     if (ltLegend) ltLegend.innerHTML = t("ltLegend");
     const ltOffsetLabel = byId("lt-offset-label-text");
@@ -948,6 +1060,20 @@ function main(): void {
       opts[1].text = t("viewRail");
       opts[2].text = t("viewFull");
     }
+  }
+
+  function applySkin(skin: AppSkin): void {
+    const changed = appSkin !== skin;
+    appSkin = skin;
+    if (changed) localStorage.setItem(APP_SKIN_KEY, skin);
+    document.body.classList.toggle("app-skin-topkek", skin === "topkek");
+    landingSkinSelect.value = skin;
+    projectsSkinSelect.value = skin;
+    appSkinSelect.value = skin;
+    landingHeroImage.src = LANDING_HERO_BY_SKIN[skin];
+    timeline.setSkin(skin);
+    applyVizSettingsFromCurrentSkin();
+    if (waveformAudioBuffer) void redrawStaticWaveform();
   }
 
   function showLanding(): void {
@@ -1175,12 +1301,42 @@ function main(): void {
   }
 
   btnBack.addEventListener("click", showProjects);
+  projectsBackLandingBtn.addEventListener("click", showLanding);
   landingStartBtn.addEventListener("click", showProjectPicker);
-  landingLangPlBtn.addEventListener("click", () => applyLanguage("pl"));
-  landingLangEnBtn.addEventListener("click", () => applyLanguage("en"));
-  appLangSelect.addEventListener("change", () => {
-    applyLanguage(appLangSelect.value === "en" ? "en" : "pl");
-    void renderProjectPicker();
+  if (landingLangSelect) {
+    landingLangSelect.addEventListener("change", () => {
+      applyLanguage(landingLangSelect.value === "en" ? "en" : "pl");
+      void renderProjectPicker();
+    });
+  }
+  if (projectsLangSelect) {
+    projectsLangSelect.addEventListener("change", () => {
+      applyLanguage(projectsLangSelect.value === "en" ? "en" : "pl");
+      void renderProjectPicker();
+    });
+  }
+  if (appLangSelect) {
+    appLangSelect.addEventListener("change", () => {
+      applyLanguage(appLangSelect.value === "en" ? "en" : "pl");
+      void renderProjectPicker();
+    });
+  }
+  const allLangButtons = [...landingLangButtons, ...projectsLangButtons, ...appLangButtons];
+  allLangButtons.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const lang = btn.dataset.lang === "en" ? "en" : "pl";
+      applyLanguage(lang);
+      void renderProjectPicker();
+    });
+  });
+  appSkinSelect.addEventListener("change", () => {
+    applySkin(appSkinSelect.value === "topkek" ? "topkek" : "default");
+  });
+  landingSkinSelect.addEventListener("change", () => {
+    applySkin(landingSkinSelect.value === "topkek" ? "topkek" : "default");
+  });
+  projectsSkinSelect.addEventListener("change", () => {
+    applySkin(projectsSkinSelect.value === "topkek" ? "topkek" : "default");
   });
   landingLiveTapBtn.addEventListener("click", () => {
     showProjectPicker();
@@ -1792,6 +1948,8 @@ function main(): void {
   // ── Bootstrap ───────────────────────────────────────────────────────
   const storedLang = localStorage.getItem(APP_LANG_KEY);
   applyLanguage(storedLang === "en" ? "en" : "pl");
+  const storedSkin = localStorage.getItem(APP_SKIN_KEY);
+  applySkin(storedSkin === "topkek" ? "topkek" : "default");
   showLanding();
   void renderProjectPicker();
 }

@@ -9,31 +9,92 @@ const BLOCK_PAD_Y = 3;     // Margines pionowy wewnątrz bloku
 const MIN_ZOOM = 2;        // px/s — minimum (widok całości)
 const MAX_ZOOM = 3000;     // px/s — maksimum (ms-precyzja)
 const MIN_BLOCK_DUR = 0.01; // Minimalna długość bloku po resize (s)
-const COLOR_BG = "#0a0a0f";
-const COLOR_GRID = "rgba(40,50,70,0.7)";
-const COLOR_TICK_LABEL = "#555";
-const COLOR_GUTTER_BG = "rgba(15,18,28,0.95)";
-const COLOR_GUTTER_TEXT = "#6a8aaa";
-const COLOR_BLOCK_A = "#1e3a5a";
-const COLOR_BLOCK_B = "#2a2850";
-const COLOR_BLOCK_SEL = "#7cf0ff";
-const COLOR_BLOCK_ACTIVE = "#4a7aaa";
-const COLOR_BLOCK_SUGG = "#5a3a10";
-const COLOR_BLOCK_BORDER_A = "#2a5a8a";
-const COLOR_BLOCK_BORDER_B = "#4a3a7a";
-const COLOR_BLOCK_SEL_BORDER = "rgba(124,240,255,0.8)";
-const COLOR_BLOCK_SUGG_BORDER = "#aa6a20";
-const COLOR_WORD_TEXT_A = "#9ec5ff";
-const COLOR_WORD_TEXT_B = "#c8a0ff";
-const COLOR_WORD_TEXT_SEL = "#0a0a0f";
-const COLOR_WORD_TEXT_SUGG = "#ffc864";
-const COLOR_BREAK_MARKER = "rgba(124,240,255,0.6)";
-const COLOR_VERSE_MARKER = "rgba(255,180,90,0.8)";
-const COLOR_PLAYHEAD = "rgba(158,197,255,0.9)";
-const COLOR_LASSO_FILL = "rgba(124,240,255,0.06)";
-const COLOR_LASSO_STROKE = "rgba(124,240,255,0.5)";
-const COLOR_LINE_BREAK = "rgba(124,240,255,0.35)";
-const COLOR_VERSE_BREAK = "rgba(255,180,90,0.55)";
+type TimelinePalette = {
+  bg: string;
+  grid: string;
+  tickLabel: string;
+  gutterBg: string;
+  gutterText: string;
+  blockA: string;
+  blockB: string;
+  blockSel: string;
+  blockActive: string;
+  blockSugg: string;
+  blockBorderA: string;
+  blockBorderB: string;
+  blockSelBorder: string;
+  blockSuggBorder: string;
+  wordTextA: string;
+  wordTextB: string;
+  wordTextSel: string;
+  wordTextSugg: string;
+  breakMarker: string;
+  verseMarker: string;
+  playhead: string;
+  lassoFill: string;
+  lassoStroke: string;
+  lineBreak: string;
+  verseBreak: string;
+  gutterDivider: string;
+};
+
+const DEFAULT_TIMELINE_PALETTE: TimelinePalette = {
+  bg: "#0a0a0f",
+  grid: "rgba(40,50,70,0.7)",
+  tickLabel: "#555",
+  gutterBg: "rgba(15,18,28,0.95)",
+  gutterText: "#6a8aaa",
+  blockA: "#1e3a5a",
+  blockB: "#2a2850",
+  blockSel: "#7cf0ff",
+  blockActive: "#4a7aaa",
+  blockSugg: "#5a3a10",
+  blockBorderA: "#2a5a8a",
+  blockBorderB: "#4a3a7a",
+  blockSelBorder: "rgba(124,240,255,0.8)",
+  blockSuggBorder: "#aa6a20",
+  wordTextA: "#9ec5ff",
+  wordTextB: "#c8a0ff",
+  wordTextSel: "#0a0a0f",
+  wordTextSugg: "#ffc864",
+  breakMarker: "rgba(124,240,255,0.6)",
+  verseMarker: "rgba(255,180,90,0.8)",
+  playhead: "rgba(158,197,255,0.9)",
+  lassoFill: "rgba(124,240,255,0.06)",
+  lassoStroke: "rgba(124,240,255,0.5)",
+  lineBreak: "rgba(124,240,255,0.35)",
+  verseBreak: "rgba(255,180,90,0.55)",
+  gutterDivider: "rgba(40,60,80,0.8)",
+};
+
+const TOPKEK_TIMELINE_PALETTE: TimelinePalette = {
+  bg: "#0f150f",
+  grid: "rgba(76,175,80,0.34)",
+  tickLabel: "#4f7353",
+  gutterBg: "rgba(10,18,11,0.96)",
+  gutterText: "#7aa67d",
+  blockA: "#173120",
+  blockB: "#1f2d1f",
+  blockSel: "#81c784",
+  blockActive: "#4caf50",
+  blockSugg: "#4d3912",
+  blockBorderA: "#2f6a3f",
+  blockBorderB: "#426744",
+  blockSelBorder: "rgba(129,199,132,0.85)",
+  blockSuggBorder: "#aa8440",
+  wordTextA: "#b7e3bb",
+  wordTextB: "#9fd0a3",
+  wordTextSel: "#071107",
+  wordTextSugg: "#f2d08f",
+  breakMarker: "rgba(129,199,132,0.65)",
+  verseMarker: "rgba(240,190,120,0.85)",
+  playhead: "rgba(129,199,132,0.92)",
+  lassoFill: "rgba(129,199,132,0.08)",
+  lassoStroke: "rgba(129,199,132,0.48)",
+  lineBreak: "rgba(129,199,132,0.4)",
+  verseBreak: "rgba(240,190,120,0.6)",
+  gutterDivider: "rgba(76,175,80,0.55)",
+};
 
 /** Kursor SVG — nawias przy zmianie początku / końca słowa (hotspot przy krawędzi). */
 const BRACKET_L_SVG =
@@ -81,6 +142,7 @@ export class LyricTimeline {
   private dragState: DragState | null = null;
 
   private readonly opts: TimelineOptions;
+  private palette: TimelinePalette = { ...DEFAULT_TIMELINE_PALETTE };
 
   constructor(container: HTMLElement, opts: TimelineOptions) {
     this.opts = opts;
@@ -158,6 +220,11 @@ export class LyricTimeline {
 
   clearSelection(): void {
     this.selected.clear();
+    this.redraw();
+  }
+
+  setSkin(skin: "default" | "topkek"): void {
+    this.palette = skin === "topkek" ? { ...TOPKEK_TIMELINE_PALETTE } : { ...DEFAULT_TIMELINE_PALETTE };
     this.redraw();
   }
 
@@ -275,7 +342,7 @@ export class LyricTimeline {
     const h = canvas.height;
 
     ctx.clearRect(0, 0, w, h);
-    ctx.fillStyle = COLOR_BG;
+    ctx.fillStyle = this.palette.bg;
     ctx.fillRect(0, 0, w, h);
 
     this.drawTimeAxis(ctx, w);
@@ -304,12 +371,12 @@ export class LyricTimeline {
     ctx.fillStyle = "rgba(12,15,24,0.8)";
     ctx.fillRect(GUTTER_W, 0, w - GUTTER_W, HEADER_H);
 
-    ctx.strokeStyle = COLOR_GRID;
+    ctx.strokeStyle = this.palette.grid;
     ctx.lineWidth = 1;
     ctx.font = '10px system-ui, sans-serif';
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
-    ctx.fillStyle = COLOR_TICK_LABEL;
+    ctx.fillStyle = this.palette.tickLabel;
 
     for (let t = firstTick; t <= this.scrollX + visibleDur + intervalSec; t += intervalSec) {
       const x = this.timeToX(t);
@@ -343,7 +410,7 @@ export class LyricTimeline {
         : this.timeToX(word.end_time);
       if (x < GUTTER_W || x > w) continue;
       const isVerse = !!word.verse_break;
-      ctx.strokeStyle = isVerse ? COLOR_VERSE_BREAK : COLOR_LINE_BREAK;
+      ctx.strokeStyle = isVerse ? this.palette.verseBreak : this.palette.lineBreak;
       ctx.lineWidth = isVerse ? 2 : 1;
       ctx.beginPath();
       ctx.moveTo(x, rowY);
@@ -352,7 +419,7 @@ export class LyricTimeline {
 
       // Znacznik: ¶ dla końca zwrotki, ↵ dla końca linijki
       ctx.font = isVerse ? 'bold 13px system-ui, sans-serif' : '11px system-ui, sans-serif';
-      ctx.fillStyle = isVerse ? COLOR_VERSE_MARKER : COLOR_BREAK_MARKER;
+      ctx.fillStyle = isVerse ? this.palette.verseMarker : this.palette.breakMarker;
       ctx.textAlign = "center";
       ctx.fillText(isVerse ? "¶" : "↵", x, rowY - 2);
       ctx.textAlign = "left";
@@ -380,12 +447,12 @@ export class LyricTimeline {
           const sx1 = this.timeToX(sugg[wordIdx]!.start_time);
           const sx2 = this.timeToX(sugg[wordIdx]!.end_time);
           const sbw = Math.max(2, sx2 - sx1);
-          ctx.fillStyle = COLOR_BLOCK_SUGG;
+          ctx.fillStyle = this.palette.blockSugg;
           ctx.fillRect(sx1, by, sbw, bh);
-          ctx.strokeStyle = COLOR_BLOCK_SUGG_BORDER;
+          ctx.strokeStyle = this.palette.blockSuggBorder;
           ctx.lineWidth = 1;
           ctx.strokeRect(sx1 + 0.5, by + 0.5, sbw - 1, bh - 1);
-          ctx.fillStyle = COLOR_WORD_TEXT_SUGG;
+          ctx.fillStyle = this.palette.wordTextSugg;
           ctx.save();
           ctx.rect(Math.max(GUTTER_W, sx1 + 2), by, sbw - 4, bh);
           ctx.clip();
@@ -394,8 +461,8 @@ export class LyricTimeline {
         }
 
         // Blok główny — naprzemienne kolory A/B w obrębie linijki
-        const blockColor = isSel ? COLOR_BLOCK_SEL : isActive ? COLOR_BLOCK_ACTIVE : isOdd ? COLOR_BLOCK_B : COLOR_BLOCK_A;
-        const borderColor = isSel ? COLOR_BLOCK_SEL_BORDER : isOdd ? COLOR_BLOCK_BORDER_B : COLOR_BLOCK_BORDER_A;
+        const blockColor = isSel ? this.palette.blockSel : isActive ? this.palette.blockActive : isOdd ? this.palette.blockB : this.palette.blockA;
+        const borderColor = isSel ? this.palette.blockSelBorder : isOdd ? this.palette.blockBorderB : this.palette.blockBorderA;
         ctx.fillStyle = blockColor;
         ctx.fillRect(x1, by, bw, bh);
         ctx.strokeStyle = borderColor;
@@ -404,7 +471,7 @@ export class LyricTimeline {
 
         // Tekst — naprzemienne kolory
         if (bw > 8) {
-          ctx.fillStyle = isSel ? COLOR_WORD_TEXT_SEL : isOdd ? COLOR_WORD_TEXT_B : COLOR_WORD_TEXT_A;
+          ctx.fillStyle = isSel ? this.palette.wordTextSel : isOdd ? this.palette.wordTextB : this.palette.wordTextA;
           ctx.save();
           ctx.rect(Math.max(GUTTER_W, x1 + 2), by, bw - 4, bh);
           ctx.clip();
@@ -431,7 +498,7 @@ export class LyricTimeline {
   private drawPlayhead(ctx: CanvasRenderingContext2D, h: number): void {
     const x = this.timeToX(this.playheadTime);
     if (x < GUTTER_W || x > this.canvas.width) return;
-    ctx.strokeStyle = COLOR_PLAYHEAD;
+    ctx.strokeStyle = this.palette.playhead;
     ctx.lineWidth = 1.5;
     ctx.beginPath();
     ctx.moveTo(x, HEADER_H);
@@ -446,9 +513,9 @@ export class LyricTimeline {
     const y = Math.min(startY, curY);
     const lw = Math.abs(curX - startX);
     const lh = Math.abs(curY - startY);
-    ctx.fillStyle = COLOR_LASSO_FILL;
+    ctx.fillStyle = this.palette.lassoFill;
     ctx.fillRect(x, y, lw, lh);
-    ctx.strokeStyle = COLOR_LASSO_STROKE;
+    ctx.strokeStyle = this.palette.lassoStroke;
     ctx.lineWidth = 1;
     ctx.setLineDash([4, 3]);
     ctx.strokeRect(x + 0.5, y + 0.5, lw - 1, lh - 1);
@@ -456,19 +523,19 @@ export class LyricTimeline {
   }
 
   private drawGutter(ctx: CanvasRenderingContext2D, h: number): void {
-    ctx.fillStyle = COLOR_GUTTER_BG;
+    ctx.fillStyle = this.palette.gutterBg;
     ctx.fillRect(0, 0, GUTTER_W, h);
 
     ctx.font = '10px system-ui, sans-serif';
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
-    ctx.fillStyle = COLOR_GUTTER_TEXT;
+    ctx.fillStyle = this.palette.gutterText;
 
     // Single-rail: jedna etykieta zamiast L1..LN.
     ctx.fillText("TXT", GUTTER_W / 2, this.lineRowY(0) + TRACK_H / 2);
 
     // Pionowy separator
-    ctx.strokeStyle = "rgba(40,60,80,0.8)";
+    ctx.strokeStyle = this.palette.gutterDivider;
     ctx.lineWidth = 1;
     ctx.beginPath();
     ctx.moveTo(GUTTER_W, 0);
