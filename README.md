@@ -4,6 +4,10 @@
 
 **Browser-native karaoke editor — sync lyrics to music, edit word-level timings, and export for Spotify & Apple Music**
 
+### [➡️ Try the live app on GitHub Pages](https://xcwajdax.github.io/lyricBlow/)
+
+> **No installation needed.** Open the link above and start using the app directly in your browser — no account, no sign-up, no backend.
+
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.8-blue?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![Vite](https://img.shields.io/badge/Vite-6-purple?logo=vite&logoColor=white)](https://vitejs.dev/)
