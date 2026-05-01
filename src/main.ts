@@ -24,6 +24,8 @@ interface BuiltinProject {
 
 type LandingLanguage = "pl" | "en";
 
+const AJKS_JSON_URL = new URL("../assets/ajks/ajkjsonnew.json", import.meta.url).href;
+
 const BUILTIN_PROJECTS: Record<string, BuiltinProject> = {
   sample_sonauto: {
     name: "Sample Sonauto",
@@ -33,6 +35,11 @@ const BUILTIN_PROJECTS: Record<string, BuiltinProject> = {
   aligned: {
     name: "Aligned (mock)",
     jsonUrl: "/fixtures/aligned.json",
+    audioUrl: undefined,
+  },
+  ajks: {
+    name: "AJKS",
+    jsonUrl: AJKS_JSON_URL,
     audioUrl: undefined,
   },
 };
