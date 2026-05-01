@@ -179,6 +179,27 @@ export class LyricTimeline {
     this.redraw();
   }
 
+  /** Ustaw widok na podany zakres czasu (synchronizacja z waveformem). */
+  setVisibleTimeRange(start: number, end: number): void {
+    const w = this.canvas.width;
+    const trackW = Math.max(1e-9, w - GUTTER_W);
+    const span = Math.max(0.01, end - start);
+    this.zoom = Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, trackW / span));
+    this.scrollX = Math.max(0, start);
+    this.redraw();
+  }
+
+  /** Pokaż cały utwór na osi czasu. */
+  fitAll(): void {
+    const duration = this.opts.getDuration();
+    if (duration <= 0 || !Number.isFinite(duration)) return;
+    const w = this.canvas.width;
+    const trackW = Math.max(1e-9, w - GUTTER_W);
+    this.zoom = Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, trackW / duration));
+    this.scrollX = 0;
+    this.redraw();
+  }
+
   /** Zakres czasu widoczny na osi (ścieżka po gutterze), do synchronizacji z innymi widżetami. */
   getVisibleTimeRange(): { start: number; end: number } {
     const w = this.canvas.width;

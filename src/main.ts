@@ -22,6 +22,8 @@ interface BuiltinProject {
   audioUrl?: string;
 }
 
+type LandingLanguage = "pl" | "en";
+
 const BUILTIN_PROJECTS: Record<string, BuiltinProject> = {
   sample_sonauto: {
     name: "Sample Sonauto",
@@ -114,11 +116,6 @@ function formatTimePrecise(s: number): string {
   return `${m.toString().padStart(2, "0")}:${sec.toString().padStart(2, "0")}.${ms.toString().padStart(3, "0")}`;
 }
 
-const projectPickerDateFmt = new Intl.DateTimeFormat("pl-PL", {
-  dateStyle: "short",
-  timeStyle: "short",
-});
-
 function formatBlobSize(bytes: number): string {
   if (bytes >= 1048576) return `${(bytes / 1048576).toFixed(1)} MB`;
   if (bytes >= 1024) return `${(bytes / 1024).toFixed(1)} KB`;
@@ -141,12 +138,17 @@ function countSectionLabels(words: AlignedWord[] | undefined): number {
 
 async function loadAlignment(url: string): Promise<AlignmentPayload> {
   const res = await fetch(url);
-  if (!res.ok) throw new Error(`Nie udało się wczytać ${url}: ${res.status}`);
+  if (!res.ok) throw new Error(`Failed to load ${url}: ${res.status}`);
   return parseAlignmentJson(await res.text());
 }
 
 function main(): void {
   const app = document.getElementById("app")!;
+  const landingDiv = document.getElementById("landing")!;
+  const landingStartBtn = document.getElementById("landing-start-app") as HTMLButtonElement;
+  const landingLiveTapBtn = document.getElementById("landing-jump-livetap") as HTMLButtonElement;
+  const landingLangPlBtn = document.getElementById("landing-lang-pl") as HTMLButtonElement;
+  const landingLangEnBtn = document.getElementById("landing-lang-en") as HTMLButtonElement;
   const projectsDiv = document.getElementById("projects")!;
   const hud = document.getElementById("hud")!;
   const modeLabel = document.getElementById("mode-label")!;
@@ -182,6 +184,7 @@ function main(): void {
   const btnLiveTap = document.getElementById("btn-livetap") as HTMLButtonElement;
   const volumeSlider = document.getElementById("volume-slider") as HTMLInputElement;
   const volumeLabel = document.getElementById("volume-label")!;
+  const appLangSelect = document.getElementById("app-lang") as HTMLSelectElement;
 
   /** Aktualnie wczytany projekt użytkownika (null dla wbudowanych lub gdy nic nie wczytane). */
   let currentUserProjectId: string | null = null;
@@ -638,7 +641,7 @@ function main(): void {
       await ctx2.close();
     }
 
-    modeLabel.textContent = "Wczytano: " + file.name;
+    modeLabel.textContent = `${t("modeLoaded")}: ${file.name}`;
   }
 
   // ── Load project audio (via fetch → blob → Audio element) ──────────
@@ -647,7 +650,7 @@ function main(): void {
     clearWaveformStorage();
 
     const res = await fetch(url);
-    if (!res.ok) throw new Error(`Nie udało się pobrać audio: ${res.status}`);
+      if (!res.ok) throw new Error(`Failed to fetch audio: ${res.status}`);
 
     const blob = await res.blob();
     const file = new File([blob], "audio.mp3", { type: blob.type });
@@ -677,6 +680,284 @@ function main(): void {
 
   // ── UI helpers ──────────────────────────────────────────────────────
   let editorHandle: { close(): boolean } | null = null;
+  const APP_LANG_KEY = "app-lang";
+
+  const landingCopy: Record<LandingLanguage, Record<string, string>> = {
+    pl: {
+      hero_title: "Lyric Visualizer - local-first",
+      hero_lead: "Narzędzie do synchronizacji i wizualizacji tekstu piosenek działające lokalnie na Twoim komputerze.",
+      privacy_callout:
+        "Prywatność: audio, tekst i timingi zostają lokalnie (IndexedDB + lokalne pliki). Aplikacja nie wysyła danych do chmury. Whisper działa wyłącznie na Twoim lokalnym serwerze, jeśli sam go uruchomisz.",
+      how_title: "Jak to działa",
+      how_1: "Tworzysz projekt i dodajesz audio oraz tekst/JSON.",
+      how_2: "Doprecyzowujesz czasy słów w edytorze lub timeline.",
+      how_3: "Tagujesz słowa na żywo w trybie Live TAP.",
+      how_4: "Eksportujesz gotowe napisy do JSON, LRC lub LRC+.",
+      livetap_title: "Dlaczego Live TAP?",
+      livetap_1: "Najszybsza metoda ustawiania timingów w rytmie utworu.",
+      livetap_2: "Używasz tylko klawiatury: Spacja, strzałki i P/K.",
+      livetap_3: "Idealny punkt startowy przed finalnym szlifem w timeline.",
+      cta_start: "Uruchom aplikację",
+      cta_livetap: "Pokaż jak uruchomić Live TAP",
+    },
+    en: {
+      hero_title: "Lyric Visualizer - local-first",
+      hero_lead: "A local tool for syncing and visualizing song lyrics directly on your computer.",
+      privacy_callout:
+        "Privacy: audio, lyrics and timings stay local (IndexedDB + local files). The app does not send your data to the cloud. Whisper is used only via your own local server when you run it.",
+      how_title: "How it works",
+      how_1: "Create a project and add your audio plus lyrics text/JSON.",
+      how_2: "Refine word timings in the timing editor or timeline.",
+      how_3: "Tag words in real time with Live TAP.",
+      how_4: "Export finished lyrics to JSON, LRC, or LRC+.",
+      livetap_title: "Why Live TAP?",
+      livetap_1: "The fastest way to build timings in song rhythm.",
+      livetap_2: "Keyboard-first flow: Space, arrows, and P/K.",
+      livetap_3: "Perfect first pass before final cleanup in timeline.",
+      cta_start: "Start app",
+      cta_livetap: "Show Live TAP quickstart",
+    },
+  };
+  let appLang: LandingLanguage = "pl";
+
+  const tr: Record<LandingLanguage, Record<string, string>> = {
+    pl: {
+      projectsTitle: "Wybierz projekt",
+      modeLoaded: "Wczytano",
+      modeLoading: "Ładowanie",
+      modeReady: "gotowe",
+      modeLoadAudio: "wczytaj audio",
+      modeError: "Błąd",
+      builtins: "Przykłady (wbudowane)",
+      yourProjects: "Twoje projekty",
+      noProjects: "Nie masz jeszcze zapisanych projektów — utwórz pierwszy poniżej.",
+      fixtureNoAudio: "bez domyślnego audio",
+      created: "Utworzono",
+      updated: "ostatnia edycja",
+      words: "słów",
+      sectionLabels: "etykiet sekcji",
+      delete: "Usuń",
+      deleteTitle: "Usuń projekt",
+      deleteConfirm: "Usunąć projekt \"{name}\"?",
+      newProject: "+ Nowy projekt",
+      npTitle: "Nowy projekt",
+      npNameLabel: "Nazwa projektu",
+      npNamePlaceholder: "np. Tiny Hands Tiny Plans",
+      npLyricsLabel: "Tekst piosenki:",
+      npTabJson: "Wgraj JSON",
+      npTabText: "Edytor tekstu",
+      npPickAudio: "Wybierz plik audio...",
+      npPickJson: "Wybierz plik JSON...",
+      npNoFile: "brak pliku",
+      npCancel: "Anuluj",
+      npSave: "Zapisz projekt",
+      edWordCol: "Słowo",
+      ltLegend:
+        "<kbd>Spacja</kbd> tap &middot; <kbd>⌫</kbd> cofnij ostatni tap &middot; <kbd>P</kbd>/<kbd>K</kbd> play/pause &middot; <kbd>←</kbd> -5s &middot; <kbd>Shift+←</kbd> -10s &middot; <kbd>→</kbd> +5s &middot; <kbd>1</kbd>/<kbd>2</kbd>/<kbd>3</kbd> tempo &middot; <kbd>Ctrl+S</kbd> zapisz &middot; <kbd>Esc</kbd> wyjście",
+      appLangLabel: "Język:",
+      btnBack: "← Projekty",
+      btnEditTiming: "Edytor czasów",
+      liveTapGuide:
+        "Szybki start Live TAP:\n1) Otwórz lub utwórz projekt.\n2) Kliknij 'LiveTap' na dolnym pasku.\n3) Podczas odtwarzania wciskaj Spację, aby tagować słowa.\n4) Zapisz przez Ctrl+S.",
+      npTextHint:
+        "<strong>Format wklejanego tekstu:</strong><ul style=\"margin: 4px 0 4px 18px; padding: 0;\"><li>każdy <strong>Enter</strong> = koniec wiersza (line break)</li><li>puste linie są ignorowane — używaj ich tylko do wizualnego grupowania</li><li><strong>nowa zwrotka</strong>: dodaj nagłówek w nawiasach kwadratowych — np. <code>[Zwrotka 1]</code>, <code>[Refren]</code>, <code>[Chorus]</code>, <code>[Bridge]</code>. Sama etykieta jest pomijana, ale wymusza początek nowej sekcji.</li><li>fallback: gdy w tekście nie ma w ogóle enterów, przecinek (<code>, </code>) traktowany jest jako koniec wiersza</li></ul>Po zapisaniu projektu czasy słów są <strong>automatycznie rozłożone równomiernie</strong> na całą długość audio. Doprecyzuj je później w Edytorze czasów lub w timeline.",
+      waveSync: "Sync",
+      waveAll: "Całość",
+      viewLabel: "Widok:",
+      viewMulti: "Wieloliniowy",
+      viewRail: "Jedna linia (środek)",
+      viewFull: "Cały tekst (zwrotki/refren)",
+    },
+    en: {
+      projectsTitle: "Choose project",
+      modeLoaded: "Loaded",
+      modeLoading: "Loading",
+      modeReady: "ready",
+      modeLoadAudio: "load audio",
+      modeError: "Error",
+      builtins: "Built-in examples",
+      yourProjects: "Your projects",
+      noProjects: "No saved projects yet — create your first one below.",
+      fixtureNoAudio: "no default audio",
+      created: "Created",
+      updated: "last edited",
+      words: "words",
+      sectionLabels: "section labels",
+      delete: "Delete",
+      deleteTitle: "Delete project",
+      deleteConfirm: "Delete project \"{name}\"?",
+      newProject: "+ New project",
+      npTitle: "New project",
+      npNameLabel: "Project name",
+      npNamePlaceholder: "e.g. Tiny Hands Tiny Plans",
+      npLyricsLabel: "Song lyrics:",
+      npTabJson: "Upload JSON",
+      npTabText: "Text editor",
+      npPickAudio: "Pick audio file...",
+      npPickJson: "Pick JSON file...",
+      npNoFile: "no file",
+      npCancel: "Cancel",
+      npSave: "Save project",
+      edWordCol: "Word",
+      ltLegend:
+        "<kbd>Space</kbd> tap &middot; <kbd>⌫</kbd> undo last tap &middot; <kbd>P</kbd>/<kbd>K</kbd> play/pause &middot; <kbd>←</kbd> -5s &middot; <kbd>Shift+←</kbd> -10s &middot; <kbd>→</kbd> +5s &middot; <kbd>1</kbd>/<kbd>2</kbd>/<kbd>3</kbd> speed &middot; <kbd>Ctrl+S</kbd> save &middot; <kbd>Esc</kbd> close",
+      appLangLabel: "Language:",
+      btnBack: "← Projects",
+      btnEditTiming: "Timing editor",
+      liveTapGuide:
+        "Live TAP quickstart:\n1) Open or create a project.\n2) Click 'LiveTap' in the bottom bar.\n3) Press Space while the track plays to tag words.\n4) Save with Ctrl+S.",
+      npTextHint:
+        "<strong>Pasted text format:</strong><ul style=\"margin: 4px 0 4px 18px; padding: 0;\"><li>each <strong>Enter</strong> = end of line (line break)</li><li>empty lines are ignored — use them only for visual grouping</li><li><strong>new verse</strong>: add a square-bracket header, e.g. <code>[Verse 1]</code>, <code>[Chorus]</code>, <code>[Bridge]</code>. The label itself is skipped, but it starts a new section.</li><li>fallback: if there are no line breaks, comma (<code>, </code>) is treated as line end</li></ul>After saving, word timings are <strong>distributed evenly</strong> across full audio duration. Refine them later in Timing Editor or timeline.",
+      waveSync: "Sync",
+      waveAll: "Full",
+      viewLabel: "View:",
+      viewMulti: "Multiline",
+      viewRail: "Single line (center)",
+      viewFull: "Full text (verses/chorus)",
+    },
+  };
+
+  function t(key: string, vars?: Record<string, string>): string {
+    let s = tr[appLang][key] ?? key;
+    if (vars) {
+      for (const [k, v] of Object.entries(vars)) s = s.replace(`{${k}}`, v);
+    }
+    return s;
+  }
+
+  function applyLanguage(lang: LandingLanguage): void {
+    appLang = lang;
+    localStorage.setItem(APP_LANG_KEY, lang);
+    document.documentElement.lang = lang;
+    landingLangPlBtn.classList.toggle("active", lang === "pl");
+    landingLangEnBtn.classList.toggle("active", lang === "en");
+    appLangSelect.value = lang;
+    const dict = landingCopy[lang];
+    const i18nNodes = landingDiv.querySelectorAll<HTMLElement>("[data-i18n]");
+    i18nNodes.forEach((node) => {
+      const key = node.dataset.i18n;
+      if (!key) return;
+      const value = dict[key];
+      if (value) node.textContent = value;
+    });
+    const byId = (id: string): HTMLElement | null => document.getElementById(id);
+    const setText = (id: string, value: string): void => { const el = byId(id); if (el) el.textContent = value; };
+    setText("projects-title", t("projectsTitle"));
+    setText("np-title", t("npTitle"));
+    setText("np-name-label", t("npNameLabel"));
+    setText("np-lyrics-label", t("npLyricsLabel"));
+    setText("np-tab-json", t("npTabJson"));
+    setText("np-tab-text", t("npTabText"));
+    setText("np-pick-audio", t("npPickAudio"));
+    setText("np-pick-json", t("npPickJson"));
+    setText("np-cancel", t("npCancel"));
+    setText("np-save", t("npSave"));
+    setText("app-lang-label", t("appLangLabel"));
+    setText("btn-back", t("btnBack"));
+    setText("btn-edit-timing", t("btnEditTiming"));
+    setText("btn-waveform-sync", t("waveSync"));
+    setText("btn-waveform-zoom-all", t("waveAll"));
+    setText("ed-add", appLang === "en" ? "+ Word" : "+ Słowo");
+    setText("ed-sort", appLang === "en" ? "Sort" : "Sortuj");
+    setText("ed-autofill", appLang === "en" ? "Distribute evenly" : "Rozłóż równomiernie");
+    setText("ed-toggle-label", appLang === "en" ? "🏷 Label" : "🏷 Etykieta");
+    setText("ed-mark-line", appLang === "en" ? "↵ Line" : "↵ Linijka");
+    setText("ed-mark-verse", appLang === "en" ? "¶ Verse" : "¶ Zwrotka");
+    setText("ed-clear-breaks", appLang === "en" ? "Clear breaks" : "Wyczyść granice");
+    setText("ed-toggle-raw", "{ } RAW");
+    setText("ed-download", "JSON");
+    setText("ed-export-lrc", "LRC");
+    setText("ed-export-lrc-plus", "LRC+");
+    setText("ed-save", appLang === "en" ? "Save" : "Zapisz");
+    setText("ed-close", appLang === "en" ? "Close" : "Zamknij");
+    setText("ed-whisper", "Whisper ✦");
+    setText("ed-accept-all", appLang === "en" ? "Accept all" : "Przyjmij wszystko");
+    setText("ed-reject-all", appLang === "en" ? "Reject" : "Odrzuć");
+    setText("btn-play", "▶");
+    setText("btn-pause", "⏸");
+    setText("btn-stop", "⏹");
+    setText("hud-pick-audio", appLang === "en" ? "Audio..." : "Audio...");
+    setText("hud-pick-json", "JSON...");
+    setText("btn-livetap", "⏱ LiveTap");
+    setText("btn-viz-settings", "Aa");
+    setText("lt-rew10", appLang === "en" ? "⟲ -10s" : "⟲ -10s");
+    setText("lt-rew5", appLang === "en" ? "⟲ -5s" : "⟲ -5s");
+    setText("lt-play", appLang === "en" ? "▶ / ⏸" : "▶ / ⏸");
+    setText("lt-fwd5", appLang === "en" ? "⟳ +5s" : "⟳ +5s");
+    setText("lt-save", appLang === "en" ? "💾 Save" : "💾 Zapisz");
+    setText("lt-close", appLang === "en" ? "✕ Close" : "✕ Zamknij");
+    setText("lt-play-under", appLang === "en" ? "▶ / ⏸" : "▶ / ⏸");
+    setText("btn-vs-reset", appLang === "en" ? "Reset defaults" : "Przywróć domyślne");
+    const npNameInput = document.getElementById("np-name") as HTMLInputElement | null;
+    if (npNameInput) npNameInput.placeholder = t("npNamePlaceholder");
+    const ltLegend = byId("lt-legend");
+    if (ltLegend) ltLegend.innerHTML = t("ltLegend");
+    const ltOffsetLabel = byId("lt-offset-label-text");
+    if (ltOffsetLabel) ltOffsetLabel.textContent = appLang === "en" ? "Offset:" : "Offset:";
+    const wordHeader = document.querySelector("#editor-modal thead th:nth-child(2)");
+    if (wordHeader) wordHeader.textContent = t("edWordCol");
+    const actionsHeader = document.querySelector("#editor-modal thead th:nth-child(5)");
+    if (actionsHeader) actionsHeader.textContent = appLang === "en" ? "Actions" : "Akcje";
+    const setTitle = (id: string, value: string): void => {
+      const el = byId(id);
+      if (el) el.setAttribute("title", value);
+    };
+    setTitle("btn-waveform-sync", appLang === "en" ? "Sync waveform with text timeline" : "Zsynchronizuj widok fali z timeline tekstu");
+    setTitle("btn-waveform-zoom-all", appLang === "en" ? "Show full track" : "Pokaż cały utwór");
+    setTitle("waveform-loop-clear", appLang === "en" ? "Clear loop" : "Wyczyść loop");
+    setTitle("btn-livetap", appLang === "en" ? "LiveTap mode - tag words with Space during playback" : "Tryb LiveTap — taguj słowa Spacją w trakcie odtwarzania");
+    setTitle("btn-viz-settings", appLang === "en" ? "Visualizer settings (font, colors)" : "Ustawienia wizualizatora (czcionka, kolory)");
+    setTitle("lt-rew10", appLang === "en" ? "Rewind 10 s (Shift+←)" : "Cofnij 10 s (Shift+←)");
+    setTitle("lt-rew5", appLang === "en" ? "Rewind 5 s (←)" : "Cofnij 5 s (←)");
+    setTitle("lt-fwd5", appLang === "en" ? "Forward 5 s (→)" : "Do przodu 5 s (→)");
+    setTitle("lt-save", appLang === "en" ? "Save state (Ctrl+S)" : "Zapisz stan (Ctrl+S)");
+    setTitle("lt-close", appLang === "en" ? "Close (Esc)" : "Zamknij (Esc)");
+    setTitle("lt-offset-label", appLang === "en" ? "Reaction-time compensation - subtracted from audio.currentTime on each tap" : "Kompensacja czasu reakcji — odejmowana od audio.currentTime przy każdym tapie");
+    setTitle("ed-add", appLang === "en" ? "Add new word at end" : "Dodaj nowe słowo na końcu");
+    setTitle("ed-sort", appLang === "en" ? "Sort by start_time" : "Posortuj wg start_time");
+    setTitle("ed-autofill", appLang === "en" ? "Distribute words across full track duration" : "Rozłóż słowa równomiernie na całą długość utworu");
+    setTitle("ed-toggle-label", appLang === "en" ? "Promote selected words to label (Chorus / vocalist / etc.)" : "Promuj zaznaczone słowa do etykiety (Refren / imię wokalisty / itp.)");
+    setTitle("ed-mark-line", appLang === "en" ? "Mark line end on last selected word" : "Oznacz koniec linijki na ostatnim słowie selekcji");
+    setTitle("ed-mark-verse", appLang === "en" ? "Mark verse end on last selected word" : "Oznacz koniec zwrotki na ostatnim słowie selekcji");
+    setTitle("ed-clear-breaks", appLang === "en" ? "Clear line/verse breaks from selected words" : "Usuń granice linii/zwrotki z zaznaczonych słów");
+    setTitle("ed-toggle-raw", appLang === "en" ? "Show/hide RAW JSON preview" : "Pokaż/ukryj podgląd RAW JSON");
+    setTitle("ed-download", appLang === "en" ? "Download JSON" : "Pobierz JSON");
+    setTitle("ed-export-lrc", appLang === "en" ? "Export as LRC (lines)" : "Eksportuj jako LRC (linie)");
+    setTitle("ed-export-lrc-plus", appLang === "en" ? "Export as enhanced LRC (words)" : "Eksportuj jako enhanced LRC (słowa)");
+    setTitle("ed-whisper-url", appLang === "en" ? "Whisper server URL" : "URL serwera Whisper");
+    const projectsH = byId("projects-title");
+    if (projectsH) projectsH.textContent = t("projectsTitle");
+    const editorH2 = document.querySelector("#editor-modal h2");
+    if (editorH2) editorH2.textContent = appLang === "en" ? "Word Timing Editor" : "Edytor czasów słów";
+    const modalH2 = byId("np-title");
+    if (modalH2) modalH2.textContent = appLang === "en" ? "New project" : "Nowy projekt";
+    const hint = byId("np-text-hint");
+    if (hint) hint.innerHTML = t("npTextHint");
+    const viewLabel = vizModeSelect.previousElementSibling as HTMLElement | null;
+    if (viewLabel) viewLabel.textContent = t("viewLabel");
+    const opts = vizModeSelect.options;
+    if (opts.length >= 3) {
+      opts[0].text = t("viewMulti");
+      opts[1].text = t("viewRail");
+      opts[2].text = t("viewFull");
+    }
+  }
+
+  function showLanding(): void {
+    landingDiv.classList.add("visible");
+    projectsDiv.classList.remove("visible");
+    hud.classList.add("hidden");
+    miniVisualizer.classList.remove("active");
+    hideTimeline();
+    viz.setBottomMargin(0);
+  }
+
+  function showProjectPicker(): void {
+    landingDiv.classList.remove("visible");
+    projectsDiv.classList.add("visible");
+    hud.classList.add("hidden");
+    miniVisualizer.classList.remove("active");
+  }
 
   function showProjects(): void {
     if (editorHandle && !editorHandle.close()) return;
@@ -685,9 +966,7 @@ function main(): void {
     alignment = null;
     currentUserProjectId = null;
     currentProjectName = "aligned";
-    projectsDiv.classList.add("visible");
-    hud.classList.add("hidden");
-    miniVisualizer.classList.remove("active");
+    showProjectPicker();
     hideTimeline();
     viz.setBottomMargin(0);
     if (audio) { audio.pause(); }
@@ -696,6 +975,7 @@ function main(): void {
   }
 
   function showHud(): void {
+    landingDiv.classList.remove("visible");
     projectsDiv.classList.remove("visible");
     hud.classList.remove("hidden");
     miniVisualizer.classList.add("active");
@@ -764,9 +1044,13 @@ function main(): void {
   }
 
   async function renderProjectPicker(): Promise<void> {
+    const projectPickerDateFmt = new Intl.DateTimeFormat(appLang === "pl" ? "pl-PL" : "en-US", {
+      dateStyle: "short",
+      timeStyle: "short",
+    });
     projectsList.innerHTML = "";
 
-    appendProjectsSectionTitle("Przykłady (wbudowane)");
+    appendProjectsSectionTitle(t("builtins"));
     for (const [id, p] of Object.entries(BUILTIN_PROJECTS)) {
       const row = document.createElement("div");
       row.className = "project-row project-row-builtin";
@@ -782,24 +1066,24 @@ function main(): void {
       subEl.className = "project-card-line project-card-line-sub";
       subEl.textContent = p.audioUrl
         ? `Fixture · ${p.jsonUrl}`
-        : `Fixture · ${p.jsonUrl} · bez domyślnego audio`;
+        : `Fixture · ${p.jsonUrl} · ${t("fixtureNoAudio")}`;
       openBtn.appendChild(subEl);
       openBtn.addEventListener("click", () => void loadBuiltinProject(id));
       row.appendChild(openBtn);
       projectsList.appendChild(row);
     }
 
-    appendProjectsSectionTitle("Twoje projekty");
+    appendProjectsSectionTitle(t("yourProjects"));
     let userProjects: UserProject[] = [];
     try {
       userProjects = await listProjects();
     } catch (e) {
-      console.warn("Nie udało się wczytać projektów użytkownika:", e);
+      console.warn("Could not load user projects:", e);
     }
     if (userProjects.length === 0) {
       const empty = document.createElement("p");
       empty.className = "projects-empty-hint";
-      empty.textContent = "Nie masz jeszcze zapisanych projektów — utwórz pierwszy poniżej.";
+      empty.textContent = t("noProjects");
       projectsList.appendChild(empty);
     }
     for (const p of userProjects) {
@@ -825,10 +1109,10 @@ function main(): void {
       chip.textContent = p.lyricsKind === "json" ? "JSON" : "Tekst";
       lineChips.appendChild(chip);
       const wordsN = userProjectWordCount(p);
-      lineChips.appendChild(document.createTextNode(` ${wordsN} słów`));
+      lineChips.appendChild(document.createTextNode(` ${wordsN} ${t("words")}`));
       const labelN = countSectionLabels(p.alignedLyrics);
       if (labelN > 0) {
-        lineChips.appendChild(document.createTextNode(` · ${labelN} etykiet sekcji`));
+        lineChips.appendChild(document.createTextNode(` · ${labelN} ${t("sectionLabels")}`));
       }
       metaWrap.appendChild(lineChips);
 
@@ -846,10 +1130,10 @@ function main(): void {
       lineDates.className = "project-card-line project-card-line-dates";
       const updatedPart =
         p.updatedAt != null
-          ? ` · ostatnia edycja: ${projectPickerDateFmt.format(new Date(p.updatedAt))}`
-          : " · ostatnia edycja: —";
+          ? ` · ${t("updated")}: ${projectPickerDateFmt.format(new Date(p.updatedAt))}`
+          : ` · ${t("updated")}: —`;
       lineDates.textContent =
-        `Utworzono: ${projectPickerDateFmt.format(new Date(p.createdAt))}` + updatedPart;
+        `${t("created")}: ${projectPickerDateFmt.format(new Date(p.createdAt))}` + updatedPart;
       metaWrap.appendChild(lineDates);
 
       openBtn.appendChild(metaWrap);
@@ -859,11 +1143,11 @@ function main(): void {
       const del = document.createElement("button");
       del.className = "project-delete";
       del.type = "button";
-      del.title = "Usuń projekt";
-      del.textContent = "Usuń";
+      del.title = t("deleteTitle");
+      del.textContent = t("delete");
       del.addEventListener("click", async (ev) => {
         ev.stopPropagation();
-        if (!confirm(`Usunąć projekt „${p.name}"?`)) return;
+        if (!confirm(t("deleteConfirm", { name: p.name }))) return;
         await deleteProject(p.id);
         void renderProjectPicker();
       });
@@ -877,19 +1161,31 @@ function main(): void {
     const newBtn = document.createElement("button");
     newBtn.className = "project-card-new";
     newBtn.type = "button";
-    newBtn.textContent = "+ Nowy projekt";
+    newBtn.textContent = t("newProject");
     newBtn.addEventListener("click", openProjectModal);
     newRow.appendChild(newBtn);
     projectsList.appendChild(newRow);
   }
 
   btnBack.addEventListener("click", showProjects);
+  landingStartBtn.addEventListener("click", showProjectPicker);
+  landingLangPlBtn.addEventListener("click", () => applyLanguage("pl"));
+  landingLangEnBtn.addEventListener("click", () => applyLanguage("en"));
+  appLangSelect.addEventListener("change", () => {
+    applyLanguage(appLangSelect.value === "en" ? "en" : "pl");
+    void renderProjectPicker();
+  });
+  landingLiveTapBtn.addEventListener("click", () => {
+    showProjectPicker();
+    alert(t("liveTapGuide"));
+  });
 
   btnEditTiming.addEventListener("click", () => {
     if (!alignment) return;
     editorHandle = openTimingEditor({
       initialWords: alignment.aligned_lyrics,
       projectName: currentProjectName,
+      language: appLang,
       getCurrentTime: () => audio?.currentTime ?? 0,
       getDuration: () => audio?.duration ?? 0,
       seekTo: (t) => {
@@ -923,6 +1219,7 @@ function main(): void {
     resumeAudioIfNeeded();
     liveTap = openLiveTap({
       initialWords: alignment.aligned_lyrics,
+      language: appLang,
       getCurrentTime: () => audio?.currentTime ?? 0,
       getDuration: () => audio?.duration ?? 0,
       seekTo: (t) => {
@@ -1001,10 +1298,10 @@ function main(): void {
       const text = await f.text();
       alignment = parseAlignmentJson(text);
       setLyrics(alignment.aligned_lyrics);
-      modeLabel.textContent = `Wczytano: ${f.name} (${alignment.aligned_lyrics.length} słów)`;
+      modeLabel.textContent = `${t("modeLoaded")}: ${f.name} (${alignment.aligned_lyrics.length} ${t("words")})`;
       startLoop();
     } catch (e) {
-      modeLabel.textContent = `Błąd JSON: ${e}`;
+      modeLabel.textContent = `${t("modeError")} JSON: ${e}`;
     }
   });
 
@@ -1160,11 +1457,7 @@ function main(): void {
 
   btnWaveformSync.addEventListener("click", () => {
     if (!waveformAudioBuffer) return;
-    const { start, end } = timeline.getVisibleTimeRange();
-    waveformViewStart = start;
-    waveformViewEnd = end;
-    clampWaveformView();
-    void redrawStaticWaveform();
+    timeline.setVisibleTimeRange(waveformViewStart, waveformViewEnd);
   });
 
   btnWaveformZoomAll.addEventListener("click", () => {
@@ -1174,6 +1467,7 @@ function main(): void {
     waveformViewStart = 0;
     waveformViewEnd = d;
     void redrawStaticWaveform();
+    timeline.fitAll();
   });
 
   // ── Whisper ─────────────────────────────────────────────────────────
@@ -1197,7 +1491,8 @@ function main(): void {
 
     const setStatus = (msg: string): void => {
       whisperStatusEl.textContent = msg;
-      whisperBar.style.width = msg.includes("Parsow") ? "90%" : msg.includes("Wysyła") ? "30%" : "60%";
+      const lower = msg.toLowerCase();
+      whisperBar.style.width = lower.includes("pars") ? "90%" : lower.includes("upload") || lower.includes("wysy") ? "30%" : "60%";
     };
 
     try {
@@ -1205,17 +1500,17 @@ function main(): void {
       let audioBlob: Blob;
       if (currentUserProjectId) {
         const proj = await getProject(currentUserProjectId);
-        if (!proj?.audioBlob) throw new Error("Brak audio w projekcie");
+        if (!proj?.audioBlob) throw new Error(appLang === "en" ? "No audio in project" : "Brak audio w projekcie");
         audioBlob = proj.audioBlob;
       } else if (audio.src.startsWith("blob:")) {
         const resp = await fetch(audio.src);
         audioBlob = await resp.blob();
       } else {
-        throw new Error("Brak dostępnego pliku audio");
+        throw new Error(appLang === "en" ? "No available audio file" : "Brak dostępnego pliku audio");
       }
 
-      const whisperWords = await transcribeWithWhisper(audioBlob, serverUrl, setStatus);
-      setStatus(`Wyrównywanie ${whisperWords.length} słów...`);
+      const whisperWords = await transcribeWithWhisper(audioBlob, serverUrl, setStatus, appLang);
+      setStatus(appLang === "en" ? `Aligning ${whisperWords.length} words...` : `Wyrównywanie ${whisperWords.length} słów...`);
       whisperBar.style.width = "80%";
 
       const suggestions = alignWhisperToLyrics(alignment.aligned_lyrics, whisperWords);
@@ -1223,9 +1518,9 @@ function main(): void {
 
       timeline.setSuggestions(suggestions);
       editorSuggestionsRef.apply?.(suggestions);
-      whisperStatusEl.textContent = `${whisperWords.length} słów Whisper`;
+      whisperStatusEl.textContent = appLang === "en" ? `${whisperWords.length} Whisper words` : `${whisperWords.length} słów Whisper`;
     } catch (e) {
-      whisperStatusEl.textContent = `Błąd: ${e instanceof Error ? e.message : String(e)}`;
+      whisperStatusEl.textContent = `${t("modeError")}: ${e instanceof Error ? e.message : String(e)}`;
       whisperStatusEl.style.color = "#ff8888";
     } finally {
       setTimeout(() => { whisperBarWrap.classList.remove("visible"); whisperBar.style.width = "0%"; }, 1500);
@@ -1252,7 +1547,7 @@ function main(): void {
     currentUserProjectId = null;
     currentProjectName = projectId;
     showHud();
-    modeLabel.textContent = `Ładowanie: ${project.name}...`;
+    modeLabel.textContent = `${t("modeLoading")}: ${project.name}...`;
 
     try {
       alignment = await loadAlignment(project.jsonUrl);
@@ -1260,14 +1555,14 @@ function main(): void {
 
       if (project.audioUrl) {
         await loadProjectAudio(project.audioUrl);
-        modeLabel.textContent = `${project.name} - gotowe`;
+        modeLabel.textContent = `${project.name} - ${t("modeReady")}`;
       } else {
-        modeLabel.textContent = `${project.name} - wczytaj audio`;
+        modeLabel.textContent = `${project.name} - ${t("modeLoadAudio")}`;
       }
 
       startLoop();
     } catch (e) {
-      modeLabel.textContent = `Błąd: ${e}`;
+      modeLabel.textContent = `${t("modeError")}: ${e}`;
     }
   }
 
@@ -1306,11 +1601,13 @@ function main(): void {
     currentUserProjectId = p.id;
     currentProjectName = p.name;
     showHud();
-    modeLabel.textContent = `Ładowanie: ${p.name}...`;
+    modeLabel.textContent = `${t("modeLoading")}: ${p.name}...`;
 
     try {
       if (!p.audioBlob) {
-        modeLabel.textContent = `Brak pliku audio w projekcie (${p.audioFileName})`;
+        modeLabel.textContent = appLang === "en"
+          ? `No audio file in project (${p.audioFileName})`
+          : `Brak pliku audio w projekcie (${p.audioFileName})`;
         return;
       }
       const file = new File([p.audioBlob], p.audioFileName, { type: p.audioBlob.type });
@@ -1356,12 +1653,12 @@ function main(): void {
       setLyrics(words);
 
       const noteUnaligned = p.lyricsKind === "text" && allZero && dur === 0
-        ? " (tekst bez timingów — wczytaj audio)"
+        ? (appLang === "en" ? " (text without timings - load audio)" : " (tekst bez timingów - wczytaj audio)")
         : "";
-      modeLabel.textContent = `${p.name} - gotowe${noteUnaligned}`;
+      modeLabel.textContent = `${p.name} - ${t("modeReady")}${noteUnaligned}`;
       startLoop();
     } catch (e) {
-      modeLabel.textContent = `Błąd: ${e}`;
+      modeLabel.textContent = `${t("modeError")}: ${e}`;
     }
   }
 
@@ -1397,10 +1694,10 @@ function main(): void {
     npName.value = "";
     npText.value = "";
     npJsonFile.value = "";
-    npJsonName.textContent = "brak pliku";
+    npJsonName.textContent = t("npNoFile");
     npJsonStatus.textContent = "";
     npError.textContent = "";
-    npAudioStatus.textContent = "brak pliku";
+    npAudioStatus.textContent = t("npNoFile");
     draftAudio = null;
     draftLyrics = { kind: "none" };
     setTab("json");
@@ -1426,7 +1723,7 @@ function main(): void {
       npAudioStatus.textContent = `${file.name} (${(file.size / 1024 / 1024).toFixed(1)} MB)`;
       refreshSaveEnabled();
     } catch (e) {
-      npError.textContent = `Błąd wyboru pliku: ${e}`;
+      npError.textContent = `${t("modeError")}: ${e}`;
     }
   });
 
@@ -1437,7 +1734,7 @@ function main(): void {
     const f = npJsonFile.files?.[0];
     if (!f) {
       draftLyrics = { kind: "none" };
-      npJsonName.textContent = "brak pliku";
+      npJsonName.textContent = t("npNoFile");
       npJsonStatus.textContent = "";
       refreshSaveEnabled();
       return;
@@ -1447,11 +1744,11 @@ function main(): void {
       const text = await f.text();
       const parsed = parseAlignmentJson(text);
       draftLyrics = { kind: "json", words: parsed.aligned_lyrics };
-      npJsonStatus.textContent = `${parsed.aligned_lyrics.length} słów`;
+      npJsonStatus.textContent = `${parsed.aligned_lyrics.length} ${t("words")}`;
     } catch (e) {
       draftLyrics = { kind: "none" };
       npJsonStatus.textContent = "";
-      npError.textContent = `Błąd JSON: ${e instanceof Error ? e.message : String(e)}`;
+      npError.textContent = `${t("modeError")} JSON: ${e instanceof Error ? e.message : String(e)}`;
     }
     refreshSaveEnabled();
   });
@@ -1481,11 +1778,14 @@ function main(): void {
       closeProjectModal();
       await renderProjectPicker();
     } catch (e) {
-      npError.textContent = `Nie udało się zapisać: ${e instanceof Error ? e.message : String(e)}`;
+      npError.textContent = `${t("modeError")}: ${e instanceof Error ? e.message : String(e)}`;
     }
   });
 
   // ── Bootstrap ───────────────────────────────────────────────────────
+  const storedLang = localStorage.getItem(APP_LANG_KEY);
+  applyLanguage(storedLang === "en" ? "en" : "pl");
+  showLanding();
   void renderProjectPicker();
 }
 

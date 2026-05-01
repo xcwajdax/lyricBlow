@@ -11,6 +11,7 @@ export type LiveTapOptions = {
   setPlaybackRate: (rate: number) => void;
   onLiveUpdate: (words: AlignedWord[]) => void;
   onSave: (words: AlignedWord[]) => void | Promise<void>;
+  language?: "pl" | "en";
 };
 
 export type LiveTapHandle = {
@@ -60,6 +61,8 @@ function nextTappable(words: AlignedWord[], from: number): number {
 }
 
 export function openLiveTap(opts: LiveTapOptions): LiveTapHandle {
+  const isEn = opts.language === "en";
+  const tr = (pl: string, en: string): string => (isEn ? en : pl);
   const root = document.getElementById("livetap-modal") as HTMLDivElement | null;
   const railEl = document.getElementById("lt-rail") as HTMLDivElement | null;
   const rateSel = document.getElementById("lt-rate") as HTMLSelectElement | null;
@@ -152,14 +155,14 @@ export function openLiveTap(opts: LiveTapOptions): LiveTapHandle {
 
   function tap(): void {
     if (cursor < 0 || cursor >= words.length) {
-      setStatus("Gotowe — wszystkie słowa zaznaczone", "#80ffa0");
+      setStatus(tr("Gotowe — wszystkie słowa zaznaczone", "Done - all words tagged"), "#80ffa0");
       return;
     }
     const w = words[cursor];
     if (!isTappable(w)) {
       const next = nextTappable(words, cursor);
       if (next < 0) {
-        setStatus("Gotowe — wszystkie słowa zaznaczone", "#80ffa0");
+        setStatus(tr("Gotowe — wszystkie słowa zaznaczone", "Done - all words tagged"), "#80ffa0");
         return;
       }
       cursor = next;
@@ -186,10 +189,10 @@ export function openLiveTap(opts: LiveTapOptions): LiveTapHandle {
     const next = nextTappable(words, cursor);
     if (next < 0) {
       cursor = words.length;
-      setStatus("Gotowe — wszystkie słowa zaznaczone", "#80ffa0");
+      setStatus(tr("Gotowe — wszystkie słowa zaznaczone", "Done - all words tagged"), "#80ffa0");
     } else {
       cursor = next;
-      setStatus(`Słowo ${cursor + 1} / ${words.length}`);
+      setStatus(isEn ? `Word ${cursor + 1} / ${words.length}` : `Słowo ${cursor + 1} / ${words.length}`);
     }
     emit();
     renderRail();
@@ -198,7 +201,7 @@ export function openLiveTap(opts: LiveTapOptions): LiveTapHandle {
   function undoTap(): void {
     const snap = history.pop();
     if (!snap) {
-      setStatus("Brak czego cofać", "#ffc080");
+      setStatus(tr("Brak czego cofać", "Nothing to undo"), "#ffc080");
       return;
     }
     const w = words[snap.idx];
@@ -208,7 +211,7 @@ export function openLiveTap(opts: LiveTapOptions): LiveTapHandle {
       words[snap.prevPrevIdx].end_time = snap.prevPrevEnd;
     }
     cursor = snap.cursorBefore;
-    setStatus(`Cofnięto — słowo ${cursor + 1}`, "#9ec5ff");
+    setStatus(isEn ? `Undone - word ${cursor + 1}` : `Cofnięto - słowo ${cursor + 1}`, "#9ec5ff");
     emit();
     renderRail();
   }
@@ -281,12 +284,12 @@ export function openLiveTap(opts: LiveTapOptions): LiveTapHandle {
   btnPlayUnder.onclick = () => togglePlay();
   btnSave.onclick = async () => {
     btnSave!.disabled = true;
-    setStatus("Zapisuję…", "#9ec5ff");
+    setStatus(tr("Zapisuję...", "Saving..."), "#9ec5ff");
     try {
       await opts.onSave(words);
       setStatus("Zapisano ✓", "#80ffa0");
     } catch (e) {
-      setStatus(`Błąd zapisu: ${e}`, "#ff8080");
+      setStatus(isEn ? `Save error: ${e}` : `Błąd zapisu: ${e}`, "#ff8080");
     } finally {
       btnSave!.disabled = false;
     }
@@ -295,7 +298,12 @@ export function openLiveTap(opts: LiveTapOptions): LiveTapHandle {
 
   document.addEventListener("keydown", onKey, true);
   root.classList.add("visible");
-  setStatus(words.length > 0 ? `Słowo ${cursor + 1} / ${words.length}` : "Brak słów do otagowania", words.length > 0 ? "#9ec5ff" : "#ffc080");
+  setStatus(
+    words.length > 0
+      ? (isEn ? `Word ${cursor + 1} / ${words.length}` : `Słowo ${cursor + 1} / ${words.length}`)
+      : tr("Brak słów do otagowania", "No words to tag"),
+    words.length > 0 ? "#9ec5ff" : "#ffc080",
+  );
   renderRail();
   tick();
 

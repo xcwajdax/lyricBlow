@@ -28,6 +28,7 @@ export type EditorOptions = {
    * Mutowalny ref przez który zewnętrzny kod może wstrzyknąć sugestie Whisper.
    */
   suggestionsRef?: { apply: ((s: AlignedWord[] | null) => void) | null };
+  language?: "pl" | "en";
 };
 
 export function alignedLyricsToJson(words: AlignedWord[]): string {
@@ -56,6 +57,8 @@ function fmtNum(n: number): string {
 }
 
 export function openTimingEditor(opts: EditorOptions): { close(): boolean } {
+  const isEn = opts.language === "en";
+  const t = (pl: string, en: string): string => (isEn ? en : pl);
   const root = document.getElementById("editor-modal");
   const tableBody = document.getElementById("ed-tbody") as HTMLTableSectionElement;
   const btnClose = document.getElementById("ed-close") as HTMLButtonElement;
@@ -127,7 +130,7 @@ export function openTimingEditor(opts: EditorOptions): { close(): boolean } {
     selectionAnchor = null;
     if (activeRow >= words.length) activeRow = Math.max(0, words.length - 1);
     dirty = true;
-    status.textContent = "Cofnięto / przywrócono";
+    status.textContent = t("Cofnięto / przywrócono", "Undone / redone");
     status.style.color = "#9ec5ff";
     opts.onLiveUpdate(cloneWords());
     render();
@@ -174,7 +177,7 @@ export function openTimingEditor(opts: EditorOptions): { close(): boolean } {
 
   function setDirty(): void {
     dirty = true;
-    status.textContent = "Niezapisane zmiany";
+    status.textContent = t("Niezapisane zmiany", "Unsaved changes");
     status.style.color = "#ffc080";
     opts.onLiveUpdate(words.map((w) => ({ ...w })));
     refreshRawJson();
@@ -183,7 +186,7 @@ export function openTimingEditor(opts: EditorOptions): { close(): boolean } {
   function applySuggestions(s: AlignedWord[] | null): void {
     suggestions = s;
     if (s) {
-      whisperStatus.textContent = `${s.length} sugestii gotowych`;
+      whisperStatus.textContent = isEn ? `${s.length} suggestions ready` : `${s.length} sugestii gotowych`;
       btnAcceptAll.style.display = "";
       btnRejectAll.style.display = "";
     } else {
@@ -251,8 +254,9 @@ export function openTimingEditor(opts: EditorOptions): { close(): boolean } {
       chevron.textContent = collapsed ? "▶" : "▼";
       const title = document.createElement("span");
       title.className = "ed-verse-title";
-      title.textContent =
-        verseRanges.length === 1 ? `Zwrotka 1 · ${nWords} słów` : `Zwrotka ${v + 1} · ${nWords} słów`;
+      title.textContent = isEn
+        ? `Verse ${v + 1} · ${nWords} words`
+        : (verseRanges.length === 1 ? `Zwrotka 1 · ${nWords} słów` : `Zwrotka ${v + 1} · ${nWords} słów`);
       const preview = document.createElement("span");
       preview.className = "ed-verse-preview";
       preview.textContent = versePreview(start, end);
@@ -352,7 +356,7 @@ export function openTimingEditor(opts: EditorOptions): { close(): boolean } {
         const setBtn = document.createElement("button");
         setBtn.type = "button";
         setBtn.className = "ed-now";
-        setBtn.title = "Ustaw na bieżący czas odtwarzania";
+        setBtn.title = t("Ustaw na bieżący czas odtwarzania", "Set to current playback time");
         setBtn.textContent = "⊙";
         setBtn.addEventListener("click", () => {
           pushHistory();
@@ -376,8 +380,8 @@ export function openTimingEditor(opts: EditorOptions): { close(): boolean } {
       const labelBtn = document.createElement("button");
       labelBtn.type = "button";
       labelBtn.title = w.kind === "label"
-        ? "Przywróć jako zwykłe słowo"
-        : "Promuj do etykiety (np. Refren, imię wokalisty)";
+        ? t("Przywróć jako zwykłe słowo", "Restore as regular word")
+        : t("Promuj do etykiety (np. Refren, imię wokalisty)", "Promote to label (e.g. Chorus, vocalist name)");
       labelBtn.textContent = w.kind === "label" ? "Aa" : "🏷";
       labelBtn.addEventListener("click", (ev) => {
         ev.stopPropagation();
@@ -390,7 +394,7 @@ export function openTimingEditor(opts: EditorOptions): { close(): boolean } {
 
       const insBtn = document.createElement("button");
       insBtn.type = "button";
-      insBtn.title = "Wstaw nowe słowo poniżej";
+      insBtn.title = t("Wstaw nowe słowo poniżej", "Insert new word below");
       insBtn.textContent = "+";
       insBtn.addEventListener("click", () => {
         pushHistory();
@@ -403,7 +407,7 @@ export function openTimingEditor(opts: EditorOptions): { close(): boolean } {
 
       const delBtn = document.createElement("button");
       delBtn.type = "button";
-      delBtn.title = "Usuń słowo";
+      delBtn.title = t("Usuń słowo", "Delete word");
       delBtn.textContent = "✕";
       delBtn.className = "danger";
       delBtn.addEventListener("click", () => {
@@ -477,7 +481,7 @@ export function openTimingEditor(opts: EditorOptions): { close(): boolean } {
   }
 
   function close(): boolean {
-    if (dirty && !confirm("Masz niezapisane zmiany. Zamknąć mimo to?")) return false;
+    if (dirty && !confirm(t("Masz niezapisane zmiany. Zamknąć mimo to?", "You have unsaved changes. Close anyway?"))) return false;
     document.removeEventListener("keydown", onKey);
     root!.classList.remove("visible");
     document.body.classList.remove("editor-open");
@@ -551,7 +555,7 @@ export function openTimingEditor(opts: EditorOptions): { close(): boolean } {
     if (words.length === 0) return;
     const dur = opts.getDuration();
     if (!dur || !Number.isFinite(dur) || dur <= 0) {
-      status.textContent = "Brak długości audio — wczytaj utwór, by rozłożyć równomiernie.";
+      status.textContent = t("Brak długości audio — wczytaj utwór, by rozłożyć równomiernie.", "No audio duration - load a track to distribute timings evenly.");
       status.style.color = "#ffc080";
       return;
     }
@@ -631,10 +635,10 @@ export function openTimingEditor(opts: EditorOptions): { close(): boolean } {
     try {
       await opts.onSave(words);
       dirty = false;
-      status.textContent = "Zapisano ✓";
+      status.textContent = t("Zapisano ✓", "Saved ✓");
       status.style.color = "#80e090";
     } catch (e) {
-      status.textContent = `Błąd zapisu: ${e instanceof Error ? e.message : String(e)}`;
+      status.textContent = `${t("Błąd zapisu", "Save error")}: ${e instanceof Error ? e.message : String(e)}`;
       status.style.color = "#ff8888";
     } finally {
       btnSave.disabled = false;
@@ -681,9 +685,11 @@ export function openTimingEditor(opts: EditorOptions): { close(): boolean } {
   if (opts.externalSelectRef) opts.externalSelectRef.scrollTo = scrollToWord;
   if (opts.suggestionsRef) opts.suggestionsRef.apply = applySuggestions;
 
-  tapHint.textContent =
-    "Klik wiersza = przewiń audio do tego słowa. Shift/Ctrl-klik = wybór zakresu/wielu wierszy. Tap-mode (poza polem tekstowym): B = ustaw start, N = ustaw koniec i przejdź dalej, ↑/↓ = nawigacja.";
-  status.textContent = `${words.length} słów`;
+  tapHint.textContent = t(
+    "Klik wiersza = przewiń audio do tego słowa. Shift/Ctrl-klik = wybór zakresu/wielu wierszy. Tap-mode (poza polem tekstowym): B = ustaw start, N = ustaw koniec i przejdź dalej, ↑/↓ = nawigacja.",
+    "Click a row to seek audio to that word. Shift/Ctrl-click selects range/multiple rows. Tap mode (outside text field): B = set start, N = set end and move next, ↑/↓ = navigate.",
+  );
+  status.textContent = `${words.length} ${t("słów", "words")}`;
   status.style.color = "#9ec5ff";
   activeRow = 0;
   render();

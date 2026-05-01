@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Lyric visualizer</title>
+    <title>Lyric Visualizer</title>
     <style>
       * {
         box-sizing: border-box;
@@ -71,6 +71,131 @@
         color: #e8e8f0; font-size: 24px;
         margin: 0 0 16px 0;
         flex-shrink: 0;
+      }
+      #landing {
+        position: fixed;
+        inset: 0;
+        z-index: 120;
+        display: none;
+        overflow: auto;
+        background:
+          radial-gradient(circle at 20% 20%, rgba(42, 74, 106, 0.18), transparent 35%),
+          radial-gradient(circle at 80% 10%, rgba(124, 240, 255, 0.08), transparent 40%),
+          #0a0a0f;
+        color: #d9dfef;
+      }
+      #landing.visible { display: block; }
+      #landing .landing-wrap {
+        width: min(980px, 92vw);
+        margin: 0 auto;
+        padding: 36px 0 42px;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+      }
+      #landing .landing-topbar {
+        display: flex;
+        justify-content: flex-end;
+      }
+      #landing .lang-toggle {
+        display: inline-flex;
+        border: 1px solid #2a3a4a;
+        border-radius: 999px;
+        overflow: hidden;
+      }
+      #landing .lang-toggle button {
+        border: 0;
+        background: #131824;
+        color: #8ea8c8;
+        padding: 7px 12px;
+        cursor: pointer;
+        font-size: 12px;
+      }
+      #landing .lang-toggle button.active {
+        background: #2a4a6a;
+        color: #e8f1ff;
+      }
+      #landing .hero {
+        background: rgba(18, 24, 34, 0.88);
+        border: 1px solid #2a3a4a;
+        border-radius: 14px;
+        padding: 28px 24px;
+      }
+      #landing h1 {
+        margin: 0 0 10px 0;
+        color: #f0f5ff;
+        font-size: clamp(28px, 5vw, 42px);
+        line-height: 1.1;
+      }
+      #landing .lead {
+        margin: 0;
+        font-size: 17px;
+        line-height: 1.45;
+        color: #bdd2ed;
+        max-width: 74ch;
+      }
+      #landing .privacy {
+        background: rgba(13, 28, 24, 0.65);
+        border: 1px solid #2e5a4a;
+        border-radius: 12px;
+        padding: 14px 16px;
+        color: #c9f4df;
+        line-height: 1.45;
+      }
+      #landing .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+        gap: 14px;
+      }
+      #landing .card {
+        background: rgba(20, 24, 35, 0.9);
+        border: 1px solid #273447;
+        border-radius: 12px;
+        padding: 16px;
+      }
+      #landing h2 {
+        margin: 0 0 8px 0;
+        color: #e8eefc;
+        font-size: 19px;
+      }
+      #landing ol,
+      #landing ul {
+        margin: 0;
+        padding-left: 20px;
+        display: grid;
+        gap: 6px;
+        line-height: 1.45;
+      }
+      #landing kbd {
+        background: #1a2030;
+        border: 1px solid #2a3a4a;
+        border-radius: 4px;
+        padding: 1px 6px;
+        font-family: ui-monospace, "Cascadia Mono", Consolas, monospace;
+        color: #dbe7fa;
+      }
+      #landing .cta-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 6px;
+      }
+      #landing .cta-row button {
+        border-radius: 8px;
+        border: 1px solid #3a5f86;
+        background: #244b70;
+        color: #e8f1ff;
+        font: inherit;
+        font-size: 14px;
+        padding: 9px 14px;
+        cursor: pointer;
+      }
+      #landing .cta-row button.secondary {
+        border-color: #3b4a5d;
+        background: #1a2230;
+      }
+      #landing .cta-row button:hover {
+        border-color: #5e8cb8;
       }
       #projects-list {
         display: flex; flex-direction: column; gap: 14px;
@@ -994,29 +1119,72 @@
     <div id="app"></div>
     <canvas id="mini-visualizer"></canvas>
 
-    <div id="projects" class="visible">
-      <h1>Wybierz projekt</h1>
+    <div id="landing" class="visible">
+      <div class="landing-wrap">
+        <div class="landing-topbar">
+          <div class="lang-toggle" role="group" aria-label="Language switcher">
+            <button type="button" id="landing-lang-pl" class="active">PL</button>
+            <button type="button" id="landing-lang-en">EN</button>
+          </div>
+        </div>
+        <section class="hero">
+          <h1 data-i18n="hero_title">Lyric Visualizer — local-first</h1>
+          <p class="lead" data-i18n="hero_lead">
+            Narzędzie do synchronizacji i wizualizacji tekstu piosenek działające lokalnie na Twoim komputerze.
+          </p>
+        </section>
+        <section class="privacy" data-i18n="privacy_callout">
+          Prywatność: audio, tekst i timingi zostają lokalnie (IndexedDB + lokalne pliki). Aplikacja nie wysyła danych do chmury.
+        </section>
+        <div class="grid">
+          <section class="card">
+            <h2 data-i18n="how_title">Jak to działa</h2>
+            <ol>
+              <li data-i18n="how_1">Tworzysz projekt i dodajesz audio oraz tekst/JSON.</li>
+              <li data-i18n="how_2">Doprecyzowujesz czasy w edytorze lub timeline.</li>
+              <li data-i18n="how_3">Tagujesz słowa na żywo w trybie Live TAP.</li>
+              <li data-i18n="how_4">Eksportujesz gotowe napisy do JSON, LRC lub LRC+.</li>
+            </ol>
+          </section>
+          <section class="card">
+            <h2 data-i18n="livetap_title">Dlaczego Live TAP?</h2>
+            <ul>
+              <li data-i18n="livetap_1">Najszybsza metoda ustawiania timingów w rytmie utworu.</li>
+              <li data-i18n="livetap_2">Używasz tylko klawiatury: <kbd>Spacja</kbd>, <kbd>←</kbd>, <kbd>→</kbd>, <kbd>P</kbd>.</li>
+              <li data-i18n="livetap_3">Świetny punkt startowy przed finalnym szlifem w timeline.</li>
+            </ul>
+          </section>
+        </div>
+        <div class="cta-row">
+          <button type="button" id="landing-start-app" data-i18n="cta_start">Uruchom aplikację</button>
+          <button type="button" id="landing-jump-livetap" class="secondary" data-i18n="cta_livetap">Pokaż jak uruchomić Live TAP</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="projects">
+      <h1 id="projects-title">Wybierz projekt</h1>
       <div id="projects-list"></div>
     </div>
 
     <div id="project-modal">
       <div class="panel">
-        <h2>Nowy projekt</h2>
+        <h2 id="np-title">Nowy projekt</h2>
 
         <label>
-          Nazwa projektu
+          <span id="np-name-label">Nazwa projektu</span>
           <input type="text" id="np-name" placeholder="np. Tiny Hands Tiny Plans" />
         </label>
 
         <div>
           <div class="row">
-            <button type="button" id="np-pick-audio">Wybierz plik audio…</button>
+            <button type="button" id="np-pick-audio">Wybierz plik audio...</button>
             <span class="audio-status" id="np-audio-status">brak pliku</span>
           </div>
         </div>
 
         <div>
-          <div class="hint" style="margin-bottom:6px">Tekst piosenki:</div>
+          <div class="hint" id="np-lyrics-label" style="margin-bottom:6px">Tekst piosenki:</div>
           <div class="lyrics-tabs">
             <button type="button" id="np-tab-json" class="active">Wgraj JSON</button>
             <button type="button" id="np-tab-text">Edytor tekstu</button>
@@ -1026,7 +1194,7 @@
         <div class="pane active" id="np-pane-json">
           <div class="row">
             <input type="file" id="np-json-file" accept=".json" style="display:none" />
-            <button type="button" id="np-pick-json">Wybierz plik JSON…</button>
+            <button type="button" id="np-pick-json">Wybierz plik JSON...</button>
             <span class="audio-status" id="np-json-name">brak pliku</span>
           </div>
           <div class="hint">Format Sonauto: <code>{ "aligned_lyrics": [{ "word", "start_time", "end_time" }, ...] }</code></div>
@@ -1034,7 +1202,7 @@
         </div>
 
         <div class="pane" id="np-pane-text">
-          <div class="hint">
+          <div class="hint" id="np-text-hint">
             <strong>Format wklejanego tekstu:</strong>
             <ul style="margin: 4px 0 4px 18px; padding: 0;">
               <li>każdy <strong>Enter</strong> = koniec wiersza (line break)</li>
@@ -1127,8 +1295,8 @@
         <button type="button" id="lt-rew5" title="Cofnij 5 s (←)">⟲ -5s</button>
         <button type="button" id="lt-play" title="Play / Pause (P)">▶︎ / ⏸</button>
         <button type="button" id="lt-fwd5" title="Do przodu 5 s (→)">⟳ +5s</button>
-        <label title="Kompensacja czasu reakcji — odejmowana od audio.currentTime przy każdym tapie">
-          Offset:
+        <label id="lt-offset-label" title="Kompensacja czasu reakcji — odejmowana od audio.currentTime przy każdym tapie">
+          <span id="lt-offset-label-text">Offset:</span>
           <input type="range" id="lt-offset" min="0" max="300" step="10" value="150" />
           <span id="lt-offset-val">150 ms</span>
         </label>
@@ -1150,7 +1318,7 @@
           <button type="button" id="lt-play-under" title="Play / Pause (P)">▶︎ / ⏸</button>
         </div>
       </div>
-      <div class="lt-legend">
+      <div class="lt-legend" id="lt-legend">
         <kbd>Spacja</kbd> tap &middot;
         <kbd>⌫</kbd> cofnij ostatni tap &middot;
         <kbd>P</kbd>/<kbd>K</kbd> play/pause &middot;
@@ -1239,6 +1407,13 @@
             </select>
           </label>
           <button type="button" id="btn-viz-settings" title="Ustawienia wizualizatora (czcionka, kolory)">Aa</button>
+          <label>
+            <span id="app-lang-label">Język:</span>
+            <select id="app-lang" aria-label="App language">
+              <option value="pl">PL</option>
+              <option value="en">EN</option>
+            </select>
+          </label>
         </div>
         <div id="time-display">
           <span id="time-current">0:00</span>

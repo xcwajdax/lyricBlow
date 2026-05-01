@@ -20,8 +20,10 @@ export async function transcribeWithWhisper(
   audioBlob: Blob,
   serverUrl: string,
   onProgress?: (msg: string) => void,
+  language: "pl" | "en" = "pl",
 ): Promise<WhisperWord[]> {
-  onProgress?.("Wysyłanie audio...");
+  const isEn = language === "en";
+  onProgress?.(isEn ? "Uploading audio..." : "Wysyłanie audio...");
 
   const form = new FormData();
   form.append("file", audioBlob, "audio.bin");
@@ -34,21 +36,22 @@ export async function transcribeWithWhisper(
     });
   } catch {
     throw new Error(
-      `Serwer Whisper niedostępny pod adresem ${serverUrl}.\n` +
-      `Uruchom serwer: python whisper_server.py`,
+      isEn
+        ? `Whisper server unavailable at ${serverUrl}.\nRun server: python whisper_server.py`
+        : `Serwer Whisper niedostępny pod adresem ${serverUrl}.\nUruchom serwer: python whisper_server.py`,
     );
   }
 
   if (!resp.ok) {
     const text = await resp.text().catch(() => resp.statusText);
-    throw new Error(`Błąd serwera Whisper (${resp.status}): ${text}`);
+    throw new Error(isEn ? `Whisper server error (${resp.status}): ${text}` : `Błąd serwera Whisper (${resp.status}): ${text}`);
   }
 
-  onProgress?.("Parsowanie wyników...");
+  onProgress?.(isEn ? "Parsing results..." : "Parsowanie wyników...");
   const data = (await resp.json()) as WhisperResponse;
 
   if (!Array.isArray(data.words)) {
-    throw new Error("Odpowiedź serwera nie zawiera pola 'words'.");
+    throw new Error(isEn ? "Server response does not contain 'words' field." : "Odpowiedź serwera nie zawiera pola 'words'.");
   }
 
   return data.words;
