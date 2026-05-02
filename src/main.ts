@@ -186,8 +186,7 @@ function main(): void {
   const app = document.getElementById("app")!;
   const landingDiv = document.getElementById("landing")!;
   const landingStartBtn = document.getElementById("landing-start-app") as HTMLButtonElement;
-  const landingLiveTapBtn = document.getElementById("landing-jump-livetap") as HTMLButtonElement;
-  const landingLangSelect = document.getElementById("landing-lang-select") as HTMLSelectElement | null;
+const landingLangSelect = document.getElementById("landing-lang-select") as HTMLSelectElement | null;
   const landingLangButtons = Array.from(document.querySelectorAll<HTMLButtonElement>("#landing-lang-switch .lang-btn"));
   const landingSkinSelect = document.getElementById("landing-skin-select") as HTMLSelectElement;
   const landingHeroImage = document.getElementById("landing-hero-image") as HTMLImageElement;
@@ -771,7 +770,6 @@ function main(): void {
       livetap_2: "Używasz tylko klawiatury: Spacja, strzałki i P/K.",
       livetap_3: "Idealny punkt startowy przed finalnym szlifem w timeline.",
       cta_start: "Uruchom aplikację",
-      cta_livetap: "Pokaż jak uruchomić Live TAP",
       langLabel: "Język:",
       skinLabel: "Skórka:",
       skinDefault: "Podstawowa",
@@ -794,7 +792,6 @@ function main(): void {
       livetap_2: "Keyboard-first flow: Space, arrows, and P/K.",
       livetap_3: "Perfect first pass before final cleanup in timeline.",
       cta_start: "Start app",
-      cta_livetap: "Show Live TAP quickstart",
       langLabel: "Language:",
       skinLabel: "Skin:",
       skinDefault: "Default",
@@ -1338,11 +1335,6 @@ function main(): void {
   projectsSkinSelect.addEventListener("change", () => {
     applySkin(projectsSkinSelect.value === "topkek" ? "topkek" : "default");
   });
-  landingLiveTapBtn.addEventListener("click", () => {
-    showProjectPicker();
-    alert(t("liveTapGuide"));
-  });
-
   btnEditTiming.addEventListener("click", () => {
     if (!alignment) return;
     editorHandle = openTimingEditor({
