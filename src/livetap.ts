@@ -73,6 +73,7 @@ export function openLiveTap(opts: LiveTapOptions): LiveTapHandle {
   const btnFwd5 = document.getElementById("lt-fwd5") as HTMLButtonElement | null;
   const btnPlay = document.getElementById("lt-play") as HTMLButtonElement | null;
   const btnPlayUnder = document.getElementById("lt-play-under") as HTMLButtonElement | null;
+  const btnEndWord = document.getElementById("lt-end-word") as HTMLButtonElement | null;
   const btnSave = document.getElementById("lt-save") as HTMLButtonElement | null;
   const btnClose = document.getElementById("lt-close") as HTMLButtonElement | null;
   const statusEl = document.getElementById("lt-status") as HTMLSpanElement | null;
@@ -81,7 +82,7 @@ export function openLiveTap(opts: LiveTapOptions): LiveTapHandle {
   const barFill = document.getElementById("lt-bar-fill") as HTMLDivElement | null;
 
   if (!root || !railEl || !rateSel || !offsetInp || !offsetVal ||
-      !btnRew10 || !btnRew5 || !btnFwd5 || !btnPlay || !btnPlayUnder || !btnSave || !btnClose ||
+      !btnRew10 || !btnRew5 || !btnFwd5 || !btnPlay || !btnPlayUnder || !btnEndWord || !btnSave || !btnClose ||
       !statusEl || !timeCur || !timeTot || !barFill) {
     return { close: () => {}, isOpen: () => false };
   }
@@ -216,6 +217,30 @@ export function openLiveTap(opts: LiveTapOptions): LiveTapHandle {
     renderRail();
   }
 
+  function endWord(): void {
+    const prevIdx = prevTappable(words, cursor);
+    if (prevIdx < 0) {
+      setStatus(tr("Brak poprzedniego słowa do zakończenia", "No previous word to end"), "#ffc080");
+      return;
+    }
+    const w = words[prevIdx];
+    const t = Math.max(0, opts.getCurrentTime() - offsetMs / 1000);
+    const snap: Snap = {
+      idx: prevIdx,
+      cursorBefore: cursor,
+      prevStart: w.start_time,
+      prevEnd: w.end_time,
+      prevPrevIdx: null,
+      prevPrevEnd: null,
+    };
+    history.push(snap);
+    if (history.length > HIST_LIMIT) history.shift();
+    w.end_time = round3(Math.max(w.start_time, t));
+    setStatus(isEn ? `End set for word ${prevIdx + 1}` : `Zakończono słowo ${prevIdx + 1}`, "#9ec5ff");
+    emit();
+    renderRail();
+  }
+
   function rew(s: number): void {
     opts.seekTo(Math.max(0, opts.getCurrentTime() - s));
   }
@@ -247,6 +272,7 @@ export function openLiveTap(opts: LiveTapOptions): LiveTapHandle {
     }
     if (inField) return;
     if (e.code === "Space") { e.preventDefault(); tap(); return; }
+    if (e.code === "KeyE") { e.preventDefault(); endWord(); return; }
     if (e.code === "Backspace") { e.preventDefault(); undoTap(); return; }
     if (e.code === "KeyP" || e.code === "KeyK") { e.preventDefault(); togglePlay(); return; }
     if (e.code === "ArrowLeft") { e.preventDefault(); rew(e.shiftKey ? 10 : 5); return; }
@@ -282,6 +308,7 @@ export function openLiveTap(opts: LiveTapOptions): LiveTapHandle {
   btnFwd5.onclick = () => fwd(5);
   btnPlay.onclick = () => togglePlay();
   btnPlayUnder.onclick = () => togglePlay();
+  btnEndWord.onclick = () => endWord();
   btnSave.onclick = async () => {
     btnSave!.disabled = true;
     setStatus(tr("Zapisuję...", "Saving..."), "#9ec5ff");
