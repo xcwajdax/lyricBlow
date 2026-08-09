@@ -75,6 +75,11 @@ const BUILTIN_PROJECTS: Record<string, BuiltinProject> = {
     jsonUrl: AJKS_JSON_URL,
     audioUrl: undefined,
   },
+  autotune_love_it: {
+    name: "Autotune Love It",
+    jsonUrl: fixtureUrl("autotune-love-it.json"),
+    audioUrl: fixtureUrl("autotune-love-it.mp3"),
+  },
 };
 
 /**

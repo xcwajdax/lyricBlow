@@ -1,0 +1,754 @@
+{
+  "aligned_lyrics": [
+    {
+      "word": "\"Three...",
+      "start_time": 0.607,
+      "end_time": 1.934
+    },
+    {
+      "word": "two...\"",
+      "start_time": 1.934,
+      "end_time": 3.107,
+      "line_break": true
+    },
+    {
+      "word": "\"Where",
+      "start_time": 3.107,
+      "end_time": 3.317
+    },
+    {
+      "word": "the",
+      "start_time": 3.317,
+      "end_time": 3.476
+    },
+    {
+      "word": "fuck",
+      "start_time": 3.476,
+      "end_time": 3.693
+    },
+    {
+      "word": "you",
+      "start_time": 3.693,
+      "end_time": 3.876
+    },
+    {
+      "word": "goin'?\"",
+      "start_time": 3.876,
+      "end_time": 4.82,
+      "line_break": true
+    },
+    {
+      "word": "\"...one.\"",
+      "start_time": 4.82,
+      "end_time": 5.903,
+      "line_break": true
+    },
+    {
+      "word": "shots",
+      "start_time": 5.903,
+      "end_time": 6.239,
+      "blank_line": true,
+      "verse_break": true
+    },
+    {
+      "word": "Twenty",
+      "start_time": 6.239,
+      "end_time": 6.565
+    },
+    {
+      "word": "SWU",
+      "start_time": 6.565,
+      "end_time": 7.028
+    },
+    {
+      "word": "drop,",
+      "start_time": 7.028,
+      "end_time": 7.341
+    },
+    {
+      "word": "he's",
+      "start_time": 7.341,
+      "end_time": 7.54
+    },
+    {
+      "word": "breathin'",
+      "start_time": 7.54,
+      "end_time": 7.817
+    },
+    {
+      "word": "—",
+      "start_time": 7.817,
+      "end_time": 7.999
+    },
+    {
+      "word": "not",
+      "start_time": 7.999,
+      "end_time": 8.127
+    },
+    {
+      "word": "for",
+      "start_time": 8.127,
+      "end_time": 8.357
+    },
+    {
+      "word": "long",
+      "start_time": 8.357,
+      "end_time": 8.713,
+      "line_break": true
+    },
+    {
+      "word": "Pick",
+      "start_time": 8.713,
+      "end_time": 8.954
+    },
+    {
+      "word": "his",
+      "start_time": 8.954,
+      "end_time": 9.109
+    },
+    {
+      "word": "ass",
+      "start_time": 9.109,
+      "end_time": 9.274
+    },
+    {
+      "word": "up,",
+      "start_time": 9.274,
+      "end_time": 9.572
+    },
+    {
+      "word": "stand",
+      "start_time": 9.572,
+      "end_time": 9.781
+    },
+    {
+      "word": "him",
+      "start_time": 9.781,
+      "end_time": 9.957
+    },
+    {
+      "word": "straight,",
+      "start_time": 9.957,
+      "end_time": 10.12
+    },
+    {
+      "word": "then",
+      "start_time": 10.12,
+      "end_time": 10.45
+    },
+    {
+      "word": "knock",
+      "start_time": 10.45,
+      "end_time": 10.691
+    },
+    {
+      "word": "him",
+      "start_time": 10.691,
+      "end_time": 10.874
+    },
+    {
+      "word": "back",
+      "start_time": 10.874,
+      "end_time": 11.045
+    },
+    {
+      "word": "to",
+      "start_time": 11.045,
+      "end_time": 11.37
+    },
+    {
+      "word": "song",
+      "start_time": 11.37,
+      "end_time": 11.535,
+      "line_break": true
+    },
+    {
+      "word": "One",
+      "start_time": 11.535,
+      "end_time": 11.77
+    },
+    {
+      "word": "runs",
+      "start_time": 11.77,
+      "end_time": 12.021
+    },
+    {
+      "word": "off",
+      "start_time": 12.021,
+      "end_time": 12.245
+    },
+    {
+      "word": "for",
+      "start_time": 12.245,
+      "end_time": 12.51
+    },
+    {
+      "word": "smoke,",
+      "start_time": 12.51,
+      "end_time": 12.898
+    },
+    {
+      "word": "finds",
+      "start_time": 12.898,
+      "end_time": 13.141
+    },
+    {
+      "word": "a",
+      "start_time": 13.141,
+      "end_time": 13.343
+    },
+    {
+      "word": "ditch",
+      "start_time": 13.343,
+      "end_time": 13.647
+    },
+    {
+      "word": "instead",
+      "start_time": 13.647,
+      "end_time": 14.234,
+      "line_break": true
+    },
+    {
+      "word": "TOPKEK",
+      "start_time": 14.234,
+      "end_time": 14.698
+    },
+    {
+      "word": "got",
+      "start_time": 14.698,
+      "end_time": 15.367
+    },
+    {
+      "word": "my",
+      "start_time": 15.367,
+      "end_time": 15.535
+    },
+    {
+      "word": "six",
+      "start_time": 15.535,
+      "end_time": 15.817
+    },
+    {
+      "word": "—",
+      "start_time": 15.817,
+      "end_time": 16.013
+    },
+    {
+      "word": "won't",
+      "start_time": 16.013,
+      "end_time": 16.185
+    },
+    {
+      "word": "let",
+      "start_time": 16.185,
+      "end_time": 16.378
+    },
+    {
+      "word": "me",
+      "start_time": 16.378,
+      "end_time": 16.554
+    },
+    {
+      "word": "kiss",
+      "start_time": 16.554,
+      "end_time": 16.707
+    },
+    {
+      "word": "the",
+      "start_time": 16.707,
+      "end_time": 17.087
+    },
+    {
+      "word": "dead",
+      "start_time": 17.087,
+      "end_time": 17.407,
+      "line_break": true
+    },
+    {
+      "word": "Queen",
+      "start_time": 17.407,
+      "end_time": 17.688
+    },
+    {
+      "word": "Cores",
+      "start_time": 17.688,
+      "end_time": 18.138
+    },
+    {
+      "word": "gone,",
+      "start_time": 18.138,
+      "end_time": 18.447
+    },
+    {
+      "word": "bitch",
+      "start_time": 18.447,
+      "end_time": 18.637
+    },
+    {
+      "word": "is",
+      "start_time": 18.637,
+      "end_time": 18.778
+    },
+    {
+      "word": "cryin',",
+      "start_time": 18.778,
+      "end_time": 18.98
+    },
+    {
+      "word": "we",
+      "start_time": 18.98,
+      "end_time": 19.321
+    },
+    {
+      "word": "just",
+      "start_time": 19.321,
+      "end_time": 19.523
+    },
+    {
+      "word": "laugh",
+      "start_time": 19.523,
+      "end_time": 20.035,
+      "line_break": true
+    },
+    {
+      "word": "Welcome",
+      "start_time": 20.035,
+      "end_time": 20.677
+    },
+    {
+      "word": "to",
+      "start_time": 20.677,
+      "end_time": 20.842
+    },
+    {
+      "word": "the",
+      "start_time": 20.842,
+      "end_time": 21.037
+    },
+    {
+      "word": "loop",
+      "start_time": 21.037,
+      "end_time": 21.471
+    },
+    {
+      "word": "—",
+      "start_time": 21.471,
+      "end_time": 21.823
+    },
+    {
+      "word": "Ark",
+      "start_time": 21.823,
+      "end_time": 21.978
+    },
+    {
+      "word": "Raiders'",
+      "start_time": 21.978,
+      "end_time": 22.157
+    },
+    {
+      "word": "epitaph",
+      "start_time": 22.157,
+      "end_time": 22.317,
+      "blank_line": true,
+      "verse_break": true
+    },
+    {
+      "word": "Break",
+      "start_time": 22.317,
+      "end_time": 23.06
+    },
+    {
+      "word": "the",
+      "start_time": 23.06,
+      "end_time": 23.477
+    },
+    {
+      "word": "line,",
+      "start_time": 23.477,
+      "end_time": 23.962
+    },
+    {
+      "word": "need",
+      "start_time": 23.962,
+      "end_time": 24.158
+    },
+    {
+      "word": "the",
+      "start_time": 24.158,
+      "end_time": 24.324
+    },
+    {
+      "word": "rush,",
+      "start_time": 24.324,
+      "end_time": 24.602
+    },
+    {
+      "word": "safe",
+      "start_time": 24.602,
+      "end_time": 24.815
+    },
+    {
+      "word": "zone's",
+      "start_time": 24.815,
+      "end_time": 25.002
+    },
+    {
+      "word": "a",
+      "start_time": 25.002,
+      "end_time": 25.407
+    },
+    {
+      "word": "fuckin'",
+      "start_time": 25.407,
+      "end_time": 25.647
+    },
+    {
+      "word": "cage",
+      "start_time": 25.647,
+      "end_time": 25.854,
+      "line_break": true
+    },
+    {
+      "word": "Three",
+      "start_time": 25.854,
+      "end_time": 26.186
+    },
+    {
+      "word": "steps",
+      "start_time": 26.186,
+      "end_time": 26.392
+    },
+    {
+      "word": "out—",
+      "start_time": 26.392,
+      "end_time": 26.557
+    },
+    {
+      "word": "\"BACK",
+      "start_time": 26.557,
+      "end_time": 26.687
+    },
+    {
+      "word": "ME",
+      "start_time": 26.687,
+      "end_time": 26.861
+    },
+    {
+      "word": "UP!\"",
+      "start_time": 26.861,
+      "end_time": 27.273
+    },
+    {
+      "word": "—",
+      "start_time": 27.273,
+      "end_time": 27.482
+    },
+    {
+      "word": "too",
+      "start_time": 27.482,
+      "end_time": 27.637
+    },
+    {
+      "word": "late,",
+      "start_time": 27.637,
+      "end_time": 27.829
+    },
+    {
+      "word": "blood",
+      "start_time": 27.829,
+      "end_time": 28.035
+    },
+    {
+      "word": "on",
+      "start_time": 28.035,
+      "end_time": 28.223
+    },
+    {
+      "word": "the",
+      "start_time": 28.223,
+      "end_time": 28.415
+    },
+    {
+      "word": "page",
+      "start_time": 28.415,
+      "end_time": 28.74,
+      "line_break": true
+    },
+    {
+      "word": "Some",
+      "start_time": 28.74,
+      "end_time": 28.922
+    },
+    {
+      "word": "dick",
+      "start_time": 28.922,
+      "end_time": 29.096
+    },
+    {
+      "word": "stole",
+      "start_time": 29.096,
+      "end_time": 29.258
+    },
+    {
+      "word": "my",
+      "start_time": 29.258,
+      "end_time": 29.765
+    },
+    {
+      "word": "loot,",
+      "start_time": 29.765,
+      "end_time": 29.946
+    },
+    {
+      "word": "I'm",
+      "start_time": 29.946,
+      "end_time": 30.117
+    },
+    {
+      "word": "screamin'",
+      "start_time": 30.117,
+      "end_time": 30.296
+    },
+    {
+      "word": "in",
+      "start_time": 30.296,
+      "end_time": 30.49
+    },
+    {
+      "word": "the",
+      "start_time": 30.49,
+      "end_time": 30.666
+    },
+    {
+      "word": "mic",
+      "start_time": 30.666,
+      "end_time": 31.182,
+      "line_break": true
+    },
+    {
+      "word": "TOPKEK",
+      "start_time": 31.182,
+      "end_time": 31.346
+    },
+    {
+      "word": "rolls",
+      "start_time": 31.346,
+      "end_time": 31.557
+    },
+    {
+      "word": "his",
+      "start_time": 31.557,
+      "end_time": 31.784
+    },
+    {
+      "word": "eyes,",
+      "start_time": 31.784,
+      "end_time": 32.394
+    },
+    {
+      "word": "picks",
+      "start_time": 32.394,
+      "end_time": 32.591
+    },
+    {
+      "word": "me",
+      "start_time": 32.591,
+      "end_time": 33.011
+    },
+    {
+      "word": "up,",
+      "start_time": 33.011,
+      "end_time": 33.342
+    },
+    {
+      "word": "sets",
+      "start_time": 33.342,
+      "end_time": 33.497
+    },
+    {
+      "word": "me",
+      "start_time": 33.497,
+      "end_time": 33.93
+    },
+    {
+      "word": "right",
+      "start_time": 33.93,
+      "end_time": 34.81,
+      "blank_line": true,
+      "verse_break": true
+    },
+    {
+      "word": "I'm",
+      "start_time": 34.81,
+      "end_time": 35.034
+    },
+    {
+      "word": "the",
+      "start_time": 35.034,
+      "end_time": 35.252
+    },
+    {
+      "word": "reason",
+      "start_time": 35.252,
+      "end_time": 35.635
+    },
+    {
+      "word": "this",
+      "start_time": 35.635,
+      "end_time": 35.966
+    },
+    {
+      "word": "team",
+      "start_time": 35.966,
+      "end_time": 36.28
+    },
+    {
+      "word": "still",
+      "start_time": 36.28,
+      "end_time": 36.618
+    },
+    {
+      "word": "stands",
+      "start_time": 36.618,
+      "end_time": 37.034,
+      "line_break": true
+    },
+    {
+      "word": "Third",
+      "start_time": 37.034,
+      "end_time": 37.359
+    },
+    {
+      "word": "wheel",
+      "start_time": 37.359,
+      "end_time": 37.695
+    },
+    {
+      "word": "preachin'",
+      "start_time": 37.695,
+      "end_time": 37.89
+    },
+    {
+      "word": "revolution",
+      "start_time": 37.89,
+      "end_time": 38.069
+    },
+    {
+      "word": "with",
+      "start_time": 38.069,
+      "end_time": 38.399
+    },
+    {
+      "word": "these",
+      "start_time": 38.399,
+      "end_time": 38.725
+    },
+    {
+      "word": "hands",
+      "start_time": 38.725,
+      "end_time": 39.07,
+      "line_break": true
+    },
+    {
+      "word": "One",
+      "start_time": 39.07,
+      "end_time": 40.11
+    },
+    {
+      "word": "chases",
+      "start_time": 40.11,
+      "end_time": 40.644
+    },
+    {
+      "word": "death,",
+      "start_time": 40.644,
+      "end_time": 41.103
+    },
+    {
+      "word": "the",
+      "start_time": 41.103,
+      "end_time": 41.29
+    },
+    {
+      "word": "other",
+      "start_time": 41.29,
+      "end_time": 41.481
+    },
+    {
+      "word": "chases",
+      "start_time": 41.481,
+      "end_time": 41.983
+    },
+    {
+      "word": "chaos",
+      "start_time": 41.983,
+      "end_time": 42.543,
+      "line_break": true
+    },
+    {
+      "word": "I",
+      "start_time": 42.543,
+      "end_time": 42.847
+    },
+    {
+      "word": "hold",
+      "start_time": 42.847,
+      "end_time": 43.013
+    },
+    {
+      "word": "the",
+      "start_time": 43.013,
+      "end_time": 43.194
+    },
+    {
+      "word": "line",
+      "start_time": 43.194,
+      "end_time": 43.514
+    },
+    {
+      "word": "—",
+      "start_time": 43.514,
+      "end_time": 43.658
+    },
+    {
+      "word": "who's",
+      "start_time": 43.658,
+      "end_time": 43.865
+    },
+    {
+      "word": "the",
+      "start_time": 43.865,
+      "end_time": 44.052
+    },
+    {
+      "word": "one",
+      "start_time": 44.052,
+      "end_time": 44.223
+    },
+    {
+      "word": "that",
+      "start_time": 44.223,
+      "end_time": 44.425
+    },
+    {
+      "word": "made",
+      "start_time": 44.425,
+      "end_time": 44.744
+    },
+    {
+      "word": "it?",
+      "start_time": 44.744,
+      "end_time": 44.87
+    },
+    {
+      "word": "Pay",
+      "start_time": 44.87,
+      "end_time": 44.87
+    },
+    {
+      "word": "us.",
+      "start_time": 44.87,
+      "end_time": 44.989
+    }
+  ]
+}
