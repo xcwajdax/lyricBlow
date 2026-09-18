@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/svg+xml" href="%BASE_URL%favicon.svg" />
-    <title>Lyric Visualizer</title>
+    <title>LyricBlow — Słowa w Twoim rytmie</title>
     <style>
       * {
         box-sizing: border-box;
@@ -1653,14 +1653,16 @@
         }
       }
     </style>
+    <link rel="stylesheet" href="/src/home.css" />
   </head>
   <body>
     <div id="app"></div>
     <canvas id="mini-visualizer"></canvas>
 
-    <div id="landing" class="visible">
+    <div id="landing" class="visible site-home">
       <div class="landing-wrap">
         <div class="landing-topbar">
+          <a class="home-wordmark" href="https://lyricblow.xcwajdax.chatgpt.site/" aria-label="LyricBlow"><span class="home-brand-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 10v2a7 7 0 0 0 14 0v-2M12 19v3m-4 0h8"/></svg></span>LyricBlow</a>
           <div class="landing-control-group">
             <span id="landing-lang-label">Język:</span>
             <div class="lang-switch" id="landing-lang-switch" role="group" aria-label="Language">
@@ -1679,17 +1681,21 @@
         <section class="hero">
           <div class="hero-brand">
             <div class="hero-copy">
-              <p class="hero-kicker" data-i18n="hero_kicker">Nowa marka</p>
-              <h1 data-i18n="hero_title">LyricBlow</h1>
-              <p class="hero-tagline" data-i18n="hero_tagline">Rhythm in motion</p>
+              <p class="hero-kicker" data-i18n="hero_kicker">Twój tekst. Twoja muzyka. Twój rytm.</p>
+              <h1><span data-i18n="hero_title">Daj słowom</span><br><span data-i18n="hero_title_second">własny</span> <em data-i18n="hero_title_accent">rytm.</em></h1>
               <p class="lead" data-i18n="hero_lead">
-                Narzędzie do synchronizacji i wizualizacji tekstu piosenek działające lokalnie na Twoim komputerze.
+                Muzyka płynie. Niech tekst płynie z nią. Dopasuj każde słowo do dźwięku i stwórz karaoke, które trafia dokładnie w punkt.
               </p>
+              <div class="cta-row">
+                <button type="button" id="landing-start-app"><span data-i18n="cta_start">Zacznij tworzyć</span><span aria-hidden="true">↗</span></button>
+                <button type="button" id="landing-jump-livetap" class="secondary" data-i18n="cta_livetap">Jak działa Live TAP?</button>
+              </div>
+              <p class="home-benefits"><span data-i18n="benefit_account">✓ Bez konta</span><span data-i18n="benefit_install">✓ Bez instalacji</span><span data-i18n="benefit_browser">✓ W przeglądarce</span></p>
             </div>
             <figure class="hero-visual">
               <img
                 id="landing-hero-image"
-                src="%BASE_URL%branding/lyric-blow-hero-openai-default.png"
+                src="%BASE_URL%branding/lyric-blow-hero-openai.png"
                 alt="Lyric Blow hero graphic"
                 loading="eager"
                 decoding="async"
@@ -1718,10 +1724,6 @@
               <li data-i18n="livetap_3">Świetny punkt startowy przed finalnym szlifem w timeline.</li>
             </ul>
           </section>
-        </div>
-        <div class="cta-row">
-          <button type="button" id="landing-start-app" data-i18n="cta_start">Uruchom aplikację</button>
-          <button type="button" id="landing-jump-livetap" class="secondary" data-i18n="cta_livetap">Pokaż jak uruchomić Live TAP</button>
         </div>
         <footer class="landing-footer">
           Autor: <a href="https://www.topkek.info" target="_blank" rel="noopener noreferrer">www.topkek.info</a>

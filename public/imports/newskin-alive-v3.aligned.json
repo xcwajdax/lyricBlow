@@ -1,0 +1,340 @@
+{
+  "aligned_lyrics": [
+    {
+      "word": "Why",
+      "start_time": 0.0,
+      "end_time": 1.667
+    },
+    {
+      "word": "is",
+      "start_time": 1.667,
+      "end_time": 3.333
+    },
+    {
+      "word": "it",
+      "start_time": 3.333,
+      "end_time": 5.0
+    },
+    {
+      "word": "so",
+      "start_time": 5.0,
+      "end_time": 6.667
+    },
+    {
+      "word": "hard.",
+      "start_time": 6.667,
+      "end_time": 8.333
+    },
+    {
+      "word": "To",
+      "start_time": 8.333,
+      "end_time": 10.0
+    },
+    {
+      "word": "see",
+      "start_time": 10.0,
+      "end_time": 11.667
+    },
+    {
+      "word": "things",
+      "start_time": 11.667,
+      "end_time": 13.333
+    },
+    {
+      "word": "from",
+      "start_time": 13.333,
+      "end_time": 15.0
+    },
+    {
+      "word": "the",
+      "start_time": 15.0,
+      "end_time": 16.667
+    },
+    {
+      "word": "other",
+      "start_time": 16.667,
+      "end_time": 18.333
+    },
+    {
+      "word": "side.",
+      "start_time": 18.333,
+      "end_time": 20.0,
+      "line_break": true
+    },
+    {
+      "word": "Takes",
+      "start_time": 20.0,
+      "end_time": 21.8
+    },
+    {
+      "word": "me",
+      "start_time": 21.8,
+      "end_time": 23.6
+    },
+    {
+      "word": "so",
+      "start_time": 23.6,
+      "end_time": 25.4
+    },
+    {
+      "word": "down,",
+      "start_time": 25.4,
+      "end_time": 27.2
+    },
+    {
+      "word": "I",
+      "start_time": 27.2,
+      "end_time": 29.0
+    },
+    {
+      "word": "can't",
+      "start_time": 29.0,
+      "end_time": 30.8
+    },
+    {
+      "word": "even",
+      "start_time": 30.8,
+      "end_time": 32.6
+    },
+    {
+      "word": "see",
+      "start_time": 32.6,
+      "end_time": 34.4
+    },
+    {
+      "word": "the",
+      "start_time": 34.4,
+      "end_time": 36.2
+    },
+    {
+      "word": "light.",
+      "start_time": 36.2,
+      "end_time": 38.0,
+      "line_break": true
+    },
+    {
+      "word": "Cause",
+      "start_time": 81.0,
+      "end_time": 85.25,
+      "verse_break": true
+    },
+    {
+      "word": "I",
+      "start_time": 85.25,
+      "end_time": 89.5
+    },
+    {
+      "word": "feel",
+      "start_time": 89.5,
+      "end_time": 93.75
+    },
+    {
+      "word": "ALIVE!",
+      "start_time": 93.75,
+      "end_time": 98.0,
+      "line_break": true
+    },
+    {
+      "word": "Cause",
+      "start_time": 98.0,
+      "end_time": 101.75
+    },
+    {
+      "word": "I",
+      "start_time": 101.75,
+      "end_time": 105.5
+    },
+    {
+      "word": "feel",
+      "start_time": 105.5,
+      "end_time": 109.25
+    },
+    {
+      "word": "ALIVE!",
+      "start_time": 109.25,
+      "end_time": 113.0,
+      "line_break": true
+    },
+    {
+      "word": "Will",
+      "start_time": 158.0,
+      "end_time": 159.8
+    },
+    {
+      "word": "it",
+      "start_time": 159.8,
+      "end_time": 161.6
+    },
+    {
+      "word": "finaly",
+      "start_time": 161.6,
+      "end_time": 163.4
+    },
+    {
+      "word": "stop?",
+      "start_time": 163.4,
+      "end_time": 165.2
+    },
+    {
+      "word": "Will",
+      "start_time": 165.2,
+      "end_time": 167.0
+    },
+    {
+      "word": "I",
+      "start_time": 167.0,
+      "end_time": 168.8
+    },
+    {
+      "word": "reach",
+      "start_time": 168.8,
+      "end_time": 170.6
+    },
+    {
+      "word": "the",
+      "start_time": 170.6,
+      "end_time": 172.4
+    },
+    {
+      "word": "finish",
+      "start_time": 172.4,
+      "end_time": 174.2
+    },
+    {
+      "word": "line?",
+      "start_time": 174.2,
+      "end_time": 176.0,
+      "line_break": true
+    },
+    {
+      "word": "Is",
+      "start_time": 189.0,
+      "end_time": 190.778
+    },
+    {
+      "word": "it",
+      "start_time": 190.778,
+      "end_time": 192.556
+    },
+    {
+      "word": "even",
+      "start_time": 192.556,
+      "end_time": 194.333
+    },
+    {
+      "word": "real",
+      "start_time": 194.333,
+      "end_time": 196.111
+    },
+    {
+      "word": "to",
+      "start_time": 196.111,
+      "end_time": 197.889
+    },
+    {
+      "word": "live",
+      "start_time": 197.889,
+      "end_time": 199.667
+    },
+    {
+      "word": "without",
+      "start_time": 199.667,
+      "end_time": 201.444
+    },
+    {
+      "word": "any",
+      "start_time": 201.444,
+      "end_time": 203.222
+    },
+    {
+      "word": "time?",
+      "start_time": 203.222,
+      "end_time": 205.0,
+      "line_break": true
+    },
+    {
+      "word": "Cause",
+      "start_time": 205.0,
+      "end_time": 208.75
+    },
+    {
+      "word": "I",
+      "start_time": 208.75,
+      "end_time": 212.5
+    },
+    {
+      "word": "feel",
+      "start_time": 212.5,
+      "end_time": 216.25
+    },
+    {
+      "word": "ALIVE!",
+      "start_time": 216.25,
+      "end_time": 220.0,
+      "line_break": true
+    },
+    {
+      "word": "Cause",
+      "start_time": 220.0,
+      "end_time": 221.75
+    },
+    {
+      "word": "I",
+      "start_time": 221.75,
+      "end_time": 223.5
+    },
+    {
+      "word": "feel",
+      "start_time": 223.5,
+      "end_time": 225.25
+    },
+    {
+      "word": "ALIVE!",
+      "start_time": 225.25,
+      "end_time": 227.0,
+      "line_break": true
+    },
+    {
+      "word": "Cause",
+      "start_time": 236.0,
+      "end_time": 237.75
+    },
+    {
+      "word": "I",
+      "start_time": 237.75,
+      "end_time": 239.5
+    },
+    {
+      "word": "feel",
+      "start_time": 239.5,
+      "end_time": 241.25
+    },
+    {
+      "word": "ALIVE!",
+      "start_time": 241.25,
+      "end_time": 243.0,
+      "line_break": true
+    },
+    {
+      "word": "Cause",
+      "start_time": 243.0,
+      "end_time": 249.25
+    },
+    {
+      "word": "I",
+      "start_time": 249.25,
+      "end_time": 255.5
+    },
+    {
+      "word": "feel",
+      "start_time": 255.5,
+      "end_time": 261.75
+    },
+    {
+      "word": "ALIVE!",
+      "start_time": 261.75,
+      "end_time": 268.0,
+      "line_break": true
+    }
+  ]
+}

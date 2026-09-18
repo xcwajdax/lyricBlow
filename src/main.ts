@@ -35,8 +35,8 @@ type WaveformPalette = {
 const AJKS_JSON_URL = new URL("../assets/ajks/ajkjsonnew.json", import.meta.url).href;
 const FIXTURES_BASE_URL = new URL("fixtures/", new URL(import.meta.env.BASE_URL, window.location.href)).href;
 const LANDING_HERO_BY_SKIN: Record<AppSkin, string> = {
-  default: new URL("../public/branding/lyric-blow-hero-openai-default.png", import.meta.url).href,
-  topkek: new URL("../public/branding/lyric-blow-hero-openai-topkek.png", import.meta.url).href,
+  default: new URL("../public/branding/lyric-blow-hero-openai.png", import.meta.url).href,
+  topkek: new URL("../public/branding/lyric-blow-hero-openai.png", import.meta.url).href,
 };
 const WAVEFORM_PALETTE_BY_SKIN: Record<AppSkin, WaveformPalette> = {
   default: {
@@ -755,10 +755,15 @@ function main(): void {
 
   const landingCopy: Record<LandingLanguage, Record<string, string>> = {
     pl: {
-      hero_kicker: "Nowa marka",
-      hero_title: "LyricBlow",
+      hero_kicker: "Twój tekst. Twoja muzyka. Twój rytm.",
+      hero_title: "Daj słowom",
+      hero_title_second: "własny",
+      hero_title_accent: "rytm.",
+      benefit_account: "✓ Bez konta",
+      benefit_install: "✓ Bez instalacji",
+      benefit_browser: "✓ W przeglądarce",
       hero_tagline: "Rhythm in motion",
-      hero_lead: "Lokalne narzedzie do synchronizacji i wizualizacji tekstu piosenek, gotowe na szybki rytm pracy.",
+      hero_lead: "Muzyka płynie. Niech tekst płynie z nią. Dopasuj każde słowo do dźwięku i stwórz karaoke, które trafia dokładnie w punkt.",
       privacy_callout:
         "Prywatność: audio, tekst i timingi zostają lokalnie (IndexedDB + lokalne pliki). Aplikacja nie wysyła danych do chmury. Whisper działa wyłącznie na Twoim lokalnym serwerze, jeśli sam go uruchomisz.",
       how_title: "Jak to działa",
@@ -770,18 +775,23 @@ function main(): void {
       livetap_1: "Najszybsza metoda ustawiania timingów w rytmie utworu.",
       livetap_2: "Używasz tylko klawiatury: Spacja, strzałki i P/K.",
       livetap_3: "Idealny punkt startowy przed finalnym szlifem w timeline.",
-      cta_start: "Uruchom aplikację",
-      cta_livetap: "Pokaż jak uruchomić Live TAP",
+      cta_start: "Zacznij tworzyć",
+      cta_livetap: "Jak działa Live TAP?",
       langLabel: "Język:",
       skinLabel: "Skórka:",
       skinDefault: "Podstawowa",
       skinTopkek: "TOPKEK",
     },
     en: {
-      hero_kicker: "New identity",
-      hero_title: "LyricBlow",
+      hero_kicker: "Your lyrics. Your music. Your rhythm.",
+      hero_title: "Give your words",
+      hero_title_second: "their own",
+      hero_title_accent: "rhythm.",
+      benefit_account: "✓ No account",
+      benefit_install: "✓ No installation",
+      benefit_browser: "✓ In your browser",
       hero_tagline: "Rhythm in motion",
-      hero_lead: "A local tool for syncing and visualizing song lyrics, tuned for fast creative flow.",
+      hero_lead: "Let your lyrics flow with the music. Match every word to the sound and create karaoke that lands right on time.",
       privacy_callout:
         "Privacy: audio, lyrics and timings stay local (IndexedDB + local files). The app does not send your data to the cloud. Whisper is used only via your own local server when you run it.",
       how_title: "How it works",
@@ -793,8 +803,8 @@ function main(): void {
       livetap_1: "The fastest way to build timings in song rhythm.",
       livetap_2: "Keyboard-first flow: Space, arrows, and P/K.",
       livetap_3: "Perfect first pass before final cleanup in timeline.",
-      cta_start: "Start app",
-      cta_livetap: "Show Live TAP quickstart",
+      cta_start: "Start creating",
+      cta_livetap: "How does Live TAP work?",
       langLabel: "Language:",
       skinLabel: "Skin:",
       skinDefault: "Default",

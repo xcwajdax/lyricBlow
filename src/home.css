@@ -1,0 +1,62 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap');
+
+/* Welcome-screen brand styling, independent of the editor's selected skin. */
+body #landing.site-home { --home-bg:#101311; --home-panel:#171c18; --home-line:#303830; --home-text:#f0f2e9; --home-muted:#abb3a8; --home-accent:#b7f59e; background:var(--home-bg); color:var(--home-text); font:16px/1.65 'DM Sans',Arial,sans-serif; scrollbar-color:#53624d var(--home-bg); }
+body #landing.site-home .landing-wrap { width:min(1280px,calc(100% - 96px)); padding:0 0 32px; gap:0; }
+body #landing.site-home .landing-topbar { min-height:110px; align-items:center; gap:16px; border-bottom:1px solid var(--home-line); }
+.home-wordmark { display:inline-flex; align-items:center; gap:9px; margin-right:auto; color:#f0f2e9; text-decoration:none; font:800 25px 'Manrope',Arial,sans-serif; letter-spacing:-1px; }
+.home-brand-icon { width:32px; height:34px; display:inline-grid; place-items:center; background:#b7f59e; border-radius:7px; color:#12200e; }
+.home-brand-icon svg { width:22px; height:24px; }
+body #landing.site-home .landing-control-group { padding:5px 8px; background:transparent; border:0; box-shadow:none; border-radius:0; gap:9px; }
+body #landing.site-home .landing-control-group :is(label,span) { color:var(--home-muted); font-size:14px; }
+body #landing.site-home :is(.landing-control-group select,.lang-btn) { font-family:inherit; background:var(--home-panel); border:1px solid var(--home-line); border-radius:8px; color:var(--home-text); box-shadow:none; min-height:36px; }
+body #landing.site-home .landing-control-group select { font-size:14px; }
+body #landing.site-home .lang-btn.active { border-color:var(--home-accent); background:#2b3b25; }
+body #landing.site-home .hero { padding:84px 0 65px; border:0; border-radius:0; background:none; box-shadow:none; }
+body #landing.site-home .hero-brand { grid-template-columns:minmax(0,1.08fr) minmax(0,1fr); gap:44px; }
+body #landing.site-home .hero-copy { gap:0; min-width:0; }
+body #landing.site-home .hero-kicker { margin:0 0 24px; padding:0; background:none; border:0; border-radius:0; color:var(--home-text); font-size:12px; letter-spacing:1.6px; }
+body #landing.site-home .hero-kicker::before { content:''; display:inline-block; width:6px; height:6px; border-radius:50%; background:var(--home-accent); flex-shrink:0; margin:7px 9px 0 0; }
+body #landing.site-home h1 { font:600 clamp(48px,6.4vw,88px)/1.08 'Manrope',Arial,sans-serif; color:var(--home-text); letter-spacing:-.055em; margin:0 0 28px; }
+body #landing.site-home h1 em { font-style:normal; color:var(--home-accent); }
+body #landing.site-home .lead { font-size:18px; line-height:1.75; color:var(--home-muted); max-width:450px; }
+body #landing.site-home .hero-visual { align-self:stretch; position:relative; border-radius:18px; border:1px solid var(--home-line); background:#080e0c; min-height:420px; }
+body #landing.site-home .hero-visual img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+body #landing.site-home .cta-row { gap:20px; align-items:center; margin-top:32px; }
+body #landing.site-home .cta-row button { display:inline-flex; gap:35px; align-items:center; padding:15px 23px; border-radius:100px; border:1px solid var(--home-accent); background:var(--home-accent); color:#14220f; font-size:15px; font-weight:700; box-shadow:none; line-height:1.5; transition:background .15s; }
+body #landing.site-home .cta-row button:hover { background:#d2ffc2; border-color:#d2ffc2; color:#14220f; }
+body #landing.site-home .cta-row button.secondary { font-size:14px; font-weight:500; background:transparent; border:0; border-radius:0; color:var(--home-text); padding:12px 0; }
+body #landing.site-home .cta-row button.secondary:hover { color:var(--home-accent); }
+.home-benefits { display:flex; flex-wrap:wrap; gap:16px; font-size:12px; color:#a6b29e; margin:21px 0 0; }
+body #landing.site-home .privacy { padding:24px 28px; background:var(--home-panel); border:1px solid var(--home-line); border-radius:14px; color:var(--home-muted); line-height:1.75; box-shadow:none; }
+body #landing.site-home .grid { margin:48px 0 60px; grid-template-columns:repeat(2,minmax(0,1fr)); gap:56px; }
+body #landing.site-home .card { padding:28px 0 0; background:transparent; border:0; border-top:1px solid var(--home-line); border-radius:0; box-shadow:none; }
+body #landing.site-home h2 { margin:0 0 20px; font:600 25px/1.25 'Manrope',Arial,sans-serif; color:var(--home-text); letter-spacing:-.6px; }
+body #landing.site-home :is(ol,ul) { gap:12px; color:var(--home-muted); line-height:1.7; }
+body #landing.site-home li::marker { color:var(--home-accent); }
+body #landing.site-home kbd { background:#2b3b25; border-color:#49633e; color:var(--home-accent); }
+body #landing.site-home .landing-footer { margin:0; padding:24px 0 0; border:0; border-top:1px solid var(--home-line); border-radius:0; background:transparent; box-shadow:none; color:var(--home-muted); font-size:14px; line-height:1.8; }
+body #landing.site-home .landing-footer a { color:var(--home-accent); overflow-wrap:anywhere; }
+body #landing.site-home :is(button,select,a):focus-visible { outline:2px solid var(--home-accent); outline-offset:5px; }
+@media (max-width:1050px) {
+  body #landing.site-home .landing-wrap { width:calc(100% - 48px); }
+  body #landing.site-home .hero-brand { gap:30px; }
+  body #landing.site-home .hero { padding-top:64px; }
+  body #landing.site-home .hero-visual { min-height:400px; }
+}
+@media (max-width:720px) {
+  body #landing.site-home .landing-wrap { width:calc(100% - 36px); }
+  body #landing.site-home .landing-topbar { justify-content:space-between; padding:20px 0 16px; gap:10px; }
+  .home-wordmark { flex-basis:100%; margin-bottom:8px; }
+  body #landing.site-home .landing-control-group { padding:0; }
+  body #landing.site-home .hero { padding:45px 0 30px; }
+  body #landing.site-home .hero-brand { grid-template-columns:minmax(0,1fr); gap:32px; }
+  body #landing.site-home h1 { font-size:clamp(48px,12vw,72px); }
+  body #landing.site-home .hero-kicker { font-size:10px; letter-spacing:1px; }
+  body #landing.site-home .lead { font-size:17px; }
+  body #landing.site-home .hero-visual { min-height:0; aspect-ratio:1.15; border-radius:14px; }
+  body #landing.site-home .cta-row { gap:8px 20px; }
+  body #landing.site-home .privacy { padding:21px; }
+  body #landing.site-home .grid { grid-template-columns:minmax(0,1fr); gap:36px; margin:34px 0 44px; }
+}
+@media (prefers-reduced-motion:reduce) { body #landing.site-home .cta-row button { transition:none; } }
